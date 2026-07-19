@@ -26,6 +26,8 @@ changefreq: weekly
         <p class="muted" style="margin:0.35rem 0 0;">We start with the average retiree's benefit as an example. Change the amounts to match your own.</p>
       </div>
       <div class="tool__body">
+        {{> provenance-strip-cola }}
+
         <form id="cola-form" novalidate>
           <div class="field-row field-row--2">
             <div class="field">
@@ -104,7 +106,13 @@ changefreq: weekly
                 <div class="figure__sub">raise you keep</div>
               </div>
             </div>
+            <div id="cola-chart" class="bc-chart" style="max-width:none;margin:1.4rem 0 0.25rem;" aria-hidden="true"></div>
+            <div class="bc-legend" aria-hidden="true">
+              <span><i class="keep"></i> Deposited to you</span>
+              <span><i class="partb"></i> Withheld for Medicare Part B</span>
+            </div>
             <p style="margin:1.1rem 0 0;" id="r-kept"></p>
+            <p style="margin:1rem 0 0;"><button class="btn btn--ghost" id="r-print" type="button"><svg class="icon" aria-hidden="true" focusable="false"><use href="#ic-doc-gov" xlink:href="#ic-doc-gov"/></svg> Print or save these numbers</button></p>
             <p class="muted" style="margin:0.5rem 0 0;font-size:0.95rem;">Based on a <strong id="r-cola-echo">3.6%</strong> COLA. Estimates only; SSA rounds your monthly benefit down to the next whole dollar and your exact figures depend on your benefit and Part B amount.</p>
           </div>
         </div>
@@ -114,13 +122,13 @@ changefreq: weekly
 
     <div class="grid grid--2" style="margin-top:2rem;">
       <a class="card card--link" href="/medicare-plan-changes">
-        <div class="card__icon" aria-hidden="true">🔍</div>
+        <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-magnifier-diff" xlink:href="#ic-magnifier-diff"/></svg></div>
         <h3>Now check your Medicare plan</h3>
         <p class="muted">Your raise is only half the picture. See exactly what changed in your Medicare plan's premium, deductible, and benefits for {{COLA_PROJECTED_YEAR}}.</p>
         <span class="badge badge--info">What Changed tool →</span>
       </a>
       <a class="card card--link" href="/key-dates">
-        <div class="card__icon" aria-hidden="true">📅</div>
+        <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-calendar-check" xlink:href="#ic-calendar-check"/></svg></div>
         <h3>Key dates for this fall</h3>
         <p class="muted">The COLA is announced {{COLA_ANNOUNCE_DATE_LONG}}. Medicare Open Enrollment runs Oct 15 – Dec 7. Here's the full calendar.</p>
         <span class="badge badge--info">See the timeline →</span>
@@ -137,6 +145,11 @@ changefreq: weekly
       <li><strong>The gross raise</strong> — your benefit multiplied by the COLA. A {{COLA_PROJECTED}}% COLA on a $2,000 benefit adds about $72 a month before anything is taken out.</li>
       <li><strong>Your Medicare Part B premium</strong> — for most people this is deducted straight from the Social Security check. When Part B rises, it quietly claws back part of the raise. In some years, a higher Part B premium has eaten up half of a retiree's COLA increase.</li>
     </ul>
+
+    <h3>Recent COLAs at a glance</h3>
+    <p>The cost-of-living adjustment swings with inflation — from the steep 8.7% of 2023 to the leaner years since. Here is how the last several years compare, with the {{COLA_PROJECTED_YEAR}} figure shown as an estimate.</p>
+    {{CHART_COLA_HISTORY}}
+
     <div class="callout callout--info">
       <p class="callout__title">The one formula that matters</p>
       <p style="margin:0;">Net benefit = (your current benefit × (1 + COLA)) − your Medicare Part B premium. That's the number our calculator shows in the <em>"After Part B is taken out"</em> box.</p>

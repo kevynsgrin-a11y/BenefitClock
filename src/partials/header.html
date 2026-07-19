@@ -12,26 +12,36 @@
       <span class="brand__mark" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="9"></circle>
-          <polyline points="12 7 12 12 15.5 14"></polyline>
+          <line x1="12" y1="12" x2="12" y2="7" stroke="#f5c451"></line>
+          <line x1="12" y1="12" x2="15.5" y2="14"></line>
         </svg>
       </span>
       <span>BenefitClock<small>Independent · ad-supported</small></span>
     </a>
 
-    <button class="nav-toggle" type="button" aria-controls="primary-nav" aria-expanded="false">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
-      Menu
-    </button>
+    <div class="site-header__end">
+      <div class="textsize" role="group" aria-label="Text size">
+        <span class="textsize__label" aria-hidden="true">Text size</span>
+        <button class="textsize__btn s1" type="button" data-textsize-set="" aria-pressed="true" aria-label="Normal text size">A</button>
+        <button class="textsize__btn s2" type="button" data-textsize-set="l" aria-pressed="false" aria-label="Larger text size">A</button>
+        <button class="textsize__btn s3" type="button" data-textsize-set="xl" aria-pressed="false" aria-label="Largest text size">A</button>
+      </div>
 
-    <nav class="primary-nav" id="primary-nav" aria-label="Primary">
-      <ul>
-        <li><a href="/" data-nav="home">Home</a></li>
-        <li><a href="/cola-calculator" data-nav="cola">COLA Calculator</a></li>
-        <li><a href="/medicare-plan-changes" data-nav="medicare">Plan Changes</a></li>
-        <li><a href="/key-dates" data-nav="dates">Key Dates</a></li>
-        <li><a href="/guides" data-nav="guides">Guides</a></li>
-        <li><a href="/about" data-nav="about">About</a></li>
-      </ul>
-    </nav>
+      <button class="nav-toggle" type="button" aria-controls="primary-nav" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
+        Menu
+      </button>
+
+      <nav class="primary-nav" id="primary-nav" aria-label="Primary">
+        <ul>
+          <li><a href="/" data-nav="home">Home</a></li>
+          <li><a href="/cola-calculator" data-nav="cola">COLA Calculator</a></li>
+          <li><a href="/medicare-plan-changes" data-nav="medicare">Plan Changes</a></li>
+          <li><a href="/key-dates" data-nav="dates">Key Dates</a></li>
+          <li><a href="/guides" data-nav="guides">Guides</a></li>
+          <li><a href="/about" data-nav="about">About</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </header>

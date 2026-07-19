@@ -12,6 +12,38 @@ function ready(fn) {
   else document.addEventListener("DOMContentLoaded", fn);
 }
 
+// "Where your raise goes" — two horizontal bars (now vs after the raise), each
+// split into what you keep (green) and what Part B withholds (amber). Decorative
+// reinforcement of the stat tiles, so the container is aria-hidden.
+function flowChart(r) {
+  const xmax = Math.max(r.newGross, r.priorGross, 1);
+  const W = 720, H = 172, plotX = 92, plotRight = 632;
+  const plotW = plotRight - plotX;
+  const scale = plotW / xmax;
+  const barH = 42;
+  const rows = [
+    { y: 26, label: "Now", gross: r.priorGross, net: r.priorNet, partb: r.priorPartB, prev: true },
+    { y: 98, label: "After raise", gross: r.newGross, net: r.newNet, partb: r.newPartB, prev: false },
+  ];
+  let svg = "";
+  for (const row of rows) {
+    const keepW = Math.max(0, row.net * scale);
+    const partBW = Math.max(0, row.partb * scale);
+    const cy = row.y + barH / 2 + 5;
+    const op = row.prev ? ' opacity="0.55"' : "";
+    svg += `<g${op}>`;
+    svg += `<rect class="bc-flow-track" x="${plotX}" y="${row.y}" width="${plotW}" height="${barH}" rx="6"/>`;
+    svg += `<rect class="bc-flow-seg--keep" x="${plotX}" y="${row.y}" width="${keepW.toFixed(1)}" height="${barH}" rx="6"/>`;
+    if (partBW > 1) svg += `<rect class="bc-flow-seg--partb" x="${(plotX + keepW).toFixed(1)}" y="${row.y}" width="${partBW.toFixed(1)}" height="${barH}" rx="6"/>`;
+    svg += `<text class="bc-flow-rowlabel" x="6" y="${cy}">${row.label}</text>`;
+    if (keepW > 74) svg += `<text class="bc-flow-value" x="${(plotX + keepW / 2).toFixed(1)}" y="${cy}" text-anchor="middle">${usd(row.net)}</text>`;
+    if (partBW > 48) svg += `<text class="bc-flow-value" x="${(plotX + keepW + partBW / 2).toFixed(1)}" y="${cy}" text-anchor="middle">${usd(row.partb)}</text>`;
+    svg += `<text class="bc-bar-value" x="${(plotX + row.gross * scale + 8).toFixed(1)}" y="${cy}" font-size="15">${usd(row.gross)}</text>`;
+    svg += `</g>`;
+  }
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Bar comparison of your benefit now versus after the raise, split into the amount deposited and the amount withheld for Medicare Part B." preserveAspectRatio="xMidYMid meet">${svg}</svg>`;
+}
+
 ready(() => {
   const form = $("cola-form");
   if (!form) return;
@@ -32,6 +64,8 @@ ready(() => {
     netInc: $("r-net-increase"),
     kept: $("r-kept"),
     colaEcho: $("r-cola-echo"),
+    chart: $("cola-chart"),
+    print: $("r-print"),
     live: $("cola-live"),
   };
 
@@ -102,11 +136,18 @@ ready(() => {
     }
 
     if (els.headline) {
-      els.headline.textContent = `A ${colaPercent.toFixed(1)}% COLA raises a ${usd(priorGross)} benefit to about ${usd(r.newGross)} a month before Part B.`;
+      const keep = Math.round(r.netIncrease);
+      const lead = keep > 0
+        ? `You'll keep about ${usd(keep)} more each month after Part B.`
+        : keep < 0
+          ? `Your monthly deposit falls about ${usd(-keep)} after Part B.`
+          : `Your monthly deposit stays about the same after Part B.`;
+      els.headline.textContent = `${lead} A ${colaPercent.toFixed(1)}% COLA lifts a ${usd(priorGross)} benefit to about ${usd(r.newGross)} before Part B.`;
     }
     if (els.live) {
       els.live.textContent = `Estimated new gross benefit ${usd(r.newGross)} per month; net deposit ${usdCents(r.newNet)} after the Part B premium.`;
     }
+    if (els.chart) els.chart.innerHTML = flowChart(r);
   }
 
   // Wire events — live updates on any change.
@@ -120,6 +161,8 @@ ready(() => {
     render();
     if (els.results) els.results.scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
+
+  if (els.print) els.print.addEventListener("click", () => window.print());
 
   syncCustomVisibility();
   render();
