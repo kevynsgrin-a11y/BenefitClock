@@ -1,0 +1,9 @@
+# Cloudflare Pages redirects.
+# Friendly aliases -> canonical clean URLs (301).
+/cola            /cola-calculator          301
+/calculator      /cola-calculator          301
+/medicare        /medicare-plan-changes    301
+/plan-changes    /medicare-plan-changes    301
+/diff            /medicare-plan-changes     301
+/dates           /key-dates                301
+/methodology     /how-it-works             301

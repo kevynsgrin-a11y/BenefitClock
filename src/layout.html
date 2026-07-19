@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}}</title>
+  <meta name="description" content="{{DESCRIPTION}}">
+  <link rel="canonical" href="{{CANONICAL}}">
+  <meta name="theme-color" content="#0f4b50">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+
+  <!-- Open Graph / social -->
+  <meta property="og:site_name" content="{{SITE_NAME}}">
+  <meta property="og:type" content="{{OG_TYPE}}">
+  <meta property="og:title" content="{{TITLE}}">
+  <meta property="og:description" content="{{DESCRIPTION}}">
+  <meta property="og:url" content="{{CANONICAL}}">
+  <meta property="og:image" content="{{OG_IMAGE}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{TITLE}}">
+  <meta name="twitter:description" content="{{DESCRIPTION}}">
+  <meta name="twitter:image" content="{{OG_IMAGE}}">
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="mask-icon" href="/favicon.svg" color="#0f4b50">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="/assets/css/site.css">
+
+  <!-- Organization + WebSite structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "{{SITE_URL}}/#org",
+        "name": "{{SITE_NAME}}",
+        "url": "{{SITE_URL}}/",
+        "description": "An independent, ad-supported public utility for Medicare and Social Security decisions. No phone numbers, no lead generation, no data sales.",
+        "slogan": "No phone number. No sales calls. Just the numbers."
+      },
+      {
+        "@type": "WebSite",
+        "@id": "{{SITE_URL}}/#site",
+        "url": "{{SITE_URL}}/",
+        "name": "{{SITE_NAME}}",
+        "publisher": { "@id": "{{SITE_URL}}/#org" },
+        "inLanguage": "en-US"
+      }
+    ]
+  }
+  </script>
+
+  <!--
+    MONETIZATION NOTE (business model = programmatic display ads ONLY).
+    When an ad network is approved, its loader script goes here, e.g.:
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXX" crossorigin="anonymous"></script>
+    BenefitClock takes NO carrier/broker CPA and captures NO PII — this keeps
+    the site outside the CMS "chain of enrollment" (TPMO) definition.
+  -->
+  {{HEAD_EXTRA}}
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  {{> header }}
+  <main id="main">
+    {{CONTENT}}
+  </main>
+  {{> footer }}
+  <script src="/assets/js/nav.js" defer></script>
+  {{PAGE_SCRIPTS}}
+</body>
+</html>

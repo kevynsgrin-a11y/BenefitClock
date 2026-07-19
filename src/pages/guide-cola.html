@@ -1,0 +1,235 @@
+<!--
+title: The 2027 Social Security COLA, Explained — Plain-English Guide | BenefitClock
+description: What the 2027 Social Security COLA is, how it's calculated from CPI-W, a worked example, recent history, and why your raise feels smaller after Medicare Part B.
+slug: guides/2027-social-security-cola
+nav: guides
+ogtype: article
+priority: 0.8
+changefreq: monthly
+-->
+<section class="section" style="padding-bottom:1.5rem;">
+  <div class="wrap">
+    <p class="eyebrow">Guide · Social Security</p>
+    <h1>The {{COLA_PROJECTED_YEAR}} Social Security COLA, explained</h1>
+    <p class="lead prose">Every autumn, Social Security raises benefits to keep up with the cost of living. This guide walks you through what that cost-of-living adjustment (COLA) really is, how it's worked out, what recent years looked like, and why the raise that lands in your bank account can feel smaller than the headline number. Plain language, no jargon.</p>
+    <p class="prose"><span class="badge badge--info">Early estimate: {{COLA_PROJECTED_YEAR}} COLA ≈ {{COLA_PROJECTED}}%</span> <span class="muted">Official figure announced {{COLA_ANNOUNCE_DATE_LONG}}.</span></p>
+  </div>
+</section>
+
+{{> ad-leaderboard }}
+
+<section class="section" style="padding-top:1.75rem;">
+  <div class="wrap prose">
+    <h2>What the COLA is, and why it exists</h2>
+    <p>A <strong>cost-of-living adjustment</strong>, or COLA, is the yearly raise Social Security adds to your benefit so that rising prices don't quietly shrink what your check can buy. If groceries, gas, and rent all cost more this year than last, a fixed benefit would stretch less far each month. The COLA is designed to offset that.</p>
+    <p>Congress built automatic COLAs into Social Security back in 1975. Before then, it took an act of Congress to raise benefits, and increases often lagged years behind inflation. Now the adjustment happens on a set schedule, tied to a government measure of prices — no vote required. The goal is simple: protect the buying power of the benefit you've already earned.</p>
+    <p>The raise takes effect with your January payment, and it's permanent. Each year's COLA is added on top of the benefit you're already receiving, so the increases compound over time.</p>
+
+    <h2>How the COLA is calculated</h2>
+    <p>The COLA isn't a guess or a political decision. It comes from a formula written into law, based on one specific inflation gauge:</p>
+    <ul>
+      <li><strong>The index used is CPI-W</strong> — the Consumer Price Index for Urban Wage Earners and Clerical Workers, published by the U.S. Bureau of Labor Statistics. This is a different, older index than the CPI-U figure you often hear quoted in the news.</li>
+      <li><strong>Only the third quarter counts.</strong> The formula looks at the average CPI-W for <strong>July, August, and September</strong> — the third quarter of the year.</li>
+      <li><strong>It's a year-over-year comparison.</strong> That Jul–Aug–Sep average is compared with the same quarter of the last year a COLA took effect. The percentage increase between the two is the COLA.</li>
+      <li><strong>It's rounded to the nearest tenth</strong> of a percent (0.1%).</li>
+    </ul>
+    <p>In plain terms: prices are averaged across three late-summer months, this year's average is stacked against last year's, and the percentage jump becomes your raise.</p>
+
+    <div class="callout callout--info">
+      <p class="callout__title">A worked example (the confirmed {{COLA_CONFIRMED_YEAR}} figure)</p>
+      <p>Here's how the {{COLA_CONFIRMED_YEAR}} COLA of {{COLA_CONFIRMED}}% was actually produced. The third-quarter CPI-W average rose from one year to the next, and the percentage change — rounded to a tenth — is the raise.</p>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data">
+        <caption>How the {{COLA_CONFIRMED_YEAR}} COLA of {{COLA_CONFIRMED}}% was calculated from CPI-W</caption>
+        <thead>
+          <tr>
+            <th scope="col">Step</th>
+            <th scope="col" class="num">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Average CPI-W for Jul–Aug–Sep 2024</td>
+            <td class="num">308.729</td>
+          </tr>
+          <tr>
+            <td>Average CPI-W for Jul–Aug–Sep 2025</td>
+            <td class="num">317.373</td>
+          </tr>
+          <tr>
+            <td>Increase (317.373 − 308.729)</td>
+            <td class="num">8.644</td>
+          </tr>
+          <tr>
+            <td>Percentage change (8.644 ÷ 308.729)</td>
+            <td class="num">2.80%</td>
+          </tr>
+          <tr>
+            <td>Rounded to the nearest 0.1%</td>
+            <td class="num"><strong>{{COLA_CONFIRMED}}%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted" style="font-size:0.95rem;">Source: U.S. Bureau of Labor Statistics CPI-W (series CWUR0000SA0) and the Social Security Administration. The 2026 COLA of 2.8% was announced on October 24, 2025 — a little later than usual because of the federal government shutdown that fall.</p>
+
+    <h2>A short history of recent COLAs</h2>
+    <p>Because the COLA follows inflation, it swings from year to year. The big 2023 increase reflected the high inflation of 2022; the smaller, calmer numbers since then track prices settling down.</p>
+
+    <div class="table-scroll">
+      <table class="data">
+        <caption>Recent Social Security cost-of-living adjustments</caption>
+        <thead>
+          <tr>
+            <th scope="col">Year the raise took effect</th>
+            <th scope="col" class="num">COLA</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2023</td>
+            <td class="num">8.7%</td>
+            <td><span class="badge badge--neutral">Confirmed</span></td>
+          </tr>
+          <tr>
+            <td>2024</td>
+            <td class="num">3.2%</td>
+            <td><span class="badge badge--neutral">Confirmed</span></td>
+          </tr>
+          <tr>
+            <td>2025</td>
+            <td class="num">2.5%</td>
+            <td><span class="badge badge--neutral">Confirmed</span></td>
+          </tr>
+          <tr>
+            <td>{{COLA_CONFIRMED_YEAR}}</td>
+            <td class="num">{{COLA_CONFIRMED}}%</td>
+            <td><span class="badge badge--good">Confirmed</span></td>
+          </tr>
+          <tr>
+            <td>{{COLA_PROJECTED_YEAR}}</td>
+            <td class="num">{{COLA_PROJECTED}}%</td>
+            <td><span class="badge badge--warn">Estimate only</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The {{COLA_PROJECTED_YEAR}} figure of <strong>{{COLA_PROJECTED}}%</strong> is an <strong>early estimate</strong> from analysts such as The Senior Citizens League and AARP — not the official number. It's based on inflation data collected before the third-quarter measuring window is even complete, so treat it as a well-informed forecast that can still move. The official {{COLA_PROJECTED_YEAR}} COLA is announced on <strong>{{COLA_ANNOUNCE_DATE_LONG}} at 8:30&nbsp;a.m. ET</strong>, right after the BLS releases September CPI-W.</p>
+
+    {{> ad-inline }}
+
+    <h2>Why your raise feels smaller than the headline</h2>
+    <p>Here's the part that surprises many people. A {{COLA_PROJECTED}}% COLA on a benefit of about $2,032 — roughly the average retired-worker check after the {{COLA_CONFIRMED_YEAR}} raise — adds around $73 a month before anything is taken out. But that's not usually the amount your deposit grows by.</p>
+    <p>For most retirees, the <strong>Medicare Part B premium</strong> is deducted straight from the Social Security payment. When Part B goes up — and it often does — the increase eats into your COLA. Your gross benefit rises by the full percentage, but the number that actually lands in your bank account grows by less. In some years, a higher Part B premium has swallowed a large share of the raise.</p>
+    <div class="callout callout--warn">
+      <p class="callout__title">The two numbers to keep separate</p>
+      <p>Your <strong>gross raise</strong> is your benefit times the COLA. Your <strong>net raise</strong> is what's left after Part B is withheld. The gap between them is why a "2.8% raise" can feel like less. We break this down in detail in <a href="/guides/part-b-premium-and-your-cola">Part B premiums and your COLA</a>.</p>
+    </div>
+    <p>None of this means the COLA isn't real — it is, and it's permanent. It just means the headline percentage and the change to your deposit are two different figures worth looking at side by side.</p>
+  </div>
+</section>
+
+<section class="section section--wash">
+  <div class="wrap prose">
+    <h2>See what it means for your own check</h2>
+    <p>The clearest way to understand the COLA is to run your own numbers. Our calculator applies the COLA to your benefit and then subtracts Part B, so you see both the gross raise and the amount you actually keep. Nothing you type ever leaves your device.</p>
+    <div class="grid grid--2" style="margin-top:0.5rem;">
+      <a class="card card--link" href="/cola-calculator">
+        <div class="card__icon" aria-hidden="true">💵</div>
+        <h3>Estimate your own raise</h3>
+        <p class="muted">Enter your benefit, pick a COLA, and see your {{COLA_PROJECTED_YEAR}} increase before and after Medicare Part B.</p>
+        <span class="badge badge--info">Open the COLA calculator →</span>
+      </a>
+      <a class="card card--link" href="/key-dates">
+        <div class="card__icon" aria-hidden="true">📅</div>
+        <h3>Key dates for this fall</h3>
+        <p class="muted">The {{COLA_PROJECTED_YEAR}} COLA is announced {{COLA_ANNOUNCE_DATE_LONG}}. Medicare enrollment runs Oct 15 – Dec 7.</p>
+        <span class="badge badge--info">See the timeline →</span>
+      </a>
+    </div>
+
+    <h2>Frequently asked questions</h2>
+
+    <details class="faq">
+      <summary>Is the {{COLA_PROJECTED_YEAR}} COLA of {{COLA_PROJECTED}}% official?</summary>
+      <div class="faq__body">
+        <p>No. The {{COLA_PROJECTED}}% figure is an early estimate from independent analysts like The Senior Citizens League and AARP, based on inflation data gathered before the measuring period is finished. The official {{COLA_PROJECTED_YEAR}} COLA is announced by the Social Security Administration on <strong>{{COLA_ANNOUNCE_DATE_LONG}} at 8:30&nbsp;a.m. ET</strong>, and it can differ from the estimate.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>Which inflation index does the COLA use?</summary>
+      <div class="faq__body">
+        <p>It uses <strong>CPI-W</strong> — the Consumer Price Index for Urban Wage Earners and Clerical Workers — not the more commonly quoted CPI-U. Specifically, it compares the average CPI-W for July, August, and September against the same quarter of the last year a COLA took effect, rounded to the nearest tenth of a percent. You can review the raw index on the <a href="https://www.bls.gov/cpi/" rel="nofollow noopener" target="_blank">BLS Consumer Price Index page</a>.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>When does the raise actually start?</summary>
+      <div class="faq__body">
+        <p>The COLA takes effect with your January payment and is permanent. Each year's adjustment is added on top of the benefit you already receive, so increases build on one another over time.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>Why did my deposit go up by less than the COLA percentage?</summary>
+      <div class="faq__body">
+        <p>Because Medicare Part B is usually withheld from your Social Security check. Your gross benefit rises by the full COLA, but if the Part B premium also increases, the change to your actual deposit is smaller. Our <a href="/cola-calculator">COLA calculator</a> shows both figures side by side.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>Where do these numbers come from?</summary>
+      <div class="faq__body">
+        <p>Everything here comes from public government sources: the <a href="https://www.bls.gov/cpi/" rel="nofollow noopener" target="_blank">Bureau of Labor Statistics</a> for CPI-W and the <a href="https://www.ssa.gov/cola/" rel="nofollow noopener" target="_blank">Social Security Administration</a> for the COLA. BenefitClock is independent — we take no commissions, sell no data, and never ask for your phone number. Read <a href="/how-it-works">how it works</a>.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{SITE_URL}}/" },
+    { "@type": "ListItem", "position": 2, "name": "Guides", "item": "{{SITE_URL}}/guides" },
+    { "@type": "ListItem", "position": 3, "name": "The 2027 Social Security COLA, explained", "item": "{{SITE_URL}}/guides/2027-social-security-cola" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The 2027 Social Security COLA, explained",
+  "description": "A plain-English guide to the 2027 Social Security cost-of-living adjustment: what it is, how it's calculated from CPI-W, a worked example, recent history, and why your raise feels smaller after Medicare Part B.",
+  "articleSection": "Social Security",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "publisher": {
+    "@type": "Organization",
+    "name": "BenefitClock",
+    "url": "{{SITE_URL}}/"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{SITE_URL}}/guides/2027-social-security-cola"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is the 2027 Social Security COLA of 3.6% official?", "acceptedAnswer": { "@type": "Answer", "text": "No. The 3.6% figure is an early estimate from independent analysts such as The Senior Citizens League and AARP. The official 2027 COLA is announced by the Social Security Administration on October 14, 2026 at 8:30 a.m. ET and can differ from the estimate." } },
+    { "@type": "Question", "name": "Which inflation index does the Social Security COLA use?", "acceptedAnswer": { "@type": "Answer", "text": "It uses CPI-W, the Consumer Price Index for Urban Wage Earners and Clerical Workers, not CPI-U. It compares the average CPI-W for July, August, and September against the same quarter of the last year a COLA took effect, rounded to the nearest tenth of a percent." } },
+    { "@type": "Question", "name": "When does the Social Security COLA raise start?", "acceptedAnswer": { "@type": "Answer", "text": "The COLA takes effect with your January payment and is permanent. Each year's adjustment is added on top of the benefit you already receive." } },
+    { "@type": "Question", "name": "Why did my deposit go up by less than the COLA percentage?", "acceptedAnswer": { "@type": "Answer", "text": "Medicare Part B is usually withheld from your Social Security check. Your gross benefit rises by the full COLA, but if the Part B premium also increases, the change to your actual deposit is smaller." } }
+  ]
+}
+</script>

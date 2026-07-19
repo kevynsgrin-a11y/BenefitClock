@@ -1,0 +1,183 @@
+<!--
+title: What Changed in My Medicare Plan for 2027? Free Diff Tool | BenefitClock
+description: See exactly what changed in your Medicare Advantage or Part D plan from 2026 to 2027 — premium, deductible, max out-of-pocket, star rating, and dropped benefits. No phone number, no sign-up.
+slug: medicare-plan-changes
+nav: medicare
+scripts: plan-diff.js
+ogtype: website
+priority: 1.0
+changefreq: weekly
+-->
+<section class="section" style="padding-bottom:1.5rem;">
+  <div class="wrap">
+    <p class="eyebrow">Medicare · Annual Enrollment</p>
+    <h1>What changed in <span style="color:var(--bc-teal-600)">your</span> Medicare plan for <span data-year-next>2027</span>?</h1>
+    <p class="lead prose">Pick your state, county, and current plan. We'll show you — instantly and side by side — how your premium, deductible, maximum out-of-pocket, star rating, and extra benefits changed for <span data-year-next>2027</span>. No forms. No phone number. No one calls you.</p>
+  </div>
+</section>
+
+{{> ad-leaderboard }}
+
+<section class="section" style="padding-top:1.75rem;">
+  <div class="wrap">
+    <div class="tool">
+      <div class="tool__head">
+        <h2>The "What Changed" plan checker</h2>
+        <p class="muted" style="margin:0.35rem 0 0;">Your plan ID (like <code>H1234-001</code>) is on your member card and on the Annual Notice of Change (ANOC) your plan mailed you.</p>
+      </div>
+      <div class="tool__body">
+        <form id="plandiff-form" novalidate>
+          <div class="field-row field-row--2">
+            <div class="field">
+              <label for="f-state">1. Your state</label>
+              <select class="input" id="f-state" name="state">
+                <option value="">Select your state…</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-county">2. Your county</label>
+              <select class="input" id="f-county" name="county" disabled>
+                <option value="">Select your state first…</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-plan">3. Your current plan</label>
+            <select class="input" id="f-plan" name="plan" disabled>
+              <option value="">Select your county first…</option>
+            </select>
+            <span class="hint">Don't see it? Plans are listed by name and plan ID for the county you chose.</span>
+          </div>
+
+          <div class="field">
+            <label for="f-planid">Know your plan ID? <span class="muted">(optional shortcut)</span></label>
+            <input class="input" id="f-planid" name="planid" type="text" inputmode="text" placeholder="e.g. H1234-001" autocomplete="off" style="max-width:22rem;">
+            <span class="hint">Type it and we'll jump straight to your plan in the list above.</span>
+          </div>
+
+          <p class="muted" id="plandiff-status" role="status" aria-live="polite" style="min-height:1.2em;"></p>
+        </form>
+
+        <!-- Empty state -->
+        <div class="callout callout--info" id="plandiff-empty">
+          <p class="callout__title">Your side-by-side comparison will appear here</p>
+          <p style="margin:0;">Choose your plan above to see what's different for <span data-year-next>2027</span>. We compare only the public numbers CMS publishes — we never ask who you are.</p>
+        </div>
+
+        <!-- Error state -->
+        <p class="error-text" id="plandiff-error" hidden></p>
+
+        <!-- Result -->
+        <div class="result" id="plandiff-results" hidden aria-live="polite">
+          <div class="result__head" id="pd-headline">Your plan comparison</div>
+          <div class="result__body">
+            <p style="margin:0 0 0.75rem;"><span class="badge badge--neutral" id="pd-status">Status</span></p>
+            <div class="grid grid--2" style="gap:1rem;margin-bottom:0.5rem;">
+              <div>
+                <div class="figure__label"><span data-year-current>2026</span> plan</div>
+                <div style="font-weight:700;color:var(--bc-teal-900);font-size:1.1rem;" id="pd-plan-name">—</div>
+                <div class="muted" id="pd-meta" style="font-size:0.95rem;"></div>
+              </div>
+              <div>
+                <div class="figure__label"><span data-year-next>2027</span> plan</div>
+                <div style="font-weight:700;color:var(--bc-teal-900);font-size:1.1rem;" id="pd-next-name">—</div>
+              </div>
+            </div>
+            <div class="callout callout--warn" style="margin:0.75rem 0 1.25rem;">
+              <p style="margin:0;" id="pd-note"></p>
+            </div>
+            <div class="table-scroll">
+              <table class="data">
+                <caption class="visually-hidden">Year-over-year plan comparison</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">What we compare</th>
+                    <th scope="col" class="num"><span data-year-current>2026</span></th>
+                    <th scope="col" class="num"><span data-year-next>2027</span></th>
+                    <th scope="col" class="num">Change</th>
+                  </tr>
+                </thead>
+                <tbody id="pd-tbody"></tbody>
+              </table>
+            </div>
+            <p class="muted" style="margin:1rem 0 0;font-size:0.95rem;">Red means the change costs you more or drops a benefit; green means it's in your favor. Always confirm on the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> before enrolling.</p>
+          </div>
+        </div>
+        <p class="visually-hidden" id="pd-live" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="grid grid--2" style="margin-top:2rem;">
+      <a class="card card--link" href="/cola-calculator">
+        <div class="card__icon" aria-hidden="true">💵</div>
+        <h3>Check your Social Security raise</h3>
+        <p class="muted">See how much your benefit rises with the {{COLA_PROJECTED_YEAR}} COLA — and how much you keep after Part B.</p>
+        <span class="badge badge--info">COLA calculator →</span>
+      </a>
+      <a class="card card--link" href="/guides/what-changed-medicare-2027">
+        <div class="card__icon" aria-hidden="true">📘</div>
+        <h3>What changed across Medicare for {{COLA_PROJECTED_YEAR}}</h3>
+        <p class="muted">Fewer plans, formulary shifts, and the new Part D out-of-pocket cap — the big picture in plain language.</p>
+        <span class="badge badge--info">Read the guide →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--wash">
+  <div class="wrap prose">
+    <h2>How to read your result</h2>
+    <p>Every fall, CMS publishes the <strong>Landscape</strong> and <strong>Crosswalk</strong> files that spell out what happens to every Medicare Advantage and Part D plan. We turn those public files into a plain-English comparison. Your plan will fall into one of these categories:</p>
+    <ul>
+      <li><strong><span class="badge badge--good">Renewing</span></strong> — your plan continues, but the premium, deductible, or benefits may have moved. Check the table.</li>
+      <li><strong><span class="badge badge--warn">Consolidated</span></strong> — CMS is merging your plan into a successor plan. Your coverage maps to the new plan ID shown.</li>
+      <li><strong><span class="badge badge--warn">Service-area reduction</span></strong> — the plan is shrinking where it's offered. Confirm it's still available in your county.</li>
+      <li><strong><span class="badge badge--bad">Terminating</span></strong> — the plan won't be offered next year. You'll need to choose a new plan during Open Enrollment or risk being moved to Original Medicare.</li>
+    </ul>
+
+    {{> ad-inline }}
+
+    <h2>Frequently asked questions</h2>
+
+    <details class="faq">
+      <summary>Where do I find my plan ID?</summary>
+      <div class="faq__body">
+        <p>It's on your plan member ID card and on the <strong>Annual Notice of Change (ANOC)</strong> your plan mails every September. It looks like <code>H1234-001</code> (or <code>S</code>/<code>R</code> followed by four digits for some plans). You can also just pick your plan by name from the dropdown.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>Is this the official government tool?</summary>
+      <div class="faq__body">
+        <p>No — and we say so proudly. BenefitClock is an <strong>independent</strong> utility. We use the same public CMS data the government publishes, but we're not affiliated with Medicare or CMS. For enrollment, always use the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or call 1-800-MEDICARE.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>Will you ask for my phone number or sell my information?</summary>
+      <div class="faq__body">
+        <p>Never. This tool doesn't collect your name, phone number, or email — there's no form to fill in and nothing is sent to a call center. That's the whole point of BenefitClock. Read our <a href="/privacy">privacy pledge</a>.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>Why don't I see 2027 numbers yet?</summary>
+      <div class="faq__body">
+        <p>CMS releases the {{COLA_PROJECTED_YEAR}} Landscape and Crosswalk files in late September or early October. Until the official files are published, this tool runs on a structurally identical sample dataset so you can see exactly how the comparison works. The moment CMS posts the real files, we load them and the numbers become live. See <a href="/how-it-works">How it works</a>.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "BenefitClock Medicare Plan Changes Checker",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Any (web browser)",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Compare your Medicare Advantage or Part D plan year over year using public CMS Landscape and Crosswalk data — premium, deductible, MOOP, star rating, and benefits."
+}
+</script>

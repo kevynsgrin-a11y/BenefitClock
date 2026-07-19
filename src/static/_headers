@@ -1,0 +1,16 @@
+# Cloudflare Pages headers — security + caching.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), interest-cohort=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Cross-Origin-Opener-Policy: same-origin
+
+# Long-cache fingerprint-free static assets (safe: content is stable, cheap to purge).
+/assets/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# Data JSON refreshes each fall — keep it short.
+/data/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
