@@ -118,6 +118,8 @@ code, kbd, samp { font-family: var(--bc-font-mono); font-size: 0.95em; }
   outline-offset: 2px;
   border-radius: 4px;
 }
+/* On dark teal grounds the blue ring falls under 3:1 (WCAG 1.4.11) — use white there. */
+.section--teal :focus-visible, .site-footer :focus-visible, .trust-bar :focus-visible { outline-color: #fff; }
 .skip-link {
   position: absolute;
   left: 0.75rem;
@@ -246,12 +248,13 @@ code, kbd, samp { font-family: var(--bc-font-mono); font-size: 0.95em; }
 }
 .site-header__inner {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.6rem 1rem;
   min-height: 4.25rem;
 }
-.site-header__end { display: flex; align-items: center; gap: 0.6rem; }
+.site-header__end { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.6rem; }
 .brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--bc-teal-900); font-weight: 800; font-size: 1.28rem; }
 .brand:hover { color: var(--bc-teal-900); }
 .brand__mark {
@@ -603,7 +606,7 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
 /* Live COLA "where your raise goes" flow chart */
 .bc-flow-track { fill: var(--bc-surface-3); }
 .bc-flow-seg--keep { fill: var(--bc-green-700); }
-.bc-flow-seg--partb { fill: var(--bc-amber-500); }
+.bc-flow-seg--partb { fill: var(--bc-amber-600); }
 .bc-flow-tick { stroke: var(--bc-ink-soft); stroke-width: 2; stroke-dasharray: 3 3; }
 .bc-flow-rowlabel { fill: var(--bc-ink-soft); font-weight: 700; font-size: 15px; font-family: var(--bc-font-sans); }
 .bc-flow-value { fill: #ffffff; font-weight: 800; font-size: 15px; font-family: var(--bc-font-sans); }
@@ -612,7 +615,7 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
 .bc-legend span { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 600; }
 .bc-legend i { width: 0.95rem; height: 0.95rem; border-radius: 3px; display: inline-block; flex: none; }
 .bc-legend i.keep { background: var(--bc-green-700); }
-.bc-legend i.partb { background: var(--bc-amber-500); }
+.bc-legend i.partb { background: var(--bc-amber-600); }
 
 /* ----- Dark mode (opt-in via prefers-color-scheme; light stays primary) - */
 /* ======================================================================
@@ -632,7 +635,7 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
 .hero__grid { display: grid; gap: 2rem; align-items: center; }
 @media (min-width: 56rem) { .hero__grid { grid-template-columns: 1.05fr 0.95fr; gap: 2.75rem; } }
 .hero__art { display: none; }
-@media (min-width: 46rem) {
+@media (min-width: 56rem) {
   .hero__art { display: block; }
   .hero__art-svg { width: 100%; height: auto; max-width: 30rem; margin-inline: auto; filter: drop-shadow(0 20px 44px rgba(4, 24, 26, 0.42)); }
 }
@@ -736,6 +739,7 @@ svg.section-divider { display: block; width: 100%; height: 52px; color: var(--bc
   .timeline .date,
   .dl-clean dd,
   .brand, .brand:hover,
+  details.faq > summary,
   .pd-planname { color: #eefaf9; }
   .eyebrow { color: #7fd3d6; }
   .figure__value--good { color: #6ee7a8; }
@@ -755,17 +759,17 @@ svg.section-divider { display: block; width: 100%; height: 52px; color: var(--bc
   .bc-bar { fill: #2a9199; }
   .bc-bar--prev { fill: #1a7a80; }
   .bc-flow-track { fill: #1e2d2b; }
-  .bc-flow-seg--keep { fill: #2f9e64; }
+  .bc-flow-seg--keep { fill: #15803d; }
   .bc-flow-rowlabel { fill: #cbd5d1; }
   .bc-flow-cap { fill: #90a29e; }
   .bc-legend { color: #cbd5d1; }
-  .bc-legend i.keep { background: #2f9e64; }
+  .bc-legend i.keep { background: #15803d; }
   /* Visual-enhancement components — light foreground on dark surfaces */
   .provenance__chip, .step__title, .result__headline { color: #eefaf9; }
   .provenance__mono { background: #10302f; color: #8fe0e2; border-color: #234a49; }
   .cta-reassure { color: #e6f5f5; }
   .textsize__btn { background: var(--bc-surface); color: #cfeaea; border-color: var(--bc-line); }
-  .textsize__btn[aria-pressed="true"] { background: var(--bc-teal-600); color: #06201f; border-color: var(--bc-teal-600); }
+  .textsize__btn[aria-pressed="true"] { background: var(--bc-teal-600); color: #fff; border-color: var(--bc-teal-600); }
 }
 
 /* ----- Print ------------------------------------------------------------ */
