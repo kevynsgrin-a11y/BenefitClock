@@ -23,32 +23,9 @@ changefreq: monthly
     <h2>Fewer plans on the menu</h2>
     <p>The first thing to know about {{COLA_PROJECTED_YEAR}} is that the number of Medicare plans has been shrinking. After years of the plan menu growing wider and wider, carriers have started to pull back — trimming plans that didn't attract enough members or cost too much to run. You can already see the trend in the move from 2025 to 2026.</p>
 
-    <div class="table-scroll">
-      <table class="data">
-        <caption>How the Medicare plan menu narrowed from 2025 to 2026</caption>
-        <thead>
-          <tr>
-            <th scope="col">What's being counted</th>
-            <th scope="col" class="num">2025</th>
-            <th scope="col" class="num">2026</th>
-            <th scope="col">Direction</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Medicare Advantage plans with drug coverage (MA-PD) the average person can choose from</td>
-            <td class="num">34</td>
-            <td class="num">32</td>
-            <td><span class="badge badge--warn">Down 2</span></td>
-          </tr>
-          <tr>
-            <td>Stand-alone Part D drug plans (PDPs) offered nationwide</td>
-            <td class="num">474</td>
-            <td class="num">367</td>
-            <td><span class="badge badge--warn">Down 107</span></td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="grid grid--2">
+      <div>{{CHART_PLANS_MAPD}}</div>
+      <div>{{CHART_PLANS_PDP}}</div>
     </div>
     <p class="muted" style="font-size:0.95rem;">Source: CMS Medicare Advantage and Part D Landscape files. "The average person" figure is the count of MA-PD plans available where a typical beneficiary lives, not the total number of plans in the country.</p>
 

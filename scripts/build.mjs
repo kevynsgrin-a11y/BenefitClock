@@ -23,6 +23,7 @@ import { readFileSync, writeFileSync, readdirSync, mkdirSync, rmSync, cpSync, ex
 import { join, dirname, basename, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
+import { colaHistoryChart, planCountChart } from "./lib/svgcharts.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -119,6 +120,23 @@ function build() {
     COLA_ANNOUNCE_DATE_LONG: longDate(announce),
   };
 
+  // Build-time inline-SVG charts (golden-fact data; no client JS, SEO-friendly).
+  const chartTokens = {
+    CHART_COLA_HISTORY: cola.history
+      ? colaHistoryChart(cola.history, cola.confirmedYear, cola.projectedYear)
+      : "",
+    CHART_PLANS_MAPD: planCountChart({
+      ariaWhat: "Average Medicare Advantage prescription-drug (MA-PD) plans available to a typical beneficiary",
+      caption: "Average MA-PD plans available to a typical beneficiary.",
+      fromYear: 2025, fromValue: 34, toYear: 2026, toValue: 32, unitLabel: "Plans",
+    }),
+    CHART_PLANS_PDP: planCountChart({
+      ariaWhat: "Stand-alone Medicare Part D prescription drug plans offered nationwide",
+      caption: "Stand-alone Part D plans offered nationwide.",
+      fromYear: 2025, fromValue: 474, toYear: 2026, toValue: 367, unitLabel: "Plans",
+    }),
+  };
+
   const layout = read(join(SRC, "layout.html"));
   const pagesDir = join(SRC, "pages");
   const pageFiles = readdirSync(pagesDir).filter((f) => f.endsWith(".html"));
@@ -153,6 +171,7 @@ function build() {
       ROBOTS: meta.robots || "index, follow, max-image-preview:large",
       CONTENT: body.trim(),
       ...colaTokens,
+      ...chartTokens,
     };
 
     let html = layout.replace("{{CONTENT}}", () => tokens.CONTENT);

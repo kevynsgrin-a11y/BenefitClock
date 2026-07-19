@@ -555,6 +555,37 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
 .dl-clean dd { margin: 0; font-weight: 700; color: var(--bc-teal-900); text-align: right; }
 .print-hint { display: none; }
 
+/* ----- Charts (inline SVG, dependency-free, accessible) ----------------- */
+.bc-chart { margin: 1.75rem 0; max-width: 42rem; }
+.bc-chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.bc-chart figcaption { font-size: 0.95rem; color: var(--bc-ink-faint); margin-top: 0.75rem; }
+.bc-gridline { stroke: var(--bc-line-soft); stroke-width: 1; }
+.bc-axis { stroke: var(--bc-line); stroke-width: 1.5; }
+.bc-bar { fill: var(--bc-teal-600); }
+.bc-bar--prev { fill: var(--bc-teal-800); }
+.bc-bar--accent { fill: var(--bc-amber-500); }
+.bc-bar--est { fill: var(--bc-teal-500); opacity: 0.5; }
+.bc-bar-value { fill: var(--bc-teal-900); font-weight: 800; font-size: 19px; font-family: var(--bc-font-sans); }
+.bc-bar-label { fill: var(--bc-ink-soft); font-weight: 700; font-size: 17px; font-family: var(--bc-font-sans); }
+.bc-bar-sub { fill: var(--bc-amber-600); font-weight: 700; font-size: 14px; font-family: var(--bc-font-sans); }
+@media (prefers-reduced-motion: no-preference) {
+  .bc-bar, .bc-flow-seg--keep, .bc-flow-seg--partb { transition: y 0.5s ease, height 0.5s ease, x 0.5s ease, width 0.5s ease; }
+}
+
+/* Live COLA "where your raise goes" flow chart */
+.bc-flow-track { fill: var(--bc-surface-3); }
+.bc-flow-seg--keep { fill: var(--bc-green-700); }
+.bc-flow-seg--partb { fill: var(--bc-amber-500); }
+.bc-flow-tick { stroke: var(--bc-ink-soft); stroke-width: 2; stroke-dasharray: 3 3; }
+.bc-flow-rowlabel { fill: var(--bc-ink-soft); font-weight: 700; font-size: 15px; font-family: var(--bc-font-sans); }
+.bc-flow-value { fill: #ffffff; font-weight: 800; font-size: 15px; font-family: var(--bc-font-sans); }
+.bc-flow-cap { fill: var(--bc-ink-faint); font-size: 13px; font-family: var(--bc-font-sans); }
+.bc-legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-top: 0.85rem; font-size: 0.95rem; color: var(--bc-ink-soft); }
+.bc-legend span { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 600; }
+.bc-legend i { width: 0.95rem; height: 0.95rem; border-radius: 3px; display: inline-block; flex: none; }
+.bc-legend i.keep { background: var(--bc-green-700); }
+.bc-legend i.partb { background: var(--bc-amber-500); }
+
 /* ----- Dark mode (opt-in via prefers-color-scheme; light stays primary) - */
 @media (prefers-color-scheme: dark) {
   :root {
@@ -600,6 +631,17 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
   .btn--ghost { color: #d7efef; }
   a { color: #7ecbd0; }
   .callout--info a, .card--link .badge { color: #8fe0e2; }
+  .bc-bar-value { fill: #eefaf9; }
+  .bc-bar-label { fill: #cbd5d1; }
+  .bc-bar-sub { fill: #f5c451; }
+  .bc-bar { fill: #2a9199; }
+  .bc-bar--prev { fill: #1a7a80; }
+  .bc-flow-track { fill: #1e2d2b; }
+  .bc-flow-seg--keep { fill: #2f9e64; }
+  .bc-flow-rowlabel { fill: #cbd5d1; }
+  .bc-flow-cap { fill: #90a29e; }
+  .bc-legend { color: #cbd5d1; }
+  .bc-legend i.keep { background: #2f9e64; }
 }
 
 /* ----- Print ------------------------------------------------------------ */
