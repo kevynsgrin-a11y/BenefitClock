@@ -118,6 +118,7 @@ function build() {
     COLA_PROJECTED_YEAR: cola.projectedYear != null ? String(cola.projectedYear) : "2027",
     COLA_ANNOUNCE_DATE: announce,
     COLA_ANNOUNCE_DATE_LONG: longDate(announce),
+    DATA_UPDATED: longDate(SITE.buildDate),
   };
 
   // Build-time inline-SVG charts (golden-fact data; no client JS, SEO-friendly).

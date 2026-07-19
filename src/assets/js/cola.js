@@ -65,6 +65,7 @@ ready(() => {
     kept: $("r-kept"),
     colaEcho: $("r-cola-echo"),
     chart: $("cola-chart"),
+    print: $("r-print"),
     live: $("cola-live"),
   };
 
@@ -135,7 +136,13 @@ ready(() => {
     }
 
     if (els.headline) {
-      els.headline.textContent = `A ${colaPercent.toFixed(1)}% COLA raises a ${usd(priorGross)} benefit to about ${usd(r.newGross)} a month before Part B.`;
+      const keep = Math.round(r.netIncrease);
+      const lead = keep > 0
+        ? `You'll keep about ${usd(keep)} more each month after Part B.`
+        : keep < 0
+          ? `Your monthly deposit falls about ${usd(-keep)} after Part B.`
+          : `Your monthly deposit stays about the same after Part B.`;
+      els.headline.textContent = `${lead} A ${colaPercent.toFixed(1)}% COLA lifts a ${usd(priorGross)} benefit to about ${usd(r.newGross)} before Part B.`;
     }
     if (els.live) {
       els.live.textContent = `Estimated new gross benefit ${usd(r.newGross)} per month; net deposit ${usdCents(r.newNet)} after the Part B premium.`;
@@ -154,6 +161,8 @@ ready(() => {
     render();
     if (els.results) els.results.scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
+
+  if (els.print) els.print.addEventListener("click", () => window.print());
 
   syncCustomVisibility();
   render();

@@ -8,19 +8,28 @@ priority: 1.0
 changefreq: weekly
 -->
 <section class="hero section--teal">
+  {{> ripple }}
   <div class="wrap hero__inner">
-    <p class="eyebrow">The fall benefits season, without the sales calls</p>
-    <h1>Your raise and your Medicare plan — side by side.</h1>
-    <p class="lead">Every autumn, your Social Security cost-of-living raise and your Medicare plan changes land at the same time. BenefitClock puts both numbers in front of you in seconds — so you can see what you'll gain and what it'll cost, and decide for yourself.</p>
-    <div class="hero__cta">
-      <a class="btn btn--primary btn--lg" href="/medicare-plan-changes">See what changed in my plan</a>
-      <a class="btn btn--onteal btn--lg" href="/cola-calculator">Calculate my COLA raise</a>
+    <div class="hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">The fall benefits season, without the sales calls</p>
+        <h1>Your raise and your Medicare plan — side by side.</h1>
+        <p class="lead">Every autumn, your Social Security cost-of-living raise and your Medicare plan changes land at the same time. BenefitClock puts both numbers in front of you in seconds — so you can see what you'll gain and what it'll cost, and decide for yourself.</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary btn--lg" href="/medicare-plan-changes">See what changed in my plan <svg class="icon" aria-hidden="true" focusable="false"><use href="#ic-arrow-right"/></svg></a>
+          <a class="btn btn--onteal btn--lg" href="/cola-calculator">Calculate my COLA raise</a>
+        </div>
+        <p class="cta-reassure"><svg class="icon" aria-hidden="true" focusable="false"><use href="#ic-shield-lock"/></svg> No sign-up. No phone number. About 30 seconds.</p>
+        <ul class="hero__promise">
+          <li><span class="tick" aria-hidden="true">✓</span> We never ask for your phone number</li>
+          <li><span class="tick" aria-hidden="true">✓</span> We never sell your data</li>
+          <li><span class="tick" aria-hidden="true">✓</span> Free, and supported only by ads</li>
+        </ul>
+      </div>
+      <div class="hero__art">
+        {{> hero-art }}
+      </div>
     </div>
-    <ul class="hero__promise">
-      <li><span class="tick" aria-hidden="true">✓</span> We never ask for your phone number</li>
-      <li><span class="tick" aria-hidden="true">✓</span> We never sell your data</li>
-      <li><span class="tick" aria-hidden="true">✓</span> Free, and supported only by ads</li>
-    </ul>
   </div>
 </section>
 
@@ -28,13 +37,13 @@ changefreq: weekly
   <div class="wrap">
     <div class="grid grid--2">
       <a class="card card--link" href="/medicare-plan-changes">
-        <div class="card__icon" aria-hidden="true">🔍</div>
+        <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-magnifier-diff"/></svg></div>
         <h3>What changed in my Medicare plan?</h3>
         <p class="muted">Pick your plan and instantly see how your premium, deductible, max out-of-pocket, star rating, and extra benefits moved from <span data-year-current>2026</span> to <span data-year-next>2027</span> — using public CMS data. No login, no form.</p>
         <span class="badge badge--info">Open the What&nbsp;Changed tool →</span>
       </a>
       <a class="card card--link" href="/cola-calculator">
-        <div class="card__icon" aria-hidden="true">💵</div>
+        <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-coins-up"/></svg></div>
         <h3>What's my real Social Security raise?</h3>
         <p class="muted">Enter your benefit and we'll apply the {{COLA_PROJECTED_YEAR}} COLA, then subtract Medicare Part B to show the raise that actually reaches your bank account. Everything runs in your browser.</p>
         <span class="badge badge--info">Open the COLA calculator →</span>
@@ -43,10 +52,16 @@ changefreq: weekly
   </div>
 </section>
 
+<section class="section" style="padding-block:0.5rem 2rem;">
+  <div class="wrap" data-reveal>
+    {{> provenance-band }}
+  </div>
+</section>
+
 {{> ad-leaderboard }}
 
 <section class="section section--wash">
-  <div class="wrap">
+  <div class="wrap" data-reveal>
     <div class="prose" style="max-width:52rem;">
       <p class="eyebrow">Why we're different</p>
       <h2>A public utility, not a lead funnel.</h2>
@@ -54,17 +69,17 @@ changefreq: weekly
     </div>
     <div class="grid grid--3" style="margin-top:2rem;">
       <div class="card">
-        <div class="card__icon" aria-hidden="true">📵</div>
+        <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-phone-off"/></svg></div>
         <h3>No phone number, ever</h3>
         <p class="muted">There's no form, no "talk to a licensed agent," no callback. You get the numbers and you're done. We don't want your phone number and we'll never ask for it.</p>
       </div>
       <div class="card">
-        <div class="card__icon" aria-hidden="true">🔒</div>
+        <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-shield-lock"/></svg></div>
         <h3>Your data stays yours</h3>
         <p class="muted">The calculators run entirely in your browser. We don't sell leads, we take no commissions from insurance companies, and we're not a broker. <a href="/privacy">Read the pledge.</a></p>
       </div>
       <div class="card">
-        <div class="card__icon" aria-hidden="true">📄</div>
+        <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-doc-gov"/></svg></div>
         <h3>Straight from the source</h3>
         <p class="muted">Every number comes from public government files — CMS for Medicare, the SSA and BLS for the COLA. No spin, no "recommended" plan we're paid to push. <a href="/how-it-works">See our data.</a></p>
       </div>
@@ -73,13 +88,13 @@ changefreq: weekly
 </section>
 
 <section class="section">
-  <div class="wrap">
+  <div class="wrap" data-reveal>
     <div class="grid grid--2" style="align-items:center;gap:2.5rem;">
       <div class="prose">
         <p class="eyebrow">Mark your calendar</p>
         <h2>Two deadlines, one busy autumn.</h2>
         <p>The moment you learn your <span data-year-next>2027</span> Social Security raise is almost the exact moment you're allowed to change your Medicare plan. BenefitClock is built for that overlap.</p>
-        <a class="btn btn--solid" href="/key-dates">See all key dates &amp; deadlines</a>
+        <a class="btn btn--solid" href="/key-dates">See all key dates &amp; deadlines <svg class="icon" aria-hidden="true" focusable="false"><use href="#ic-arrow-right"/></svg></a>
       </div>
       <ul class="timeline">
         <li>
@@ -100,19 +115,43 @@ changefreq: weekly
 </section>
 
 <section class="section section--wash">
-  <div class="wrap prose" style="max-width:52rem;">
+  <div class="wrap prose" style="max-width:52rem;" data-reveal>
     <p class="eyebrow">How it works</p>
     <h2>Three steps, no sign-up.</h2>
-    <ol style="font-size:1.1rem;">
-      <li style="margin-bottom:0.8rem;"><strong>Check your raise.</strong> Enter your benefit in the COLA calculator to see your <span data-year-next>2027</span> increase — before and after Part B.</li>
-      <li style="margin-bottom:0.8rem;"><strong>Check your plan.</strong> Pick your Medicare plan and see the year-over-year diff: premium, deductible, MOOP, star rating, and dropped extras.</li>
-      <li><strong>Decide with confidence.</strong> Take the numbers to the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or 1-800-MEDICARE to enroll. We don't enroll you and we don't hand you off to anyone.</li>
+    <ol class="steps">
+      <li>
+        <div class="step">
+          <span class="step__num" aria-hidden="true">1</span>
+          <div>
+            <p class="step__title">Check your raise</p>
+            <p>Enter your benefit in the COLA calculator to see your <span data-year-next>2027</span> increase — before and after Part B.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="step">
+          <span class="step__num" aria-hidden="true">2</span>
+          <div>
+            <p class="step__title">Check your plan</p>
+            <p>Pick your Medicare plan and see the year-over-year diff: premium, deductible, MOOP, star rating, and dropped extras.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="step">
+          <span class="step__num" aria-hidden="true">3</span>
+          <div>
+            <p class="step__title">Decide with confidence</p>
+            <p>Take the numbers to the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or 1-800-MEDICARE to enroll. We don't enroll you and we don't hand you off to anyone.</p>
+          </div>
+        </div>
+      </li>
     </ol>
   </div>
 </section>
 
 <section class="section">
-  <div class="wrap center">
+  <div class="wrap center" data-reveal>
     <h2>Ready when the numbers drop this fall.</h2>
     <p class="lead" style="margin-inline:auto;max-width:40ch;">Bookmark BenefitClock now. When your COLA and plan changes arrive, you'll have both answers in under a minute.</p>
     <div class="hero__cta" style="justify-content:center;">

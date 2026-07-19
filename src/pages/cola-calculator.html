@@ -26,6 +26,8 @@ changefreq: weekly
         <p class="muted" style="margin:0.35rem 0 0;">We start with the average retiree's benefit as an example. Change the amounts to match your own.</p>
       </div>
       <div class="tool__body">
+        {{> provenance-strip-cola }}
+
         <form id="cola-form" novalidate>
           <div class="field-row field-row--2">
             <div class="field">
@@ -110,6 +112,7 @@ changefreq: weekly
               <span><i class="partb"></i> Withheld for Medicare Part B</span>
             </div>
             <p style="margin:1.1rem 0 0;" id="r-kept"></p>
+            <p style="margin:1rem 0 0;"><button class="btn btn--ghost" id="r-print" type="button"><svg class="icon" aria-hidden="true" focusable="false"><use href="#ic-doc-gov"/></svg> Print or save these numbers</button></p>
             <p class="muted" style="margin:0.5rem 0 0;font-size:0.95rem;">Based on a <strong id="r-cola-echo">3.6%</strong> COLA. Estimates only; SSA rounds your monthly benefit down to the next whole dollar and your exact figures depend on your benefit and Part B amount.</p>
           </div>
         </div>
@@ -119,13 +122,13 @@ changefreq: weekly
 
     <div class="grid grid--2" style="margin-top:2rem;">
       <a class="card card--link" href="/medicare-plan-changes">
-        <div class="card__icon" aria-hidden="true">🔍</div>
+        <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-magnifier-diff"/></svg></div>
         <h3>Now check your Medicare plan</h3>
         <p class="muted">Your raise is only half the picture. See exactly what changed in your Medicare plan's premium, deductible, and benefits for {{COLA_PROJECTED_YEAR}}.</p>
         <span class="badge badge--info">What Changed tool →</span>
       </a>
       <a class="card card--link" href="/key-dates">
-        <div class="card__icon" aria-hidden="true">📅</div>
+        <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-calendar-check"/></svg></div>
         <h3>Key dates for this fall</h3>
         <p class="muted">The COLA is announced {{COLA_ANNOUNCE_DATE_LONG}}. Medicare Open Enrollment runs Oct 15 – Dec 7. Here's the full calendar.</p>
         <span class="badge badge--info">See the timeline →</span>

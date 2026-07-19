@@ -227,6 +227,8 @@ ready(async () => {
   els.planId && els.planId.addEventListener("change", onPlanIdEntry);
   els.planId && els.planId.addEventListener("blur", onPlanIdEntry);
   form.addEventListener("submit", (e) => { e.preventDefault(); onPlan(); });
+  const printBtn = document.getElementById("pd-print");
+  if (printBtn) printBtn.addEventListener("click", () => window.print());
 
   // Column headers reflect the actual data years.
   const yh = document.querySelectorAll("[data-year-current]");
