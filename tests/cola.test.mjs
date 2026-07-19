@@ -62,6 +62,14 @@ test("projectBenefit handles zero Part B", () => {
   assert.equal(r.newNet, 1028);
 });
 
+test("projectBenefit: a Part B decrease grows the deposit by more than the raise", () => {
+  const r = projectBenefit({ priorGross: 2000, colaPercent: 2.8, priorPartB: 185, newPartB: 174 });
+  assert.ok(r.partBIncrease < 0, "partBIncrease should be negative");
+  assert.equal(r.grossIncrease, 56);
+  assert.equal(r.netIncrease, 67);            // (2056-174) - (2000-185)
+  assert.ok(r.netIncrease > r.grossIncrease, "net should exceed gross when Part B falls");
+});
+
 test("currency formatters", () => {
   assert.equal(usd(2056), "$2,056");
   assert.equal(usdCents(1849.5), "$1,849.50");

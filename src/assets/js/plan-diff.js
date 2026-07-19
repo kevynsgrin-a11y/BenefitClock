@@ -83,7 +83,7 @@ ready(async () => {
   if (els.state) {
     els.state.innerHTML =
       `<option value="">Select your state…</option>` +
-      states.map((s) => `<option value="${s}">${s}</option>`).join("");
+      states.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
   }
 
   function resetSelect(sel, placeholder) {
@@ -101,7 +101,7 @@ ready(async () => {
     const counties = listCounties(meta.currentIndex, s);
     els.county.innerHTML =
       `<option value="">Select your county…</option>` +
-      counties.map((c) => `<option value="${c}">${c}</option>`).join("");
+      counties.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
     els.county.disabled = false;
   }
 

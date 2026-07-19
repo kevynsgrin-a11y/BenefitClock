@@ -414,6 +414,7 @@ select.input {
 .figure__value--good { color: var(--bc-green-700); }
 .figure__value--bad { color: var(--bc-red-700); }
 .figure__sub { font-size: 0.9rem; color: var(--bc-ink-faint); }
+.pd-planname { font-weight: 700; color: var(--bc-teal-900); font-size: 1.1rem; }
 
 /* ----- Tables ----------------------------------------------------------- */
 .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -575,6 +576,30 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
   .btn--primary { background: var(--bc-amber-500); color: #241402; }
   .ad-slot__frame { background: repeating-linear-gradient(45deg, #16211f, #16211f 12px, #1a2725 12px, #1a2725 24px); }
   .callout--warn { background: #241d0f; }
+
+  /* Text that hard-codes dark teal tokens as its COLOR must lighten in dark mode
+     (the tokens stay dark where they're used as opaque BACKGROUNDS). WCAG 1.4.3. */
+  h1, h2, h3, h4,
+  .field > label, .field > .field__label,
+  .figure__value,
+  .callout__title,
+  table.data caption, table.data thead th,
+  .timeline .date,
+  .dl-clean dd,
+  .brand, .brand:hover,
+  .pd-planname { color: #eefaf9; }
+  .eyebrow { color: #7fd3d6; }
+  .figure__value--good { color: #6ee7a8; }
+  .figure__value--bad { color: #fca5a5; }
+  .cell-change--up { color: #fca5a5; }
+  .cell-change--down { color: #6ee7a8; }
+  .badge--info { background: #10302f; color: #8fe0e2; }
+  .badge--neutral { background: #1e2d2b; color: #cbd5d1; }
+  .primary-nav a[aria-current="page"] { color: #8fe0e2; }
+  .card__icon { color: #8fe0e2; }
+  .btn--ghost { color: #d7efef; }
+  a { color: #7ecbd0; }
+  .callout--info a, .card--link .badge { color: #8fe0e2; }
 }
 
 /* ----- Print ------------------------------------------------------------ */

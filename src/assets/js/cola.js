@@ -94,6 +94,8 @@ ready(() => {
         els.kept.textContent = `Your Part B premium rose ${usdCents(r.partBIncrease)}, so you keep about ${Math.round(r.keptPercentOfRaise)}% of the raise.`;
       } else if (r.partBIncrease > 0) {
         els.kept.textContent = `Your Part B premium rose ${usdCents(r.partBIncrease)} a month.`;
+      } else if (r.partBIncrease < 0) {
+        els.kept.textContent = `Your Part B premium fell ${usdCents(Math.abs(r.partBIncrease))} a month, so your deposit rises by more than the raise.`;
       } else {
         els.kept.textContent = `Your Part B premium is unchanged in this estimate, so the full raise reaches your deposit.`;
       }

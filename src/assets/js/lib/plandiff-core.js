@@ -140,7 +140,11 @@ export function diffMetric(metric, prior, next) {
     }
   } else {
     const av = Number(a), bv = Number(b);
-    const bothNum = Number.isFinite(av) && Number.isFinite(bv);
+    // A missing metric (null / undefined / "") is NOT comparable. Guard before
+    // coercing, because Number(null) and Number("") are 0, not NaN — otherwise a
+    // blank value would masquerade as a real $0 and fabricate a movement.
+    const missing = (x) => x === null || x === undefined || x === "";
+    const bothNum = !missing(a) && !missing(b) && Number.isFinite(av) && Number.isFinite(bv);
     if (!bothNum || av === bv) {
       direction = "flat"; tone = "flat"; deltaText = "No change";
     } else {

@@ -13,7 +13,7 @@
      title: Page title | BenefitClock
      description: Meta description (<=160 chars).
      slug: cola-calculator        # output path; "" or "index" => site root
-     nav: cola                    # active nav id (home|cola|medicare|learn|about)
+     nav: cola                    # active nav id (home|cola|medicare|dates|guides|about)
      scripts: cola.js             # comma-separated module scripts from /assets/js
      ogtype: website
      -->
@@ -150,6 +150,7 @@ function build() {
       BUILD_YEAR: String(SITE.buildYear),
       PAGE_SCRIPTS: scripts,
       HEAD_EXTRA: meta.head || "",
+      ROBOTS: meta.robots || "index, follow, max-image-preview:large",
       CONTENT: body.trim(),
       ...colaTokens,
     };
@@ -169,7 +170,7 @@ function build() {
     const dest = outPath(slug);
     mkdirSync(dirname(dest), { recursive: true });
     writeFileSync(dest, html);
-    built.push({ slug, url, file, priority: meta.priority, changefreq: meta.changefreq });
+    built.push({ slug, url, file, priority: meta.priority, changefreq: meta.changefreq, robots: meta.robots });
     console.log(`  → ${url}  (${basename(dest)})`);
   }
 
@@ -195,6 +196,7 @@ function build() {
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     built
+      .filter((p) => !/noindex/i.test(p.robots || ""))
       .map((p) => {
         const loc = SITE.url + (p.url === "/" ? "/" : p.url);
         const pr = p.priority || (p.url === "/" ? "1.0" : "0.8");

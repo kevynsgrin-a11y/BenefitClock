@@ -1,6 +1,6 @@
 <!--
 title: What Changed in My Medicare Plan for 2027? Free Diff Tool | BenefitClock
-description: See exactly what changed in your Medicare Advantage or Part D plan from 2026 to 2027 — premium, deductible, max out-of-pocket, star rating, and dropped benefits. No phone number, no sign-up.
+description: See exactly what changed in your Medicare Advantage or Part D plan from 2026 to 2027 — premium, deductible, max out-of-pocket, star rating, and benefits.
 slug: medicare-plan-changes
 nav: medicare
 scripts: plan-diff.js
@@ -66,22 +66,22 @@ changefreq: weekly
         </div>
 
         <!-- Error state -->
-        <p class="error-text" id="plandiff-error" hidden></p>
+        <p class="error-text" id="plandiff-error" role="alert" hidden></p>
 
         <!-- Result -->
-        <div class="result" id="plandiff-results" hidden aria-live="polite">
+        <div class="result" id="plandiff-results" hidden>
           <div class="result__head" id="pd-headline">Your plan comparison</div>
           <div class="result__body">
             <p style="margin:0 0 0.75rem;"><span class="badge badge--neutral" id="pd-status">Status</span></p>
             <div class="grid grid--2" style="gap:1rem;margin-bottom:0.5rem;">
               <div>
                 <div class="figure__label"><span data-year-current>2026</span> plan</div>
-                <div style="font-weight:700;color:var(--bc-teal-900);font-size:1.1rem;" id="pd-plan-name">—</div>
+                <div class="pd-planname" id="pd-plan-name">—</div>
                 <div class="muted" id="pd-meta" style="font-size:0.95rem;"></div>
               </div>
               <div>
                 <div class="figure__label"><span data-year-next>2027</span> plan</div>
-                <div style="font-weight:700;color:var(--bc-teal-900);font-size:1.1rem;" id="pd-next-name">—</div>
+                <div class="pd-planname" id="pd-next-name">—</div>
               </div>
             </div>
             <div class="callout callout--warn" style="margin:0.75rem 0 1.25rem;">

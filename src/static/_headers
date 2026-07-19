@@ -1,5 +1,10 @@
 # Cloudflare Pages headers — security + caching.
 /*
+  # Content-Security-Policy: the site loads no third-party scripts today (the ad
+  # loader in layout.html is commented out). 'unsafe-inline' in style-src covers
+  # the inline style="" attributes; data: in img-src covers the CSS select arrow.
+  # When an ad network is enabled, add its hosts to script-src/frame-src/connect-src.
+  Content-Security-Policy: default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin

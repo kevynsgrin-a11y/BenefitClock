@@ -89,3 +89,30 @@ test("statusInfo covers all codes", () => {
     assert.ok(info.label && info.note && info.tone);
   }
 });
+
+test("a missing numeric metric is non-comparable, not a fabricated $0 movement", () => {
+  const moop = METRICS.find((x) => x.field === "moop");
+  const d = diffMetric(moop, { moop: 6700 }, { moop: null });
+  assert.equal(d.direction, "flat");
+  assert.equal(d.tone, "flat");
+  assert.equal(d.deltaText, "No change");
+  assert.equal(d.priorText, "$6,700");
+  assert.equal(d.nextText, "—");
+  // and the reverse (missing -> present) is also non-comparable
+  const d2 = diffMetric(moop, { moop: null }, { moop: 5000 });
+  assert.equal(d2.direction, "flat");
+  assert.equal(d2.deltaText, "No change");
+});
+
+test("zero is a real value, not treated as missing", () => {
+  const prem = METRICS.find((x) => x.field === "premium");
+  const d = diffMetric(prem, { premium: 0 }, { premium: 20 });
+  assert.equal(d.direction, "up");
+  assert.equal(d.tone, "bad");
+  assert.match(d.deltaText, /\+\$20/);
+  // premium dropping to $0 is a real, good change
+  const d2 = diffMetric(prem, { premium: 20 }, { premium: 0 });
+  assert.equal(d2.direction, "down");
+  assert.equal(d2.tone, "good");
+  assert.equal(d2.nextText, "$0");
+});
