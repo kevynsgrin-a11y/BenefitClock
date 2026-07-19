@@ -1,0 +1,256 @@
+<!--
+title: How BenefitClock Works & Where Our Data Comes From | BenefitClock
+description: We build only on public government files — CMS Medicare data, BLS CPI-W, and the SSA COLA — and show our math. See our sources, our formulas, and how we stay current.
+slug: how-it-works
+nav:
+ogtype: article
+priority: 0.7
+changefreq: monthly
+-->
+<section class="section" style="padding-bottom:1.5rem;">
+  <div class="wrap">
+    <p class="eyebrow">Methodology · Data sources</p>
+    <h1>How it works, and where our data comes from</h1>
+    <p class="lead prose">BenefitClock is built on one simple rule: we use only public government files, and we show our math. Every number on this site traces back to a file that CMS, the Social Security Administration, or the Bureau of Labor Statistics publishes for anyone to download. We don't estimate in secret, and we don't add a thumb on the scale. This page walks through exactly how the calculations work — so a careful reader can check us.</p>
+  </div>
+</section>
+
+{{> ad-leaderboard }}
+
+<section class="section" style="padding-top:1.75rem;">
+  <div class="wrap prose">
+    <p class="eyebrow">Social Security</p>
+    <h2>The COLA, step by step</h2>
+    <p>Each year, Social Security benefits rise by a <strong>cost-of-living adjustment (COLA)</strong> so they keep pace with inflation. The percentage isn't a guess or a vote — it comes straight out of a formula written into law. Here is that formula in plain language.</p>
+    <p>The government tracks a specific inflation measure called <strong>CPI-W</strong> — the Consumer Price Index for Urban Wage Earners and Clerical Workers. It's a cousin of the more familiar CPI-U you hear about on the news, but the COLA law uses CPI-W, not CPI-U. The BLS publishes it every month as series <code>CWUR0000SA0</code>.</p>
+    <p>To set the COLA, Social Security looks at just one stretch of the year — the <strong>third quarter: July, August, and September</strong>. It averages the CPI-W for those three months, then compares that average to the same three-month average from the last year a COLA took effect. The percentage increase, <strong>rounded to the nearest tenth of a percent</strong>, is your COLA.</p>
+
+    <h3>A worked example: the {{COLA_CONFIRMED_YEAR}} COLA</h3>
+    <p>The {{COLA_CONFIRMED_YEAR}} COLA was exactly {{COLA_CONFIRMED}}%, announced on October 24, 2025 (a few days later than usual because of the federal government shutdown). Here's how that number falls out of the two third-quarter averages:</p>
+    <div class="table-scroll">
+      <table class="data">
+        <caption>How the {{COLA_CONFIRMED_YEAR}} COLA of {{COLA_CONFIRMED}}% is calculated from CPI-W</caption>
+        <thead>
+          <tr>
+            <th scope="col">Step</th>
+            <th scope="col" class="num">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Average CPI-W, July–Aug–Sep 2024 (the base quarter)</td>
+            <td class="num">308.729</td>
+          </tr>
+          <tr>
+            <td>Average CPI-W, July–Aug–Sep 2025 (the new quarter)</td>
+            <td class="num">317.373</td>
+          </tr>
+          <tr>
+            <td>Increase: (317.373 − 308.729) ÷ 308.729</td>
+            <td class="num">2.799…%</td>
+          </tr>
+          <tr>
+            <td>Rounded to the nearest tenth of a percent</td>
+            <td class="num"><strong>{{COLA_CONFIRMED}}%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>That's the whole calculation. No opinion, no adjustment — just two averages and a rounding rule. The <a href="/guides/2027-social-security-cola">{{COLA_PROJECTED_YEAR}} COLA is an early estimate of {{COLA_PROJECTED}}%</a> from The Senior Citizens League and AARP, and we label it that way everywhere it appears. The official {{COLA_PROJECTED_YEAR}} figure arrives when the BLS releases September CPI-W and the SSA announces the COLA on <strong>{{COLA_ANNOUNCE_DATE_LONG}} at 8:30&nbsp;a.m. ET</strong>.</p>
+
+    <div class="callout callout--info">
+      <p class="callout__title">From the raise to what lands in your account</p>
+      <p style="margin:0;">The COLA raises your gross benefit, but Medicare Part B is usually withheld from your check. So the number that actually reaches your bank is: <strong>Net benefit = (your current benefit × (1 + COLA)) − your Medicare Part B premium.</strong> That's the exact formula behind our <a href="/cola-calculator">COLA calculator</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--wash">
+  <div class="wrap prose">
+    <p class="eyebrow">Medicare</p>
+    <h2>How the Medicare plan data works</h2>
+    <p>Every fall, CMS publishes a set of public files that spell out what happens to every Medicare Advantage and Part D plan for the coming year. Our "What Changed" tool is really just a careful reading of three of them, lined up side by side.</p>
+
+    <h3>The Landscape file — this year's baseline</h3>
+    <p>The <strong>Landscape</strong> files list which plans are offered in each county, along with the headline facts: monthly premium, deductible, and star rating. This is the snapshot of what's available and what it costs — the starting point for any comparison.</p>
+
+    <h3>The Crosswalk file — the map from this year to next</h3>
+    <p>The <strong>Crosswalk</strong> file is the one that makes a real year-over-year diff possible. It maps each plan's current ID to its ID for next year and flags what's happening to it — whether the plan is <strong>renewing</strong>, being <strong>consolidated</strong> into a successor plan, or <strong>terminating</strong> entirely. Without the Crosswalk you couldn't tell whether "your plan" next year is the same plan, a merged one, or gone. This file is what powers our comparison.</p>
+
+    <h3>The Public Use Files and PBP — the fine print</h3>
+    <p>The Part D formulary <strong>Public Use Files (PUFs)</strong> and the <strong>Plan Benefit Package (PBP)</strong> data hold the detail underneath the headline numbers: the specific benefits a plan covers and how it sorts drugs into pricing tiers. That's where the maximum out-of-pocket amounts and dropped extras in your comparison come from.</p>
+
+    <p>All of these files are <strong>public domain</strong> — released by CMS in late September or early October each year, and free for anyone to download. We don't get special access, and there's nothing proprietary about the data itself; the work is in reading it accurately and putting it in plain English.</p>
+
+    {{> ad-inline }}
+
+    <h3>Our data sources at a glance</h3>
+    <div class="table-scroll">
+      <table class="data">
+        <caption>The public files BenefitClock is built on</caption>
+        <thead>
+          <tr>
+            <th scope="col">Source</th>
+            <th scope="col">What it powers</th>
+            <th scope="col">Format &amp; cadence</th>
+            <th scope="col">License</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CMS Landscape files</td>
+            <td>Plan availability by county, premium, deductible, star rating</td>
+            <td>Spreadsheet files, released late Sep / early Oct each year</td>
+            <td>Public domain</td>
+          </tr>
+          <tr>
+            <td>CMS Crosswalk files</td>
+            <td>Mapping of this year's plan IDs to next year's; renewal, consolidation, and termination flags — our year-over-year diff</td>
+            <td>Spreadsheet files, released late Sep / early Oct each year</td>
+            <td>Public domain</td>
+          </tr>
+          <tr>
+            <td>CMS Part D formulary PUFs</td>
+            <td>Covered drugs and pricing-tier detail</td>
+            <td>Public Use Files, released annually each fall</td>
+            <td>Public domain</td>
+          </tr>
+          <tr>
+            <td>CMS Plan Benefit Package (PBP)</td>
+            <td>Covered benefits, maximum out-of-pocket, extra benefits</td>
+            <td>Benefit data files, released annually each fall</td>
+            <td>Public domain</td>
+          </tr>
+          <tr>
+            <td>BLS CPI-W (<code>CWUR0000SA0</code>)</td>
+            <td>The inflation index behind the COLA calculation</td>
+            <td>Data series, published monthly</td>
+            <td>Public domain</td>
+          </tr>
+          <tr>
+            <td>SSA COLA announcement</td>
+            <td>The official cost-of-living adjustment percentage</td>
+            <td>Announcement, released once a year each October</td>
+            <td>Public domain</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--warn">
+      <p class="callout__title">An honest note about {{COLA_PROJECTED_YEAR}}</p>
+      <p style="margin:0;">Until CMS publishes the official {{COLA_PROJECTED_YEAR}} files (late September / early October), our plan tool runs on a <strong>structurally identical sample dataset</strong> — same fields, same layout, real behavior — so you can see exactly how the comparison works before the real numbers exist. The moment CMS posts the actual files, we load them and the tool becomes live. We would rather tell you this plainly than pretend the {{COLA_PROJECTED_YEAR}} numbers are already final.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap prose">
+    <p class="eyebrow">Staying current</p>
+    <h2>How we keep it up to date</h2>
+    <p>There's a clear rhythm to the benefits year, and we follow it. Each autumn, as the government posts new files, we ingest them:</p>
+    <ul class="timeline">
+      <li>
+        <span class="date">Late Sep – early Oct 2026</span>
+        CMS releases the {{COLA_PROJECTED_YEAR}} Landscape, Crosswalk, PUF, and PBP files. We load them, replacing the sample dataset, so the "What Changed" tool shows real plan changes.
+      </li>
+      <li>
+        <span class="date">{{COLA_ANNOUNCE_DATE_LONG}}</span>
+        The BLS releases September CPI-W and the SSA announces the official {{COLA_PROJECTED_YEAR}} COLA. We update the confirmed figure across the site.
+      </li>
+      <li>
+        <span class="date">Each following October</span>
+        We repeat the same process every year: fresh CMS files, fresh SSA COLA, same public sources.
+      </li>
+    </ul>
+    <p class="muted">Future-year figures stay labeled as estimates until the official announcement lands. When the real number is published, the estimate is replaced — and the source is always one you can check yourself at <a href="https://www.cms.gov/" rel="nofollow noopener" target="_blank">CMS.gov</a>, <a href="https://www.ssa.gov/cola/" rel="nofollow noopener" target="_blank">SSA.gov</a>, and <a href="https://www.bls.gov/cpi/" rel="nofollow noopener" target="_blank">BLS.gov</a>.</p>
+  </div>
+</section>
+
+<section class="section section--wash">
+  <div class="wrap prose">
+    <h2>Frequently asked questions</h2>
+
+    <details class="faq">
+      <summary>Are you affiliated with Medicare, the SSA, or an insurance company?</summary>
+      <div class="faq__body">
+        <p>No. BenefitClock is an independent utility. We use the same public government files anyone can download, but we're not affiliated with CMS, Medicare, the SSA, or any insurer. We are not a broker or agent: we take no carrier or broker commissions, we capture no personal information, we sell no leads or data, and we never recommend a specific plan for payment. We're supported only by programmatic display ads. To enroll, always use the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or call 1-800-MEDICARE.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>Why CPI-W and not the CPI you usually hear about?</summary>
+      <div class="faq__body">
+        <p>The COLA law specifically names <strong>CPI-W</strong> — the index for Urban Wage Earners and Clerical Workers. The more commonly quoted CPI-U (for all urban consumers) is a different series, and it isn't the one that sets your Social Security raise. We use CPI-W because that's what the law uses.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>Can I check your numbers myself?</summary>
+      <div class="faq__body">
+        <p>Yes, and we encourage it. The COLA math uses BLS CPI-W series <code>CWUR0000SA0</code>, published monthly at <a href="https://www.bls.gov/cpi/" rel="nofollow noopener" target="_blank">BLS.gov</a>. The Medicare plan data comes from the CMS Landscape, Crosswalk, PUF, and PBP files at <a href="https://www.cms.gov/" rel="nofollow noopener" target="_blank">CMS.gov</a>. Everything we show traces back to those public files.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>Do the tools store what I type?</summary>
+      <div class="faq__body">
+        <p>No. The calculators run entirely in your web browser. We don't have a server that receives your benefit amount or your plan choice, and we never ask for your name, email, or phone number. See our <a href="/privacy">privacy pledge</a>.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap center">
+    <h2>See the data put to work.</h2>
+    <p class="lead" style="margin-inline:auto;max-width:44ch;">Now that you know where every number comes from, try the two tools built on it.</p>
+    <div class="grid grid--2" style="margin-top:2rem;text-align:left;">
+      <a class="card card--link" href="/cola-calculator">
+        <div class="card__icon" aria-hidden="true">💵</div>
+        <h3>Calculate your COLA raise</h3>
+        <p class="muted">Apply the {{COLA_PROJECTED_YEAR}} COLA to your benefit and subtract Part B to see the raise you actually keep.</p>
+        <span class="badge badge--info">COLA calculator →</span>
+      </a>
+      <a class="card card--link" href="/medicare-plan-changes">
+        <div class="card__icon" aria-hidden="true">🔍</div>
+        <h3>See what changed in your plan</h3>
+        <p class="muted">Compare your Medicare plan year over year using the public CMS files described above.</p>
+        <span class="badge badge--info">What Changed tool →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "How BenefitClock Works & Where Our Data Comes From",
+  "description": "BenefitClock's methodology: we use only public government files — CMS Medicare data, BLS CPI-W, and the SSA COLA — and show our math.",
+  "about": ["Social Security COLA", "Medicare plan data", "CPI-W", "CMS Landscape and Crosswalk files"],
+  "isAccessibleForFree": true
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "/" },
+    { "@type": "ListItem", "position": 2, "name": "How it works & data sources", "item": "/how-it-works" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Are you affiliated with Medicare, the SSA, or an insurance company?", "acceptedAnswer": { "@type": "Answer", "text": "No. BenefitClock is an independent utility that uses public government files. We are not a broker or agent, take no commissions, capture no personal information, sell no leads or data, and never recommend a plan for payment. We are supported only by display ads. Enroll through the official Medicare Plan Finder or 1-800-MEDICARE." } },
+    { "@type": "Question", "name": "Why CPI-W and not the CPI you usually hear about?", "acceptedAnswer": { "@type": "Answer", "text": "The COLA law specifically uses CPI-W, the Consumer Price Index for Urban Wage Earners and Clerical Workers, not the more commonly quoted CPI-U." } },
+    { "@type": "Question", "name": "Can I check your numbers myself?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The COLA uses BLS CPI-W series CWUR0000SA0 from BLS.gov, and the Medicare plan data comes from the public CMS Landscape, Crosswalk, PUF, and PBP files at CMS.gov." } },
+    { "@type": "Question", "name": "Do the tools store what I type?", "acceptedAnswer": { "@type": "Answer", "text": "No. The calculators run entirely in your browser. We never ask for your name, email, or phone number." } }
+  ]
+}
+</script>

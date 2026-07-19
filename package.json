@@ -1,0 +1,21 @@
+{
+  "name": "benefitclock",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BenefitClock — an independent, ad-supported public utility that helps Medicare beneficiaries compare their plan year-over-year and project their Social Security COLA. No phone numbers, no lead-gen, no data sales.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:data": "node scripts/build-cola-data.mjs && node scripts/build-plan-data.mjs",
+    "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\"",
+    "dev": "npm run build && node scripts/serve.mjs",
+    "serve": "node scripts/serve.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}

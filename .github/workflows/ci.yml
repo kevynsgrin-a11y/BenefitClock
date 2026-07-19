@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # The project has zero runtime/dev dependencies, so there is nothing to install.
+      - name: Unit tests (COLA + plan-diff logic)
+        run: node --test
+
+      - name: Build the static site
+        run: npm run build
+
+      - name: Sanity-check the build output
+        run: |
+          test -f dist/index.html || { echo "missing dist/index.html"; exit 1; }
+          test -f dist/cola-calculator.html || { echo "missing COLA page"; exit 1; }
+          test -f dist/medicare-plan-changes.html || { echo "missing plan-diff page"; exit 1; }
+          test -f dist/sitemap.xml || { echo "missing sitemap"; exit 1; }
+          pages=$(find dist -name '*.html' | wc -l)
+          echo "Built $pages HTML pages."
+          test "$pages" -ge 13 || { echo "expected >=13 pages, got $pages"; exit 1; }
+          if grep -rl '{{' dist --include='*.html' | grep .; then
+            echo "Unresolved template tokens found in build output"; exit 1
+          fi
+          echo "Build output looks good."

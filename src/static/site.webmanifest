@@ -1,0 +1,12 @@
+{
+  "name": "BenefitClock",
+  "short_name": "BenefitClock",
+  "description": "Independent, ad-supported tools for Social Security COLA and Medicare plan changes. No phone numbers, no data selling.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#fbfcfc",
+  "theme_color": "#0f4b50",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
