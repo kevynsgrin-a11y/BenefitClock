@@ -1,11 +1,11 @@
 export const meta = {
-  name: 'benefitclock-charts-propagate',
+  name: 'benefitdial-charts-propagate',
   description: 'Insert the new inline-SVG charts into the guide + methodology pages',
   phases: [{ title: 'Insert charts' }],
 };
 
 const SHARED = `
-BenefitClock now has a dependency-free inline-SVG chart system. The build replaces these tokens
+BenefitDial now has a dependency-free inline-SVG chart system. The build replaces these tokens
 with fully-styled, accessible <figure class="bc-chart">…</figure> charts at build time:
   {{CHART_COLA_HISTORY}}  → a bar chart of the annual Social Security COLA (2023 8.7%, 2024 3.2%,
                             2025 2.5%, 2026 2.8%, 2027 3.6% [estimate]).

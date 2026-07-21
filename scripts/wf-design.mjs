@@ -1,5 +1,5 @@
 export const meta = {
-  name: 'benefitclock-design-studio',
+  name: 'benefitdial-design-studio',
   description: 'A design studio of specialist agents that produce a coherent, buildable visual-elevation spec',
   phases: [
     { title: 'Research & critique', detail: 'researcher, designer, architect, a11y, brand — in parallel' },
@@ -8,7 +8,7 @@ export const meta = {
 };
 
 const CONTEXT = `
-PROJECT: "BenefitClock" — an independent, ad-supported PUBLIC UTILITY for U.S. seniors (65+) for the
+PROJECT: "BenefitDial" — an independent, ad-supported PUBLIC UTILITY for U.S. seniors (65+) for the
 fall Medicare + Social Security season. Two working tools (a COLA calculator and a Medicare "What
 Changed" plan diff) plus guide/info pages. Brand promise: the calm, HONEST opposite of aggressive
 Medicare TV ads and lead-gen funnels — "no phone number, we never sell your data, free & ad-supported."
@@ -68,7 +68,7 @@ phase('Research & critique');
 
 const [research, design, architecture, a11y, brand] = await parallel([
   () => agent(
-    `${CONTEXT}\n\nROLE: MARKET RESEARCHER. Use web search + fetch to study 6–8 genuinely well-designed, high-trust websites in adjacent categories: senior-focused finance/insurance, Medicare/health decision tools, consumer-finance utilities (e.g. NerdWallet, GoodRx, Credit Karma), and government-adjacent info sites (Medicare.gov, SSA.gov). Identify the CONCRETE visual + UX patterns the best ones share that build trust and drive action — hero structure, imagery style, trust signals/social proof, CTA design, whitespace & rhythm, typography, use of color, motion, data presentation, and mobile behavior. Then translate them into specific, prioritized recommendations that FIT BenefitClock's no-sales, senior-first, ad-supported model (and its zero-dependency constraint). Put each recommendation in items[] (with impact/effort/risk); list the sites you studied in sources[].`,
+    `${CONTEXT}\n\nROLE: MARKET RESEARCHER. Use web search + fetch to study 6–8 genuinely well-designed, high-trust websites in adjacent categories: senior-focused finance/insurance, Medicare/health decision tools, consumer-finance utilities (e.g. NerdWallet, GoodRx, Credit Karma), and government-adjacent info sites (Medicare.gov, SSA.gov). Identify the CONCRETE visual + UX patterns the best ones share that build trust and drive action — hero structure, imagery style, trust signals/social proof, CTA design, whitespace & rhythm, typography, use of color, motion, data presentation, and mobile behavior. Then translate them into specific, prioritized recommendations that FIT BenefitDial's no-sales, senior-first, ad-supported model (and its zero-dependency constraint). Put each recommendation in items[] (with impact/effort/risk); list the sites you studied in sources[].`,
     { label: 'role:market-researcher', phase: 'Research & critique', schema: LIST, agentType: 'general-purpose', effort: 'high' }
   ).catch(() => null),
 
@@ -126,7 +126,7 @@ const SPEC = {
 const pack = (name, r) => `\n===== ${name} =====\n${r ? JSON.stringify(r, null, 2) : '(no output)'}\n`;
 
 const spec = await agent(
-  `${CONTEXT}\n\nROLE: CREATIVE DIRECTOR / VISUAL COORDINATOR. Below are five specialist reports (market research, design, architecture, accessibility, brand). Reconcile them into ONE coherent, prioritized, BUILDABLE implementation spec that will make BenefitClock genuinely pop while honoring every hard constraint and the senior-first brand. Resolve conflicts, drop anything off-brand or infeasible, and MERGE overlaps. Output:
+  `${CONTEXT}\n\nROLE: CREATIVE DIRECTOR / VISUAL COORDINATOR. Below are five specialist reports (market research, design, architecture, accessibility, brand). Reconcile them into ONE coherent, prioritized, BUILDABLE implementation spec that will make BenefitDial genuinely pop while honoring every hard constraint and the senior-first brand. Resolve conflicts, drop anything off-brand or infeasible, and MERGE overlaps. Output:
 - northStar: one paragraph on the elevated visual direction.
 - tokens: any new/changed design tokens (colors, gradients, type scale, spacing, shadows) as concrete CSS values that fit the existing palette.
 - enhancements[]: a ranked list (priority 1 = build first). Each MUST be specific enough for an implementer to build with no further questions — name exact files/partials/classes and describe the markup + CSS + any JS. Include acceptance criteria (incl. light/dark contrast + reduced-motion where relevant). Keep it to the ~8–12 highest-impact items.

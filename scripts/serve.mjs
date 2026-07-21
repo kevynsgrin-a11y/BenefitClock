@@ -60,4 +60,4 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => console.log(`BenefitClock preview → http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`BenefitDial preview → http://localhost:${PORT}`));

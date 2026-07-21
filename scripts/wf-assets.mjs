@@ -1,11 +1,11 @@
 export const meta = {
-  name: 'benefitclock-visual-assets',
+  name: 'benefitdial-visual-assets',
   description: 'Build isolated visual assets (icon sprite, hero illustration, provenance, motion JS) to exact contracts',
   phases: [{ title: 'Build assets' }],
 };
 
 const RULES = `
-You are building ONE self-contained asset file for BenefitClock (an independent, ad-supported,
+You are building ONE self-contained asset file for BenefitDial (an independent, ad-supported,
 senior-first Medicare/Social Security utility). It is a STATIC, ZERO-DEPENDENCY site. Hard rules:
 - Plain HTML/CSS/vanilla-JS and inline SVG only. No frameworks, no external anything.
 - COLOR TOKENS ALREADY EXIST in src/assets/css/site.css — never hard-code hex. Use CSS variables:
@@ -73,7 +73,7 @@ FILE 1 — src/partials/provenance-band.html (the FULL band, used on the home pa
     <span class="provenance__chip"><span class="provenance__mono" aria-hidden="true">BLS</span> Bureau of Labor Statistics</span>
     <span class="provenance__chip"><span class="provenance__mono" aria-hidden="true">CMS</span> Centers for Medicare &amp; Medicaid Services</span>
   </div>
-  <p class="provenance__note">Every figure on BenefitClock comes from public U.S. government files — no proprietary data, no guesswork. Data last refreshed {{DATA_UPDATED}}.</p>
+  <p class="provenance__note">Every figure on BenefitDial comes from public U.S. government files — no proprietary data, no guesswork. Data last refreshed {{DATA_UPDATED}}.</p>
 </aside>
 (Use exactly those class names; keep the {{DATA_UPDATED}} token literally — the build fills it in.)
 

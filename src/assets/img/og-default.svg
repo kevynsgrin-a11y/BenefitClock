@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="BenefitClock — your Social Security raise and your Medicare plan, side by side">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="BenefitDial — your Social Security raise and your Medicare plan, side by side">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0f4b50"/>
@@ -12,7 +12,7 @@
       <circle cx="48" cy="48" r="30" fill="none" stroke="#ffffff" stroke-width="7"/>
       <path d="M48 27 V48 L63 57" fill="none" stroke="#f5c451" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
-    <text x="124" y="66" font-family="Segoe UI, Arial, sans-serif" font-size="52" font-weight="800" fill="#ffffff">BenefitClock</text>
+    <text x="124" y="66" font-family="Segoe UI, Arial, sans-serif" font-size="52" font-weight="800" fill="#ffffff">BenefitDial</text>
   </g>
   <text x="96" y="330" font-family="Segoe UI, Arial, sans-serif" font-size="74" font-weight="800" fill="#ffffff">Your raise. Your plan.</text>
   <text x="96" y="416" font-family="Segoe UI, Arial, sans-serif" font-size="74" font-weight="800" fill="#f5c451">Side by side.</text>
