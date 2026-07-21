@@ -1,8 +1,8 @@
 {
-  "name": "benefitclock",
+  "name": "benefitdial",
   "version": "1.0.0",
   "private": true,
-  "description": "BenefitClock — an independent, ad-supported public utility that helps Medicare beneficiaries compare their plan year-over-year and project their Social Security COLA. No phone numbers, no lead-gen, no data sales.",
+  "description": "BenefitDial — an independent, ad-supported public utility that helps Medicare beneficiaries compare their plan year-over-year and project their Social Security COLA. No phone numbers, no lead-gen, no data sales.",
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",

@@ -1,7 +1,7 @@
-# BenefitClock
+# BenefitDial
 
 **An independent, ad-supported public utility for the fall benefits season.**
-BenefitClock helps U.S. Medicare beneficiaries do two things in under a minute — with
+BenefitDial helps U.S. Medicare beneficiaries do two things in under a minute — with
 no phone number, no lead form, and no data selling:
 
 1. **Estimate their Social Security COLA raise** and see the amount they actually keep
@@ -85,14 +85,14 @@ tests/                   # node --test unit tests
 - **Build command:** `npm run build`
 - **Build output directory:** `dist`
 - **Environment:** set `SITE_URL` to the production origin (defaults to
-  `https://benefitclock.org`) so canonical URLs, the sitemap, and `robots.txt` are correct.
+  `https://benefitdial.com`) so canonical URLs, the sitemap, and `robots.txt` are correct.
 
 `_headers` sets security headers (HSTS, `X-Content-Type-Options`, a restrictive
 `Permissions-Policy`, etc.) and cache policies. `_redirects` maps friendly aliases.
 
 ## Monetization & compliance stance
 
-BenefitClock is **not** a broker, agent, or Third-Party Marketing Organization (TPMO):
+BenefitDial is **not** a broker, agent, or Third-Party Marketing Organization (TPMO):
 
 - It takes **no** carrier or broker commissions / CPA and sells **no** leads or data.
 - It captures **no** personal information — no name, email, or phone number — and the
@@ -105,7 +105,7 @@ spot in `src/layout.html`. See `/how-it-works` and `/privacy` on the site itself
 
 ## Not affiliated with the U.S. government
 
-BenefitClock is an independent educational utility and is not connected with or endorsed
+BenefitDial is an independent educational utility and is not connected with or endorsed
 by the U.S. government, the federal Medicare program, CMS, or the SSA. Figures for future
 years are estimates until the official government announcements. Nothing here is
 financial, legal, or medical advice.

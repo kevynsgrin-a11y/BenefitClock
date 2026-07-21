@@ -1,5 +1,5 @@
 <!--
-title: How BenefitClock Works & Where Our Data Comes From | BenefitClock
+title: How BenefitDial Works & Where Our Data Comes From | BenefitDial
 description: We build only on public government files — CMS Medicare data, BLS CPI-W, and the SSA COLA — and show our math. See our sources, our formulas, and how we stay current.
 slug: how-it-works
 nav:
@@ -11,7 +11,7 @@ changefreq: monthly
   <div class="wrap">
     <p class="eyebrow">Methodology · Data sources</p>
     <h1>How it works, and where our data comes from</h1>
-    <p class="lead prose">BenefitClock is built on one simple rule: we use only public government files, and we show our math. Every number on this site traces back to a file that CMS, the Social Security Administration, or the Bureau of Labor Statistics publishes for anyone to download. We don't estimate in secret, and we don't add a thumb on the scale. This page walks through exactly how the calculations work — so a careful reader can check us.</p>
+    <p class="lead prose">BenefitDial is built on one simple rule: we use only public government files, and we show our math. Every number on this site traces back to a file that CMS, the Social Security Administration, or the Bureau of Labor Statistics publishes for anyone to download. We don't estimate in secret, and we don't add a thumb on the scale. This page walks through exactly how the calculations work — so a careful reader can check us.</p>
   </div>
 </section>
 
@@ -89,7 +89,7 @@ changefreq: monthly
     <h3>Our data sources at a glance</h3>
     <div class="table-scroll">
       <table class="data">
-        <caption>The public files BenefitClock is built on</caption>
+        <caption>The public files BenefitDial is built on</caption>
         <thead>
           <tr>
             <th scope="col">Source</th>
@@ -176,7 +176,7 @@ changefreq: monthly
     <details class="faq">
       <summary>Are you affiliated with Medicare, the SSA, or an insurance company?</summary>
       <div class="faq__body">
-        <p>No. BenefitClock is an independent utility. We use the same public government files anyone can download, but we're not affiliated with CMS, Medicare, the SSA, or any insurer. We are not a broker or agent: we take no carrier or broker commissions, we capture no personal information, we sell no leads or data, and we never recommend a specific plan for payment. We're supported only by programmatic display ads. To enroll, always use the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or call 1-800-MEDICARE.</p>
+        <p>No. BenefitDial is an independent utility. We use the same public government files anyone can download, but we're not affiliated with CMS, Medicare, the SSA, or any insurer. We are not a broker or agent: we take no carrier or broker commissions, we capture no personal information, we sell no leads or data, and we never recommend a specific plan for payment. We're supported only by programmatic display ads. To enroll, always use the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or call 1-800-MEDICARE.</p>
       </div>
     </details>
 
@@ -209,13 +209,13 @@ changefreq: monthly
     <p class="lead" style="margin-inline:auto;max-width:44ch;">Now that you know where every number comes from, try the two tools built on it.</p>
     <div class="grid grid--2" style="margin-top:2rem;text-align:left;">
       <a class="card card--link" href="/cola-calculator">
-        <div class="card__icon" aria-hidden="true">💵</div>
+        <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-coins-up" xlink:href="#ic-coins-up"/></svg></div>
         <h3>Calculate your COLA raise</h3>
         <p class="muted">Apply the {{COLA_PROJECTED_YEAR}} COLA to your benefit and subtract Part B to see the raise you actually keep.</p>
         <span class="badge badge--info">COLA calculator →</span>
       </a>
       <a class="card card--link" href="/medicare-plan-changes">
-        <div class="card__icon" aria-hidden="true">🔍</div>
+        <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-magnifier-diff" xlink:href="#ic-magnifier-diff"/></svg></div>
         <h3>See what changed in your plan</h3>
         <p class="muted">Compare your Medicare plan year over year using the public CMS files described above.</p>
         <span class="badge badge--info">What Changed tool →</span>
@@ -228,8 +228,8 @@ changefreq: monthly
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "How BenefitClock Works & Where Our Data Comes From",
-  "description": "BenefitClock's methodology: we use only public government files — CMS Medicare data, BLS CPI-W, and the SSA COLA — and show our math.",
+  "headline": "How BenefitDial Works & Where Our Data Comes From",
+  "description": "BenefitDial's methodology: we use only public government files — CMS Medicare data, BLS CPI-W, and the SSA COLA — and show our math.",
   "about": ["Social Security COLA", "Medicare plan data", "CPI-W", "CMS Landscape and Crosswalk files"],
   "isAccessibleForFree": true
 }
@@ -249,7 +249,7 @@ changefreq: monthly
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "Are you affiliated with Medicare, the SSA, or an insurance company?", "acceptedAnswer": { "@type": "Answer", "text": "No. BenefitClock is an independent utility that uses public government files. We are not a broker or agent, take no commissions, capture no personal information, sell no leads or data, and never recommend a plan for payment. We are supported only by display ads. Enroll through the official Medicare Plan Finder or 1-800-MEDICARE." } },
+    { "@type": "Question", "name": "Are you affiliated with Medicare, the SSA, or an insurance company?", "acceptedAnswer": { "@type": "Answer", "text": "No. BenefitDial is an independent utility that uses public government files. We are not a broker or agent, take no commissions, capture no personal information, sell no leads or data, and never recommend a plan for payment. We are supported only by display ads. Enroll through the official Medicare Plan Finder or 1-800-MEDICARE." } },
     { "@type": "Question", "name": "Why CPI-W and not the CPI you usually hear about?", "acceptedAnswer": { "@type": "Answer", "text": "The COLA law specifically uses CPI-W, the Consumer Price Index for Urban Wage Earners and Clerical Workers, not the more commonly quoted CPI-U." } },
     { "@type": "Question", "name": "Can I check your numbers myself?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The COLA uses BLS CPI-W series CWUR0000SA0 from BLS.gov, and the Medicare plan data comes from the public CMS Landscape, Crosswalk, PUF, and PBP files at CMS.gov." } },
     { "@type": "Question", "name": "Do the tools store what I type?", "acceptedAnswer": { "@type": "Answer", "text": "No. The calculators run entirely in your browser. We never ask for your name, email, or phone number." } }

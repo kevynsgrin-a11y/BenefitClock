@@ -1,11 +1,11 @@
 export const meta = {
-  name: 'benefitclock-qa-visual',
+  name: 'benefitdial-qa-visual',
   description: 'Adversarial QA of the visual-enhancement pass (a11y, regression, coherence) with verification',
   phases: [{ title: 'Review' }, { title: 'Verify' }],
 };
 
 const CTX = `
-BenefitClock just received a visual-elevation pass (static, zero-dependency). Review the NEW work for
+BenefitDial just received a visual-elevation pass (static, zero-dependency). Review the NEW work for
 real, actionable defects only. Files most affected:
   • src/assets/css/site.css — new tokens (:root ~55-81, dark ~628-640), text-size overrides, and a big
     "Visual enhancements" section (icons, hero mesh/art, provenance, card depth, steps, reveal, text-size)

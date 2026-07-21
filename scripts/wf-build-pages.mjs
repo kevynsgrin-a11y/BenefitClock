@@ -1,11 +1,11 @@
 export const meta = {
-  name: 'benefitclock-build-pages',
-  description: 'Build every BenefitClock content page in parallel against the locked design system',
+  name: 'benefitdial-build-pages',
+  description: 'Build every BenefitDial content page in parallel against the locked design system',
   phases: [{ title: 'Build pages', detail: 'one senior front-end agent per page' }],
 };
 
 const CONTRACT = `
-You are a senior front-end engineer at a high-end web studio, building pages for BenefitClock —
+You are a senior front-end engineer at a high-end web studio, building pages for BenefitDial —
 an independent, ad-supported public-utility website that helps U.S. seniors (age 65+) during the
 fall Medicare + Social Security season. The visual system, build pipeline, and two interactive
 tool pages are ALREADY BUILT. Your job is to write ONE additional page's HTML so it is
@@ -24,7 +24,7 @@ Match them. Do not invent a new visual style.
 Write a COMPLETE file to the given path with the Write tool. The file must contain:
   1) An HTML comment front-matter block at the very top, EXACTLY this shape:
      <!--
-     title: <60-65 char SEO title> | BenefitClock
+     title: <60-65 char SEO title> | BenefitDial
      description: <150-160 char meta description>
      slug: <given slug>
      nav: <given nav id, or leave the value empty>
@@ -81,7 +81,7 @@ Data-driven year spans elsewhere may use <span data-year-current>2026</span> / <
 • Inflation Reduction Act: $2,000 annual out-of-pocket cap on Part D drug costs began in 2025; Manufacturer
   Discount Program changes finalized for 2027 (CY2027 Final Rule, published April 2026).
 • Data sources are PUBLIC DOMAIN: CMS Landscape/Crosswalk/PUF/PBP files; BLS CPI-W (series CWUR0000SA0); SSA COLA.
-• BenefitClock is NOT a broker/agent/TPMO: it takes NO carrier or broker commissions/CPA, captures NO personal
+• BenefitDial is NOT a broker/agent/TPMO: it takes NO carrier or broker commissions/CPA, captures NO personal
   info (no name/email/phone), sells NO leads or data, and is supported ONLY by programmatic display ads. It never
   recommends a specific plan for payment. This is the site's core identity — reinforce it, never undercut it.
   Always point users to the official Medicare Plan Finder (medicare.gov/plan-compare) or 1-800-MEDICARE to enroll.
@@ -107,12 +107,12 @@ const PAGES = [
   {
     file: 'src/pages/about.html', slug: 'about', nav: 'about',
     label: 'about',
-    brief: `PAGE: "About BenefitClock" (slug about, nav about, ogtype website).
+    brief: `PAGE: "About BenefitDial" (slug about, nav about, ogtype website).
 Purpose: build trust and explain the independent, no-sales-calls stance in human terms.
 Include, as flowing sections (not a wall of text):
  - A hero-ish opening (plain "section", NOT teal) with h1 "The benefits utility that doesn't want your phone number" (or similar) and a lead.
  - "Why we built this": the AEP season buries seniors in ads/robocalls/mail designed to capture a phone number; we wanted the opposite — the numbers, fast, no strings.
- - "How we're different from the brokers": a grid--2 or grid--3 of cards contrasting BenefitClock (independent, ad-supported, no PII, no commissions) vs typical lead-gen funnels (capture phone number → call center). Keep it factual, not mean.
+ - "How we're different from the brokers": a grid--2 or grid--3 of cards contrasting BenefitDial (independent, ad-supported, no PII, no commissions) vs typical lead-gen funnels (capture phone number → call center). Keep it factual, not mean.
  - "How we make money — plainly": we run standard display ads (like a newspaper). We accept NO commissions from insurers/brokers, sell NO leads, and take NO payment to recommend a plan. Explain this is deliberate: it keeps us independent AND keeps us out of the insurance sales chain.
  - "What we will never do": a short list (ask for your phone number/email; sell your data; push a specific plan for pay; pretend to be the government).
  - A callout pointing to /how-it-works (data) and /privacy (pledge).
@@ -195,7 +195,7 @@ Deep but readable explainer (~900-1200 words). Include:
  - h1 + lead; BreadcrumbList + Article JSON-LD.
  - "What AEP is and when": October 15 – December 7, 2026; changes take effect January 1, 2027.
  - "What you can and can't do during AEP" (switch Original Medicare ↔ Medicare Advantage; change MA plan; change/add/drop Part D). Contrast with the MA OEP (Jan 1 – Mar 31, 2027, one change for current MA enrollees).
- - "How to prepare in 20 minutes": read your ANOC; list your drugs & pharmacies; check your doctors; then run the BenefitClock plan-changes tool and confirm on the official Medicare Plan Finder.
+ - "How to prepare in 20 minutes": read your ANOC; list your drugs & pharmacies; check your doctors; then run the BenefitDial plan-changes tool and confirm on the official Medicare Plan Finder.
  - "Watch out for" — the flood of ads/robocalls; you never have to give a phone number to compare plans; the government never cold-calls you.
  - {{> ad-inline }} mid-article.
  - CTA to /medicare-plan-changes and /key-dates.

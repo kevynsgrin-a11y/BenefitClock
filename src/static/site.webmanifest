@@ -1,6 +1,6 @@
 {
-  "name": "BenefitClock",
-  "short_name": "BenefitClock",
+  "name": "BenefitDial",
+  "short_name": "BenefitDial",
   "description": "Independent, ad-supported tools for Social Security COLA and Medicare plan changes. No phone numbers, no data selling.",
   "start_url": "/",
   "display": "browser",

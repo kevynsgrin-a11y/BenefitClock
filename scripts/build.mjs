@@ -1,5 +1,5 @@
 /* ==========================================================================
-   build.mjs — BenefitClock's tiny static-site generator (zero dependencies)
+   build.mjs — BenefitDial's tiny static-site generator (zero dependencies)
 
    - Assembles src/pages/*.html into full documents using src/layout.html
      and src/partials/*.html (token + include based).
@@ -10,7 +10,7 @@
    Page front-matter is an HTML comment at the very top of each page file:
 
      <!--
-     title: Page title | BenefitClock
+     title: Page title | BenefitDial
      description: Meta description (<=160 chars).
      slug: cola-calculator        # output path; "" or "index" => site root
      nav: cola                    # active nav id (home|cola|medicare|dates|guides|about)
@@ -31,8 +31,8 @@ const SRC = join(ROOT, "src");
 const DIST = join(ROOT, "dist");
 
 const SITE = {
-  name: "BenefitClock",
-  url: (process.env.SITE_URL || "https://benefitclock.org").replace(/\/$/, ""),
+  name: "BenefitDial",
+  url: (process.env.SITE_URL || "https://benefitdial.com").replace(/\/$/, ""),
   tagline: "Your Social Security raise and your Medicare plan — side by side, with no phone calls.",
   twitter: "",
   buildDate: new Date().toISOString().slice(0, 10),
@@ -164,7 +164,7 @@ function build() {
       SITE_URL: SITE.url,
       SITE_NAME: SITE.name,
       OG_TYPE: meta.ogtype || "website",
-      OG_IMAGE: `${SITE.url}/assets/img/og-default.svg`,
+      OG_IMAGE: `${SITE.url}/assets/img/og-default.png`,
       BUILD_DATE: SITE.buildDate,
       BUILD_YEAR: String(SITE.buildYear),
       PAGE_SCRIPTS: scripts,
@@ -226,6 +226,9 @@ function build() {
       .join("\n") +
     `\n</urlset>\n`;
   writeFileSync(join(DIST, "sitemap.xml"), sitemap);
+
+  // robots.txt — generated from SITE_URL so it can never drift from the domain.
+  writeFileSync(join(DIST, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${SITE.url}/sitemap.xml\n`);
 
   console.log(`\n✓ Built ${built.length} pages to dist/  (site: ${SITE.url})`);
 }
