@@ -1,0 +1,66 @@
+name: Deploy to Cloudflare Pages
+
+# Deploys dist/ straight to Cloudflare Pages on every push to main (and on
+# demand via the Actions tab). This is independent of Cloudflare's own Git
+# integration — it works even if the Pages project was never connected to
+# the repo. It requires two repository secrets:
+#   CLOUDFLARE_API_TOKEN   — an API token with the "Cloudflare Pages: Edit" permission
+#   CLOUDFLARE_ACCOUNT_ID  — from the Cloudflare dashboard (right sidebar of any zone)
+# Optional repository variable:
+#   CLOUDFLARE_PAGES_PROJECT — the Pages project name (defaults to "benefitdial")
+# Until the secrets are added, the deploy step is skipped with a notice and the
+# workflow still validates the build.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Unit tests
+        run: node --test
+
+      - name: Build the site
+        run: npm run build
+
+      - name: Sanity-check the build output
+        run: |
+          test -f dist/index.html && test -f dist/sitemap.xml && test -f dist/robots.txt
+          pages=$(find dist -name '*.html' | wc -l)
+          echo "Built $pages HTML pages for production."
+          test "$pages" -ge 13
+
+      - name: Check for Cloudflare credentials
+        id: creds
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "$CF_TOKEN" ] && [ -n "$CF_ACCOUNT" ]; then
+            echo "have=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "have=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Cloudflare deploy skipped::Add the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets (Settings → Secrets and variables → Actions) to enable automatic deploys of dist/ to Cloudflare Pages."
+          fi
+
+      - name: Deploy dist/ to Cloudflare Pages
+        if: steps.creds.outputs.have == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT || 'benefitdial' }}
