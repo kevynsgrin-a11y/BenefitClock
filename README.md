@@ -90,6 +90,18 @@ tests/                   # node --test unit tests
 `_headers` sets security headers (HSTS, `X-Content-Type-Options`, a restrictive
 `Permissions-Policy`, etc.) and cache policies. `_redirects` maps friendly aliases.
 
+There are two ways to deploy; either alone is sufficient:
+
+1. **Cloudflare Git integration** — connect the Pages project to this GitHub repo
+   (production branch `main`) with the build command/output directory above.
+2. **CI deploy (`.github/workflows/deploy.yml`)** — pushes `dist/` to Pages with
+   wrangler on every push to `main`, independent of the Git integration. Enable it
+   by adding two repository secrets: `CLOUDFLARE_API_TOKEN` (Pages: Edit permission)
+   and `CLOUDFLARE_ACCOUNT_ID`; optionally set the `CLOUDFLARE_PAGES_PROJECT`
+   repository variable if the Pages project isn't named `benefitdial`. Until the
+   secrets exist, the workflow validates the build and skips the deploy step
+   with a notice.
+
 ## Monetization & compliance stance
 
 BenefitDial is **not** a broker, agent, or Third-Party Marketing Organization (TPMO):
