@@ -139,7 +139,20 @@ code, kbd, samp { font-family: var(--bc-font-mono); font-size: 0.95em; }
   padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0);
   white-space: nowrap; border: 0;
+  /* Auto table layout sizes to content and ignores width:1px, which lets a
+     hidden data table (see svgcharts.mjs) silently widen the page's scrollable
+     area even though it paints nothing. Fixed layout makes width authoritative. */
+  table-layout: fixed;
 }
+/* white-space:nowrap above is right for the general sr-only case, but on a
+   TABLE it inflates every cell's min-content width to its full unwrappable
+   line length — CSS tables can never shrink below that floor (GRIDMIN),
+   regardless of table-layout:fixed or width:1px. Nothing is visible either
+   way (still clipped by overflow:hidden above), so let hidden-table cells
+   wrap; that collapses GRIDMIN to the widest single word and keeps the
+   table from forcing the whole page to scroll horizontally on narrow
+   viewports. */
+table.visually-hidden { white-space: normal; }
 
 /* ----- Layout primitives ----------------------------------------------- */
 .wrap { width: 100%; max-width: var(--bc-maxw); margin-inline: auto; padding-inline: 1.25rem; }
@@ -255,7 +268,7 @@ code, kbd, samp { font-family: var(--bc-font-mono); font-size: 0.95em; }
   min-height: 4.25rem;
 }
 .site-header__end { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.6rem; }
-.brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--bc-teal-900); font-weight: 800; font-size: 1.28rem; }
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--bc-teal-900); font-weight: 800; font-size: 1.28rem; padding-block: 0.3rem; margin-block: -0.3rem; }
 .brand:hover { color: var(--bc-teal-900); }
 .brand__mark {
   width: 2.25rem; height: 2.25rem;
@@ -562,6 +575,10 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
   padding-block: 3rem 2rem;
   margin-top: 3rem;
 }
+/* .muted (--bc-ink-faint) is tuned for light page surfaces; the footer is
+   always dark regardless of theme, so it needs its own light-on-dark muted
+   tone rather than inheriting the light-surface one (was ~2.2:1, below AA). */
+.site-footer .muted { color: #a9d4d3; }
 .site-footer a { color: #d7f0f0; }
 .site-footer a:hover { color: #fff; }
 .site-footer h4 { color: #fff; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.06em; }
@@ -692,7 +709,7 @@ svg.section-divider { display: block; width: 100%; height: 52px; color: var(--bc
 /* Header text-size control */
 .textsize { display: inline-flex; align-items: center; gap: 0.2rem; }
 .textsize__label { font-size: 0.8rem; font-weight: 700; color: var(--bc-ink-faint); margin-right: 0.15rem; }
-.textsize__btn { min-width: 2.6rem; min-height: 2.6rem; display: grid; place-items: center; border: 2px solid var(--bc-line); background: var(--bc-surface); color: var(--bc-teal-800); border-radius: 9px; font-weight: 800; cursor: pointer; line-height: 1; }
+.textsize__btn { min-width: 2.75rem; min-height: 2.75rem; display: grid; place-items: center; border: 2px solid var(--bc-line); background: var(--bc-surface); color: var(--bc-teal-800); border-radius: 9px; font-weight: 800; cursor: pointer; line-height: 1; }
 .textsize__btn:hover { border-color: var(--bc-teal-600); }
 .textsize__btn[aria-pressed="true"] { background: var(--bc-teal-700); color: #fff; border-color: var(--bc-teal-700); }
 .textsize__btn.s1 { font-size: 0.82rem; } .textsize__btn.s2 { font-size: 1rem; } .textsize__btn.s3 { font-size: 1.18rem; }
