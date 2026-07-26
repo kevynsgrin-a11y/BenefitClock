@@ -11,8 +11,8 @@ changefreq: weekly
 <section class="section" style="padding-bottom:1.5rem;">
   <div class="wrap">
     <p class="eyebrow">Medicare · Annual Enrollment</p>
-    <h1>What changed in <span style="color:var(--bc-teal-600)">your</span> Medicare plan for <span data-year-next>2027</span>?</h1>
-    <p class="lead prose">Pick your state, county, and current plan. We'll show you — instantly and side by side — how your premium, deductible, maximum out-of-pocket, star rating, and extra benefits changed for <span data-year-next>2027</span>. No forms. No phone number. No one calls you.</p>
+    <h1>What changed in <span style="color:var(--bc-teal-600)">your</span> Medicare plan for <span data-year-next>{{PLAN_YEAR_NEXT}}</span>?</h1>
+    <p class="lead prose">Pick your state, county, and current plan. We'll show you — instantly and side by side — how your premium, deductible, maximum out-of-pocket, star rating, and extra benefits changed for <span data-year-next>{{PLAN_YEAR_NEXT}}</span>. No forms. No phone number. No one calls you.</p>
   </div>
 </section>
 
@@ -34,7 +34,7 @@ changefreq: weekly
                mode, which prints as near-white on white paper. This warning has to
                survive being printed from any browser, in any theme. -->
           <p style="font-weight:800;font-size:1.1rem;margin-bottom:0.35rem;">These are sample numbers — not real plan data</p>
-          <p style="margin:0 0 0.5rem;">The plan names, plan IDs and dollar amounts here are <strong>made up</strong>. They show how the comparison works until CMS publishes the official <span data-year-next>2027</span> plan files. Every plan name starts with the word <strong>“Sample”</strong>.</p>
+          <p style="margin:0 0 0.5rem;">The plan names, plan IDs and dollar amounts here are <strong>made up</strong>. They show how the comparison works until CMS publishes the official <span data-year-next>{{PLAN_YEAR_NEXT}}</span> plan files. Every plan name starts with the word <strong>“Sample”</strong>.</p>
           <p style="margin:0;"><strong>Do not use these numbers to make a decision about your coverage.</strong> For your real plan, use the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or call 1‑800‑MEDICARE (TTY 1‑877‑486‑2048).</p>
         </div>
 
@@ -82,7 +82,7 @@ changefreq: weekly
         <!-- Empty state -->
         <div class="callout callout--info" id="plandiff-empty">
           <p class="callout__title">Your side-by-side comparison will appear here</p>
-          <p style="margin:0;">Choose your plan above to see what's different for <span data-year-next>2027</span>. We compare only the public numbers CMS publishes — we never ask who you are.</p>
+          <p style="margin:0;">Choose your plan above to see what's different for <span data-year-next>{{PLAN_YEAR_NEXT}}</span>. We compare only the public numbers CMS publishes — we never ask who you are.</p>
         </div>
 
         <!-- Error state -->
@@ -98,12 +98,12 @@ changefreq: weekly
             <p style="margin:0 0 0.75rem;"><span class="badge badge--neutral" id="pd-status">Status</span></p>
             <div class="grid grid--2" style="gap:1rem;margin-bottom:0.5rem;">
               <div>
-                <div class="figure__label"><span data-year-current>2026</span> plan</div>
+                <div class="figure__label"><span data-year-current>{{PLAN_YEAR_CURRENT}}</span> plan</div>
                 <div class="pd-planname" id="pd-plan-name">—</div>
                 <div class="muted" id="pd-meta" style="font-size:0.95rem;"></div>
               </div>
               <div>
-                <div class="figure__label"><span data-year-next>2027</span> plan</div>
+                <div class="figure__label"><span data-year-next>{{PLAN_YEAR_NEXT}}</span> plan</div>
                 <div class="pd-planname" id="pd-next-name">—</div>
               </div>
             </div>
@@ -116,8 +116,8 @@ changefreq: weekly
                 <thead>
                   <tr>
                     <th scope="col">What we compare</th>
-                    <th scope="col" class="num"><span data-year-current>2026</span></th>
-                    <th scope="col" class="num"><span data-year-next>2027</span></th>
+                    <th scope="col" class="num"><span data-year-current>{{PLAN_YEAR_CURRENT}}</span></th>
+                    <th scope="col" class="num"><span data-year-next>{{PLAN_YEAR_NEXT}}</span></th>
                     <th scope="col" class="num">Change</th>
                   </tr>
                 </thead>
@@ -154,7 +154,7 @@ changefreq: weekly
   <div class="wrap prose">
     <p class="eyebrow">The big picture</p>
     <h2>Why checking matters: the menu is shrinking</h2>
-    <p>Plans aren't just changing their prices — there are fewer of them. For <span data-year-current>2026</span>, the average beneficiary can choose from about <strong>32</strong> Medicare Advantage prescription-drug plans, down from 34 a year earlier. Stand-alone Part D drug plans fell even more sharply. When plans consolidate or leave, "doing nothing" can quietly move you onto different coverage — which is exactly why a year-over-year check is worth 60 seconds.</p>
+    <p>Plans aren't just changing their prices — there are fewer of them. For <span data-year-current>{{PLAN_YEAR_CURRENT}}</span>, the average beneficiary can choose from about <strong>32</strong> Medicare Advantage prescription-drug plans, down from 34 a year earlier. Stand-alone Part D drug plans fell even more sharply. When plans consolidate or leave, "doing nothing" can quietly move you onto different coverage — which is exactly why a year-over-year check is worth 60 seconds.</p>
     <div class="grid grid--2">
       <div>{{CHART_PLANS_MAPD}}</div>
       <div>{{CHART_PLANS_PDP}}</div>
@@ -201,7 +201,7 @@ changefreq: weekly
     <details class="faq">
       <summary>Why don't I see {{PLAN_YEAR_NEXT}} numbers yet?</summary>
       <div class="faq__body">
-        <p>CMS releases the <span data-year-next>2027</span> Landscape and Crosswalk files in late September or early October. Until the official files are published, this tool runs on a structurally identical sample dataset so you can see exactly how the comparison works. The moment CMS posts the real files, we load them and the numbers become live. See <a href="/how-it-works">How it works</a>.</p>
+        <p>CMS releases the <span data-year-next>{{PLAN_YEAR_NEXT}}</span> Landscape and Crosswalk files in late September or early October. Until the official files are published, this tool runs on a structurally identical sample dataset so you can see exactly how the comparison works. The moment CMS posts the real files, we load them and the numbers become live. See <a href="/how-it-works">How it works</a>.</p>
       </div>
     </details>
   </div>

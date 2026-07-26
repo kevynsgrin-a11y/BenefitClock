@@ -71,6 +71,10 @@ Part B prefill measured: `202.90`.
 | Print from dark mode | min 1.07:1 → 5.02:1 |
 | Tests | 21 → 43 passing |
 
+> **Follow-up pass.** Three of the four items below have since moved — see
+> [Follow-up](#follow-up-closing-the-open-items) at the end. The section is kept
+> as written so the reasoning at the time stays legible.
+
 ## Deliberately left open
 
 **AEP season years are still literal** (`guide-aep.html`). No token means
@@ -96,3 +100,64 @@ federalregister.gov returned 403 from the sandbox. The caveat is recorded in
 Two audit findings were also **refuted during remediation** and correctly left
 alone: the privacy page's ad-network disclosure is properly hedged and accurate,
 and the `Permissions-Policy` header was never voided.
+
+## Follow-up: closing the open items
+
+Tests 43 → 66. Build clean, 13 pages, no unreplaced tokens.
+
+**AEP season — closed.** The season now has its own row set in `src/data/aep.csv`
+(window dates, the coverage year they take effect in, the MA OEP window that
+follows), because the COLA and Medicare-figures years roll at different moments
+and borrowing either would move the title while the body stayed pinned. Exactly
+one row may be `status=current`: zero fails the build rather than leaving a
+closed window on the page, more than one fails rather than guessing, and
+`coverage_year` must be `season_year + 1`. Every phrasing the pages quote is
+derived once, so the FAQ copy and its structured-data twin cannot drift.
+Rendering is unchanged — every date byte-identical, the only copy change being
+"Oct 15 – Dec 7" spelled out.
+
+**A related defect found while doing it.** `data-year-current` / `data-year-next`
+spans are rewritten by `plan-diff.js`, which loads on the plan tool page and
+nowhere else — so on `index`, `about`, `404` and the AEP guide the fallback text
+inside the span *was* the number people read, frozen at whatever year it was
+typed in. Markup that advertised a binding it did not have, on four of the five
+pages using it. Three of those spans also pointed at the wrong source: `index`
+used `data-year-next` for the COLA year, which the script would have overwritten
+with the plan year had it ever loaded there. Now build-time tokens, from the
+source that matches the sentence.
+
+| | Before | After |
+| --- | --- | --- |
+| Pages with an unbound `data-year` span | 4 | 0 |
+| Spans pointed at the wrong data source | 3 | 0 |
+
+**Chart label sizing — closed, and the diagnosis was wrong.** Label text is sized
+in user units, so rendered size is container width ÷ viewBox width. Measured in
+Chromium, the symptom was the reverse of the one recorded above: the four
+two-bar plan-count charts sit in a two-column grid, so on a **1280px desktop**
+they rendered 7.6px labels — smaller than on a phone, because the mobile floor
+keys off *viewport* width and a narrow container on a wide screen got nothing.
+The viewBox is now one slot per bar, which lands the five-bar COLA chart back on
+exactly 720 and leaves it measurably identical; each figure declares its natural
+width so CSS caps scaling at 1:1 and skips the scroll for charts that fit.
+
+| Chart | Before (320px → 1280px) | After |
+| --- | --- | --- |
+| Two-bar (×4) | 11.3px → **7.6px**, always scrolled | 16.1px → 17px, fits |
+| Five-bar (×3) | 11.3px → 15.7px | unchanged |
+
+**The 2026 statutory figures — still open, and it cannot be closed here.** The
+recorded reason was wrong: it is not that cms.gov and federalregister.gov refuse
+us. Retried this pass, *every* host is refused at the proxy, `example.com`
+included — the environment permits no outbound fetch at all, so trying another
+government URL will never close it. Both figures were re-corroborated across
+independent secondary sources, and the caveat in `medicare-figures.csv` and the
+README now names the two exact documents instead of gesturing at a fact sheet:
+Federal Register **2025-20251** (2025-11-19), where the Part B premium is legally
+set, and the CMS *Final CY 2026 Part D Redesign Program Instructions* for the
+$2,100 cap. It needs a networked environment or a person.
+
+**Content-hashed assets — still deliberately open,** on the reasoning above:
+`must-revalidate` already makes a stale asset impossible, so what remains is a
+performance gain that would cost ES module specifier rewriting across the tool
+scripts.

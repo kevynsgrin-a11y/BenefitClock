@@ -67,7 +67,8 @@ the build refuses to substitute a plausible-looking literal when the data stops
 carrying one. `npm run build` exits non-zero — it does not warn — when:
 
 - **a required figure is missing**: the confirmed or projected COLA, the COLA
-  announcement date, the Part B premium/deductible, or the Part D cap. The
+  announcement date, the Part B premium/deductible, the Part D cap, or the
+  current enrolment season. The
   historical failure this prevents: promoting the projection to `official` in
   `cola-history.csv` without adding the *next* year's projection row used to
   leave the site quoting the previous estimate (`3.6%`) in 41 places, including
@@ -91,10 +92,11 @@ carrying one. `npm run build` exits non-zero — it does not warn — when:
 | SSA **COLA** announcement | Confirmed COLA figure | Announced Oct 14, 2026 |
 | CMS **Parts A & B premiums and deductibles** fact sheet | Part B standard premium + annual deductible | Published Nov, effective Jan 1 |
 | CMS **Part D redesign / annual parameters** | Part D out-of-pocket cap (IRA; indexed annually) | Annual |
+| CMS **Medicare & You** / 42 CFR 422.62 | Annual Enrollment Period window dates | Annual |
 
 ### Updating the data each fall
 
-Three data sets make up the whole annual update. Every CSV below is committed;
+Four data sets make up the whole annual update. Every CSV below is committed;
 the JSON they produce is generated and gitignored.
 
 - **COLA — `src/data/cola-history.csv`.** After the SSA announcement, promote the
@@ -111,14 +113,36 @@ the JSON they produce is generated and gitignored.
   `source_updated`; `scripts/build-medicare-figures.mjs` takes the latest official
   row as current. The build fails if that row has no Part B premium.
 
-  > **Caveat — the 2026 row wants one primary-source confirmation.** `$202.90` (Part B
-  > standard premium) and `$2,100` (Part D cap) were corroborated only through web
-  > search across independent secondary sources — direct fetches to cms.gov,
-  > medicare.gov and federalregister.gov returned 403 from the environment the
-  > figures were gathered in, so no government page was read first-hand. Before
-  > relying on them in production, check the CMS "Medicare Parts A & B Premiums
-  > and Deductibles" fact sheet and the CMS Part D annual parameters directly, and
-  > correct the row if they differ.
+  > **Caveat — the 2026 row still wants one primary-source confirmation.**
+  > `$202.90` (Part B standard premium), `$283` (Part B deductible) and `$2,100`
+  > (Part D cap) are corroborated across independent secondary sources and have
+  > been re-checked since, but no government page has been read first-hand.
+  >
+  > This is *not* a cms.gov-specific block, as previously recorded: the
+  > environments this repo has been worked in permit no outbound fetch at all —
+  > every host is refused at the proxy, `example.com` included — so retrying a
+  > different government URL will not close it. It needs a networked environment
+  > or a person. The two documents to read are:
+  >
+  > - **Federal Register 2025-20251** (published 2025-11-19), *Medicare Program;
+  >   Medicare Part B Monthly Actuarial Rates, Premium Rates, and Annual
+  >   Deductible Beginning January 1, 2026* — the notice that legally sets the
+  >   premium; the CMS fact sheet restates it.
+  > - **CMS *Final CY 2026 Part D Redesign Program Instructions*** —
+  >   `cms.gov/files/document/final-cy-2026-part-d-redesign-program-instruction.pdf`,
+  >   carrying the `$2,100` CY2026 out-of-pocket threshold.
+  >
+  > Correct the row if either differs.
+- **Enrolment season — `src/data/aep.csv`.** One row per Annual Enrollment Period,
+  carrying the window dates, the coverage year they take effect in, and the
+  following MA Open Enrollment window. Add next season's row and move
+  `status=current` onto it. Exactly one row may be `current`: the build fails on
+  zero (the site would keep advertising a window that has closed) and on more than
+  one (it would have to guess). The season rolls on its own schedule, so pages use
+  `{{AEP_SEASON_YEAR}}`, `{{AEP_COVERAGE_YEAR}}`, `{{AEP_WINDOW_RANGE_LONG}}` and
+  friends rather than borrowing the COLA or Medicare-figures year — those roll at
+  different moments, and borrowing one used to roll a page title while its body
+  stayed pinned to the old season.
 - **Medicare plans:** drop the real CMS CSVs into `src/data/` as
   `landscape-current.csv`, `landscape-next.csv`, and `crosswalk.csv`, then rebuild.
   `scripts/build-plan-data.mjs` ingests them automatically. **Until those files are

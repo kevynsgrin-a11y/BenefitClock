@@ -40,7 +40,7 @@ changefreq: weekly
       <a class="card card--link" href="/medicare-plan-changes">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-magnifier-diff" xlink:href="#ic-magnifier-diff"/></svg></div>
         <h3>What changed in my Medicare plan?</h3>
-        <p class="muted">Pick your plan and instantly see how your premium, deductible, max out-of-pocket, star rating, and extra benefits moved from <span data-year-current>2026</span> to <span data-year-next>2027</span> — using public CMS data. No login, no form.</p>
+        <p class="muted">Pick your plan and instantly see how your premium, deductible, max out-of-pocket, star rating, and extra benefits moved from {{PLAN_YEAR_CURRENT}} to {{PLAN_YEAR_NEXT}} — using public CMS data. No login, no form.</p>
         <span class="badge badge--info">Open the What&nbsp;Changed tool →</span>
       </a>
       <a class="card card--link" href="/cola-calculator">
@@ -94,13 +94,13 @@ changefreq: weekly
       <div class="prose">
         <p class="eyebrow">Mark your calendar</p>
         <h2>Two deadlines, one busy autumn.</h2>
-        <p>The moment you learn your <span data-year-next>2027</span> Social Security raise is almost the exact moment you're allowed to change your Medicare plan. BenefitDial is built for that overlap.</p>
+        <p>The moment you learn your {{COLA_PROJECTED_YEAR}} Social Security raise is almost the exact moment you're allowed to change your Medicare plan. BenefitDial is built for that overlap.</p>
         <a class="btn btn--solid" href="/key-dates">See all key dates &amp; deadlines <svg class="icon" aria-hidden="true" focusable="false"><use href="#ic-arrow-right" xlink:href="#ic-arrow-right"/></svg></a>
       </div>
       <ul class="timeline">
         <li>
           <span class="date">{{COLA_ANNOUNCE_DATE_LONG}}</span>
-          BLS releases September inflation data and the SSA announces the official <span data-year-next>2027</span> COLA.
+          BLS releases September inflation data and the SSA announces the official {{COLA_PROJECTED_YEAR}} COLA.
         </li>
         <li>
           <span class="date">October 15 – December 7, 2026</span>
@@ -125,7 +125,7 @@ changefreq: weekly
           <span class="step__num" aria-hidden="true">1</span>
           <div>
             <p class="step__title">Check your raise</p>
-            <p>Enter your benefit in the COLA calculator to see your <span data-year-next>2027</span> increase — before and after Part B.</p>
+            <p>Enter your benefit in the COLA calculator to see your {{COLA_PROJECTED_YEAR}} increase — before and after Part B.</p>
           </div>
         </div>
       </li>

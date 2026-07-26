@@ -7,10 +7,20 @@
 #   part_d_oop_cap — CMS Part D annual parameters (Inflation Reduction Act cap,
 #     indexed each year; it is NOT fixed at its original $2,000).
 #
-# CAVEAT on the 2026 row: these figures were corroborated from secondary
-# sources only. Direct fetches to cms.gov, medicare.gov and federalregister.gov
-# were blocked (403) when this row was added, so confirm against the CMS fact
-# sheet before relying on them in published copy.
+# CAVEAT on the 2026 row: still not read first-hand. The figures are
+# corroborated across independent secondary sources, and re-checked since, but
+# no government page has been opened directly — the environments this repo has
+# been worked in permit no outbound fetch at all (every host is refused at the
+# proxy, example.com included), so this is not a cms.gov-specific block and
+# retrying another government URL will not close it. It needs a networked
+# environment or a person. The two documents to read:
+#   part_b_premium / part_b_deductible — Federal Register 2025-20251, published
+#     2025-11-19, "Medicare Program; Medicare Part B Monthly Actuarial Rates,
+#     Premium Rates, and Annual Deductible Beginning January 1, 2026". The FR
+#     notice is where the premium is legally set; the CMS fact sheet restates it.
+#   part_d_oop_cap — CMS "Final CY 2026 Part D Redesign Program Instructions"
+#     (cms.gov/files/document/final-cy-2026-part-d-redesign-program-instruction.pdf),
+#     which carries the $2,100 CY2026 OOP threshold and the $615 deductible max.
 year,part_b_premium,part_b_deductible,part_d_oop_cap,status,source_updated,source
 2023,164.90,226,,official,2022-09-27,CMS annual Medicare Parts A & B premiums and deductibles
 2024,174.70,240,,official,2023-10-12,CMS annual Medicare Parts A & B premiums and deductibles
