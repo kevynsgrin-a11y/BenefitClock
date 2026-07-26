@@ -1,16 +1,17 @@
 <!--
-title: Key Medicare & Social Security Dates for 2026–2027 | BenefitDial
-description: A plain-language calendar of the fall benefits season: when the 2027 COLA is announced, when Medicare Open Enrollment runs, and when changes take effect.
+title: Medicare & Social Security Key Dates 2026–{{COLA_PROJECTED_YEAR}} | BenefitDial
+description: A plain-language calendar of the fall benefits season: when the {{COLA_PROJECTED_YEAR}} COLA is announced, when Medicare Open Enrollment runs, and when changes take effect.
 slug: key-dates
 nav: dates
 ogtype: article
+head: <meta property="article:published_time" content="2026-07-19"><meta property="article:modified_time" content="2026-07-26"><meta property="article:section" content="Key dates">
 priority: 0.8
 changefreq: monthly
 -->
 <section class="section" style="padding-bottom:1.5rem;">
   <div class="wrap">
     <p class="eyebrow">Your fall calendar, in one place</p>
-    <h1>Key Medicare &amp; Social Security dates for fall 2026 into 2027</h1>
+    <h1>Key Medicare &amp; Social Security dates for fall 2026 into {{COLA_PROJECTED_YEAR}}</h1>
     <p class="lead prose">Every autumn, two of the biggest numbers in your year land almost on top of each other. You learn your Social Security cost-of-living raise, and — at the very same time — you get the window to change your Medicare plan. This page lays out the whole overlap, in order, so nothing sneaks up on you.</p>
   </div>
 </section>
@@ -24,7 +25,7 @@ changefreq: monthly
         <p class="eyebrow">The season at a glance</p>
         <h2>Two announcements, one busy autumn.</h2>
         <p>The dates below run from midsummer, when the first {{COLA_PROJECTED_YEAR}} COLA estimates appear, through the following spring, when the last enrollment window closes. The two you can act on are the Annual Enrollment Period and the Medicare Advantage Open Enrollment Period — everything else is a heads-up so you're ready.</p>
-        <p>Want the short version? The official COLA arrives <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, and Medicare Open Enrollment runs <strong>October 15 – December 7, 2026</strong>.</p>
+        <p>Want the short version? The official COLA is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, and Medicare Open Enrollment runs <strong>October 15 – December 7, 2026</strong>.</p>
       </div>
       <ul class="timeline">
         <li>
@@ -36,8 +37,8 @@ changefreq: monthly
           CMS releases the Medicare <strong>Landscape</strong> and <strong>Crosswalk</strong> files, and your plan mails you its <strong>Annual Notice of Change (ANOC)</strong> — the booklet that spells out how your plan's costs and benefits move next year. Read it, don't file it away.
         </li>
         <li>
-          <span class="date">{{COLA_ANNOUNCE_DATE_LONG}}, 8:30&nbsp;a.m. ET</span>
-          The Bureau of Labor Statistics releases September CPI-W inflation data, and the Social Security Administration announces the <strong>official {{COLA_PROJECTED_YEAR}} COLA</strong>. This is the day the estimate becomes real.
+          <span class="date">{{COLA_ANNOUNCE_DATE_LONG}} (expected)</span>
+          The Bureau of Labor Statistics releases September CPI-W inflation data, normally at 8:30&nbsp;a.m. ET, and the Social Security Administration usually announces the <strong>official {{COLA_PROJECTED_YEAR}} COLA</strong> the same morning. This is the day the estimate becomes real — though the date can slip, as it did in 2025, when the announcement came on October 24.
         </li>
         <li>
           <span class="date">October 15 – December 7, 2026</span>
@@ -106,7 +107,7 @@ changefreq: monthly
     <details class="faq">
       <summary>When will I actually see the bigger check?</summary>
       <div class="faq__body">
-        <p>The {{COLA_PROJECTED_YEAR}} COLA is announced on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, but the higher amount doesn't arrive right away. The new benefit takes effect for <strong>January 2027</strong>, which most people receive in their payment in <strong>January 2027</strong>. You'll get a notice in your <a href="https://www.ssa.gov/cola/" rel="nofollow noopener" target="_blank">my Social Security</a> message center in late November, and a mailed notice in December, confirming your new amount before it starts.</p>
+        <p>The {{COLA_PROJECTED_YEAR}} COLA is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, but the higher amount doesn't arrive right away. The new benefit takes effect for <strong>January 2027</strong>, which most people receive in their payment in <strong>January 2027</strong>. You'll get a notice in your <a href="https://www.ssa.gov/cola/" rel="nofollow noopener" target="_blank">my Social Security</a> message center in late November, and a mailed notice in December, confirming your new amount before it starts.</p>
       </div>
     </details>
 
@@ -120,7 +121,7 @@ changefreq: monthly
     <details class="faq">
       <summary>Is the {{COLA_PROJECTED}}% COLA for {{COLA_PROJECTED_YEAR}} final?</summary>
       <div class="faq__body">
-        <p>No. The <strong>{{COLA_PROJECTED}}%</strong> figure is an early estimate from groups like The Senior Citizens League and AARP, based on inflation data so far. By law, the official COLA is the percentage increase in the average <strong>CPI-W</strong> for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration announces the official number on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was <strong>{{COLA_CONFIRMED}}%</strong>.</p>
+        <p>No. The <strong>{{COLA_PROJECTED}}%</strong> figure is an early estimate from groups like The Senior Citizens League and AARP, based on inflation data so far. By law, the official COLA is the percentage increase in the average <strong>CPI-W</strong> for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration is expected to announce the official number on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, though the date can move. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was <strong>{{COLA_CONFIRMED}}%</strong>.</p>
       </div>
     </details>
 
@@ -148,10 +149,21 @@ changefreq: monthly
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Key Medicare & Social Security dates for fall 2026 into 2027",
-  "description": "A plain-language calendar of the fall benefits season — when the 2027 COLA is announced, when Medicare Open Enrollment runs, and when your bigger check and new plan start.",
+  "headline": "Key Medicare & Social Security dates for fall 2026 into {{COLA_PROJECTED_YEAR}}",
+  "description": "A plain-language calendar of the fall benefits season — when the {{COLA_PROJECTED_YEAR}} COLA is announced, when Medicare Open Enrollment runs, and when your bigger check and new plan start.",
   "about": ["Social Security COLA", "Medicare Annual Enrollment Period", "Medicare Advantage Open Enrollment"],
-  "publisher": { "@type": "Organization", "name": "BenefitDial" }
+  "articleSection": "Key dates",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "datePublished": "2026-07-19",
+  "dateModified": "2026-07-26",
+  "image": "{{SITE_URL}}/assets/img/og-default.png",
+  "author": { "@id": "{{SITE_URL}}/#org" },
+  "publisher": { "@id": "{{SITE_URL}}/#org" },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{SITE_URL}}/key-dates"
+  }
 }
 </script>
 <script type="application/ld+json">
@@ -159,8 +171,8 @@ changefreq: monthly
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "/" },
-    { "@type": "ListItem", "position": 2, "name": "Key Dates & Deadlines", "item": "/key-dates" }
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{SITE_URL}}/" },
+    { "@type": "ListItem", "position": 2, "name": "Key Dates & Deadlines", "item": "{{SITE_URL}}/key-dates" }
   ]
 }
 </script>
@@ -169,9 +181,10 @@ changefreq: monthly
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "When will I actually see the bigger Social Security check?", "acceptedAnswer": { "@type": "Answer", "text": "The 2027 COLA is announced October 14, 2026, but the higher benefit takes effect for January 2027 and arrives in your January 2027 payment. A notice appears in your my Social Security message center in late November and a mailed notice in December." } },
-    { "@type": "Question", "name": "What if I miss the Medicare Annual Enrollment Period?", "acceptedAnswer": { "@type": "Answer", "text": "If you miss AEP (October 15 – December 7), your current coverage carries into the new year. People already in a Medicare Advantage plan get one more change during the MA Open Enrollment Period, January 1 – March 31, 2027. Otherwise you generally need a Special Enrollment Period." } },
-    { "@type": "Question", "name": "Is the 3.6% COLA for 2027 final?", "acceptedAnswer": { "@type": "Answer", "text": "No. The 3.6% figure is an early estimate. The official COLA equals the percentage increase in the average CPI-W for July, August, and September over the same quarter of the last year a COLA took effect, and the SSA announces it on October 14, 2026." } }
+    { "@type": "Question", "name": "When will I actually see the bigger check?", "acceptedAnswer": { "@type": "Answer", "text": "The {{COLA_PROJECTED_YEAR}} COLA is expected on {{COLA_ANNOUNCE_DATE_LONG}}, but the higher amount doesn't arrive right away. The new benefit takes effect for January 2027, which most people receive in their payment in January 2027. You'll get a notice in your my Social Security message center in late November, and a mailed notice in December, confirming your new amount before it starts." } },
+    { "@type": "Question", "name": "What if I miss the Annual Enrollment Period?", "acceptedAnswer": { "@type": "Answer", "text": "If you miss AEP (October 15 – December 7), your current coverage simply carries into {{COLA_PROJECTED_YEAR}} with whatever changes your plan made — so it's worth reading your ANOC even if you plan to stay put. If you're already in a Medicare Advantage plan, you get one more chance during the MA Open Enrollment Period, January 1 – March 31, 2027, to switch plans or return to Original Medicare. Outside those windows, you generally need a Special Enrollment Period, which is triggered by specific life events like moving. Check your options on the official Medicare Plan Finder or by calling 1-800-MEDICARE." } },
+    { "@type": "Question", "name": "Is the {{COLA_PROJECTED}}% COLA for {{COLA_PROJECTED_YEAR}} final?", "acceptedAnswer": { "@type": "Answer", "text": "No. The {{COLA_PROJECTED}}% figure is an early estimate from groups like The Senior Citizens League and AARP, based on inflation data so far. By law, the official COLA is the percentage increase in the average CPI-W for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration is expected to announce the official number on {{COLA_ANNOUNCE_DATE_LONG}}, though the date can move. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was {{COLA_CONFIRMED}}%." } },
+    { "@type": "Question", "name": "Where do these dates come from?", "acceptedAnswer": { "@type": "Answer", "text": "All of them come from public government sources: the Social Security Administration and Bureau of Labor Statistics for the COLA, and CMS for the Medicare enrollment periods and plan files. BenefitDial is independent — we're not a broker or agent, we take no commissions, and we never ask for your name, phone number, or email. We just line the dates up for you." } }
   ]
 }
 </script>

@@ -2,24 +2,53 @@
    plan-diff.js — wires the Medicare "What Changed" tool to plandiff-core.js
    Loads the public-data-derived JSON, guides the user State -> County -> Plan,
    and renders a year-over-year diff. No PII, no accounts, nothing is sent out.
+
+   Two rules this file exists to enforce:
+   1. When the manifest says the dataset is sample data, the page says so —
+      loudly, in the visible text, on screen and on paper — and never claims
+      the figures were verified against CMS files.
+   2. Colour comes from a change's MEANING (`tone`), never from whether the
+      number went up or down: a falling star rating is bad news, not good.
    ========================================================================== */
 import {
   indexPlans, indexCrosswalk, listStates, listCounties, plansInCounty,
-  contractPlanKey, buildDiff, formatMetric,
+  buildDiff, planTypeLabel,
 } from "./lib/plandiff-core.js";
 
 const $ = (id) => document.getElementById(id);
 const DATA_BASE = "/data";
+const LOAD_TIMEOUT_MS = 15000;
+
+/* Plain state names read better than two-letter codes for this audience. */
+const STATE_NAMES = {
+  AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California",
+  CO: "Colorado", CT: "Connecticut", DE: "Delaware", DC: "District of Columbia",
+  FL: "Florida", GA: "Georgia", HI: "Hawaii", ID: "Idaho", IL: "Illinois",
+  IN: "Indiana", IA: "Iowa", KS: "Kansas", KY: "Kentucky", LA: "Louisiana",
+  ME: "Maine", MD: "Maryland", MA: "Massachusetts", MI: "Michigan",
+  MN: "Minnesota", MS: "Mississippi", MO: "Missouri", MT: "Montana",
+  NE: "Nebraska", NV: "Nevada", NH: "New Hampshire", NJ: "New Jersey",
+  NM: "New Mexico", NY: "New York", NC: "North Carolina", ND: "North Dakota",
+  OH: "Ohio", OK: "Oklahoma", OR: "Oregon", PA: "Pennsylvania", PR: "Puerto Rico",
+  RI: "Rhode Island", SC: "South Carolina", SD: "South Dakota", TN: "Tennessee",
+  TX: "Texas", UT: "Utah", VT: "Vermont", VA: "Virginia", WA: "Washington",
+  WV: "West Virginia", WI: "Wisconsin", WY: "Wyoming",
+};
+const stateName = (code) => STATE_NAMES[String(code).toUpperCase()] || String(code);
 
 function ready(fn) {
   if (document.readyState !== "loading") fn();
   else document.addEventListener("DOMContentLoaded", fn);
 }
 
-async function loadJSON(path) {
-  const res = await fetch(path, { cache: "no-store" });
+async function loadJSON(path, signal) {
+  const res = await fetch(path, { cache: "no-store", signal });
   if (!res.ok) throw new Error(`Failed to load ${path} (${res.status})`);
   return res.json();
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
 ready(async () => {
@@ -35,55 +64,133 @@ ready(async () => {
     results: $("plandiff-results"),
     empty: $("plandiff-empty"),
     error: $("plandiff-error"),
+    retry: $("plandiff-retry"),
+    retryBtn: $("pd-retry"),
     headline: $("pd-headline"),
     statusBadge: $("pd-status"),
     planName: $("pd-plan-name"),
     nextName: $("pd-next-name"),
     note: $("pd-note"),
+    notes: $("pd-notes"),
     tbody: $("pd-tbody"),
     meta: $("pd-meta"),
     live: $("pd-live"),
+    coverage: $("pd-coverage"),
+    banner: $("pd-sample-banner"),
+    bannerInline: $("pd-sample-inline"),
+    provenance: $("pd-provenance"),
   };
 
   function setStatus(msg) { if (els.status) els.status.textContent = msg; }
-  function showError(msg) {
+  function announce(msg) { if (els.live) els.live.textContent = msg; }
+
+  function showError(msg, { retry = false } = {}) {
     if (els.error) { els.error.textContent = msg; els.error.hidden = false; }
     if (els.results) els.results.hidden = true;
     if (els.empty) els.empty.hidden = true;
+    if (els.retry) els.retry.hidden = !retry;
+    announce(msg);
   }
 
-  let meta = { currentIndex: null, nextIndex: null, crosswalk: null, currentYear: 2026, nextYear: 2027 };
+  function clearError() {
+    if (els.error) { els.error.hidden = true; els.error.textContent = ""; }
+    if (els.retry) els.retry.hidden = true;
+  }
 
-  // ---- Load data -------------------------------------------------------
-  setStatus("Loading the latest public Medicare plan data…");
-  try {
-    const [manifest, plansCur, plansNext, xwalk] = await Promise.all([
-      loadJSON(`${DATA_BASE}/manifest.json`).catch(() => null),
-      loadJSON(`${DATA_BASE}/plans-current.json`),
-      loadJSON(`${DATA_BASE}/plans-next.json`),
-      loadJSON(`${DATA_BASE}/crosswalk.json`),
-    ]);
-    if (manifest) {
-      meta.currentYear = manifest.currentYear || meta.currentYear;
-      meta.nextYear = manifest.nextYear || meta.nextYear;
+  let meta = { currentIndex: null, nextIndex: null, crosswalk: null, currentYear: 2026, nextYear: 2027, sample: true };
+
+  /* ---- Sample-data disclosure ----------------------------------------
+     The markup ships in the honest (sample) state, so this only ever has to
+     turn the warning OFF — and only when the manifest positively says the
+     data came from real CMS files. */
+  function applyProvenance(manifest) {
+    const isSample = !manifest || manifest.sample !== false;
+    meta.sample = isSample;
+    if (els.banner) els.banner.hidden = !isSample;
+    if (els.bannerInline) els.bannerInline.hidden = !isSample;
+    if (els.provenance && !isSample) {
+      const verified = els.provenance.getAttribute("data-verified") || "";
+      els.provenance.innerHTML =
+        `<span class="badge badge--info">Source: CMS Landscape &amp; Crosswalk files</span> ` +
+        `<span class="badge badge--neutral">Public CMS plan data</span>` +
+        (verified
+          ? ` <span class="datasource__fresh"><svg class="icon" aria-hidden="true" focusable="false"><use href="#ic-clock" xlink:href="#ic-clock"/></svg> Figures verified ${escapeHtml(verified)}</span>`
+          : "");
     }
-    meta.currentIndex = indexPlans(plansCur);
-    meta.nextIndex = indexPlans(plansNext);
-    meta.crosswalk = indexCrosswalk(xwalk);
-    setStatus("");
-  } catch (err) {
-    showError(
-      "We could not load the plan data right now. This tool needs the CMS Landscape and Crosswalk files, which are published each fall. Please try again shortly."
-    );
-    return;
   }
 
-  // ---- Populate state dropdown ----------------------------------------
-  const states = listStates(meta.currentIndex);
-  if (els.state) {
-    els.state.innerHTML =
-      `<option value="">Select your state…</option>` +
-      states.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
+  /* ---- Load data ------------------------------------------------------ */
+  async function loadData() {
+    clearError();
+    if (els.state) {
+      els.state.disabled = true;
+      els.state.innerHTML = `<option value="">Loading the plan list…</option>`;
+    }
+    setStatus("Loading the public Medicare plan data…");
+
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), LOAD_TIMEOUT_MS);
+    try {
+      const [manifest, plansCur, plansNext, xwalk] = await Promise.all([
+        loadJSON(`${DATA_BASE}/manifest.json`, ctrl.signal).catch(() => null),
+        loadJSON(`${DATA_BASE}/plans-current.json`, ctrl.signal),
+        loadJSON(`${DATA_BASE}/plans-next.json`, ctrl.signal),
+        loadJSON(`${DATA_BASE}/crosswalk.json`, ctrl.signal),
+      ]);
+      clearTimeout(timer);
+      if (manifest) {
+        meta.currentYear = manifest.currentYear || meta.currentYear;
+        meta.nextYear = manifest.nextYear || meta.nextYear;
+      }
+      applyProvenance(manifest);
+      meta.currentIndex = indexPlans(plansCur);
+      meta.nextIndex = indexPlans(plansNext);
+      meta.crosswalk = indexCrosswalk(xwalk);
+      setStatus("");
+      populateStates();
+      hideResult();
+      return true;
+    } catch (err) {
+      clearTimeout(timer);
+      // Never leave "Loading…" sitting next to an error, and never leave an
+      // enabled-but-empty dropdown pretending the tool is ready.
+      setStatus("");
+      if (els.state) {
+        els.state.disabled = true;
+        els.state.innerHTML = `<option value="">Plan data unavailable</option>`;
+      }
+      showError(
+        err && err.name === "AbortError"
+          ? "The plan data is taking too long to load. Your connection may be slow. Please try again."
+          : "We could not load the plan data right now. Please try again in a moment. You can also use the official Medicare Plan Finder at medicare.gov/plan-compare or call 1-800-MEDICARE.",
+        { retry: true }
+      );
+      return false;
+    }
+  }
+
+  /* ---- Coverage: say what we have, and where to go if we don't --------- */
+  function populateStates() {
+    const states = listStates(meta.currentIndex);
+    if (els.state) {
+      const sorted = [...states].sort((a, b) => stateName(a).localeCompare(stateName(b)));
+      els.state.innerHTML =
+        `<option value="">Select your state…</option>` +
+        sorted
+          .map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(stateName(s))} (${escapeHtml(s)})</option>`)
+          .join("");
+      els.state.disabled = false;
+    }
+    if (els.coverage) {
+      const counties = new Set(meta.currentIndex.all.map((p) => `${p.state}|${p.county}`)).size;
+      const names = [...states].map(stateName).sort((a, b) => a.localeCompare(b));
+      const list = names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names[0] || "";
+      els.coverage.innerHTML =
+        `Right now this checker covers ${counties} counties in ${names.length} states: ${escapeHtml(list)}. ` +
+        `If your state or county is not on the list, use the official ` +
+        `<a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> ` +
+        `or call 1-800-MEDICARE (TTY 1-877-486-2048).`;
+    }
   }
 
   function resetSelect(sel, placeholder) {
@@ -127,29 +234,57 @@ ready(async () => {
     runDiff();
   }
 
-  // Optional: direct plan-ID entry like "H1234-001" selects the option.
+  /* Optional: direct plan-ID entry like "H1234-001" selects the option.
+     Every exit from this function has to leave the page in a state the user
+     can read: silently doing nothing left the PREVIOUS plan's comparison on
+     screen as if it were the answer to what they just typed. */
   function onPlanIdEntry() {
+    if (!meta.currentIndex) return; // data never loaded; its own error stands
     const raw = String(els.planId.value || "").trim().toUpperCase().replace(/\s+/g, "");
+    if (!raw) { clearError(); setStatus(""); return; }
+
+    if (!els.plan || els.plan.disabled) {
+      hideResult();
+      const msg = "Choose your state and county first, then we can look up that plan ID.";
+      setStatus(msg);
+      announce(msg);
+      return;
+    }
+
     const m = raw.match(/([HRS]\d{3,4})[-\s]?(\d{1,3})/i);
-    if (!m || !els.plan || els.plan.disabled) return;
+    if (!m) {
+      showError(
+        `We could not read “${els.planId.value.trim()}” as a plan ID. Plan IDs look like H1234-001 — a letter, four numbers, a dash, then three numbers. You can also pick your plan by name in the list above.`
+      );
+      setStatus("");
+      return;
+    }
+
     const target = `${m[1].toUpperCase()}|${m[2].padStart(3, "0")}`;
     for (const opt of els.plan.options) {
       if (opt.value.toUpperCase() === target) {
         els.plan.value = opt.value;
+        setStatus("");
         runDiff();
         return;
       }
     }
+
+    const county = els.county && els.county.value ? `${els.county.value} County` : "this county";
+    showError(
+      `We could not find plan ${m[1].toUpperCase()}-${m[2].padStart(3, "0")} in ${county}. Check the ID on your member card or Annual Notice of Change, or pick your plan by name in the list above.`
+    );
+    setStatus("");
   }
 
   function hideResult() {
     if (els.results) els.results.hidden = true;
     if (els.empty) els.empty.hidden = false;
-    if (els.error) els.error.hidden = true;
+    clearError();
   }
 
   function runDiff() {
-    if (els.error) els.error.hidden = true;
+    clearError();
     const [contractId, planId] = String(els.plan.value).split("|");
     const state = els.state.value;
     const county = els.county.value;
@@ -160,6 +295,8 @@ ready(async () => {
       nextIndex: meta.nextIndex,
       crosswalk: meta.crosswalk,
       contractId, planId, state, county,
+      currentYear: meta.currentYear,
+      nextYear: meta.nextYear,
     });
 
     if (!diff.ok) {
@@ -168,6 +305,12 @@ ready(async () => {
     }
     renderDiff(diff);
   }
+
+  /* Colour comes from `tone` (what the change MEANS), not `direction` (which
+     way the number moved). The stylesheet's class names are directional, so
+     map meaning onto them here: good -> green, bad -> red, everything else
+     stays neutral rather than being coloured by accident. */
+  const TONE_CLASS = { good: "cell-change--down", bad: "cell-change--up", warn: "cell-change--warn", flat: "cell-change--flat" };
 
   function renderDiff(diff) {
     if (els.empty) els.empty.hidden = true;
@@ -184,41 +327,46 @@ ready(async () => {
 
     if (els.planName) els.planName.textContent = `${diff.prior.planName} (${diff.prior.contractId}-${diff.prior.planId})`;
     if (els.nextName) {
-      els.nextName.textContent = diff.next
-        ? `${diff.next.planName} (${diff.next.contractId}-${diff.next.planId})`
-        : "No 2027 successor plan";
+      if (diff.next) els.nextName.textContent = `${diff.next.planName} (${diff.next.contractId}-${diff.next.planId})`;
+      else if (diff.ambiguous) els.nextName.textContent = "More than one plan matches — see the note below";
+      else els.nextName.textContent = `No ${meta.nextYear} successor plan`;
     }
     if (els.meta) {
-      els.meta.textContent = `${diff.prior.orgName} · ${diff.prior.planType} · ${diff.prior.county}, ${diff.prior.state}`;
+      els.meta.textContent = `${diff.prior.orgName} · ${planTypeLabel(diff.prior)} · ${diff.prior.county}, ${diff.prior.state}`;
     }
 
     if (els.tbody) {
-      if (!diff.next) {
+      if (diff.ambiguous) {
+        els.tbody.innerHTML = `<tr><td colspan="4">We are not showing a comparison for this plan. See the note above.</td></tr>`;
+      } else if (!diff.next) {
         els.tbody.innerHTML = `<tr><td colspan="4">This plan is not offered in ${meta.nextYear}. Use Medicare Plan Finder or your county's plan list to choose a replacement during Open Enrollment.</td></tr>`;
       } else {
         els.tbody.innerHTML = diff.metrics
           .map((m) => {
-            const dirClass = { up: "cell-change--up", down: "cell-change--down", flat: "cell-change--flat", added: "cell-change--down", removed: "cell-change--up" }[m.direction] || "cell-change--flat";
-            const arrow = { up: "▲", down: "▼", added: "＋", removed: "✕", flat: "—" }[m.direction] || "";
+            const toneClass = TONE_CLASS[m.tone] || "cell-change--flat";
+            const arrow = { up: "▲", down: "▼", added: "＋", removed: "✕", flat: "—", changed: "→", na: "" }[m.direction] || "";
             return `<tr>
               <th scope="row">${escapeHtml(m.label)}</th>
               <td class="num">${escapeHtml(m.priorText)}</td>
               <td class="num">${escapeHtml(m.nextText)}</td>
-              <td class="num cell-change ${dirClass}">${arrow} ${escapeHtml(m.deltaText)}</td>
+              <td class="num cell-change ${toneClass}">${arrow} ${escapeHtml(m.deltaText)}</td>
             </tr>`;
           })
           .join("");
       }
     }
 
-    if (els.live) {
-      els.live.textContent = `${diff.prior.planName}: ${diff.headline}`;
+    if (els.notes) {
+      const notes = diff.notes || [];
+      els.notes.innerHTML = notes.map((n) => `<li>${escapeHtml(n)}</li>`).join("");
+      els.notes.hidden = notes.length === 0;
     }
-    if (els.results) els.results.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    announce(
+      `${diff.prior.planName}: ${diff.headline}` +
+        (meta.sample ? " These are sample numbers, not real plan data." : "")
+    );
+    if (els.results) els.results.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   els.state && els.state.addEventListener("change", onState);
@@ -226,13 +374,21 @@ ready(async () => {
   els.plan && els.plan.addEventListener("change", onPlan);
   els.planId && els.planId.addEventListener("change", onPlanIdEntry);
   els.planId && els.planId.addEventListener("blur", onPlanIdEntry);
-  form.addEventListener("submit", (e) => { e.preventDefault(); onPlan(); });
-  const printBtn = document.getElementById("pd-print");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const typed = els.planId && String(els.planId.value || "").trim();
+    if (typed) onPlanIdEntry();
+    else onPlan();
+  });
+  const printBtn = $("pd-print");
   if (printBtn) printBtn.addEventListener("click", () => window.print());
+  if (els.retryBtn) els.retryBtn.addEventListener("click", () => { loadData(); });
+
+  const loaded = await loadData();
 
   // Column headers reflect the actual data years.
-  const yh = document.querySelectorAll("[data-year-current]");
-  yh.forEach((n) => (n.textContent = String(meta.currentYear)));
-  const yn = document.querySelectorAll("[data-year-next]");
-  yn.forEach((n) => (n.textContent = String(meta.nextYear)));
+  if (loaded) {
+    document.querySelectorAll("[data-year-current]").forEach((n) => (n.textContent = String(meta.currentYear)));
+    document.querySelectorAll("[data-year-next]").forEach((n) => (n.textContent = String(meta.nextYear)));
+  }
 });

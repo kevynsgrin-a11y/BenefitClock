@@ -26,15 +26,33 @@ changefreq: weekly
         <p class="muted" style="margin:0.35rem 0 0;">Your plan ID (like <code>H1234-001</code>) is on your member card and on the Annual Notice of Change (ANOC) your plan mailed you.</p>
       </div>
       <div class="tool__body">
-        {{> provenance-strip }}
+        <!-- Sample-data warning. Shown by default and hidden only when the data
+             manifest says the figures come from real CMS files, so a script
+             failure can never leave made-up numbers looking official. -->
+        <div class="callout callout--warn" id="pd-sample-banner" style="margin-bottom:1.1rem;border-left-width:10px;">
+          <!-- Deliberately NOT .callout__title: that class is recoloured for dark
+               mode, which prints as near-white on white paper. This warning has to
+               survive being printed from any browser, in any theme. -->
+          <p style="font-weight:800;font-size:1.1rem;margin-bottom:0.35rem;">These are sample numbers — not real plan data</p>
+          <p style="margin:0 0 0.5rem;">The plan names, plan IDs and dollar amounts here are <strong>made up</strong>. They show how the comparison works until CMS publishes the official <span data-year-next>2027</span> plan files. Every plan name starts with the word <strong>“Sample”</strong>.</p>
+          <p style="margin:0;"><strong>Do not use these numbers to make a decision about your coverage.</strong> For your real plan, use the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or call 1‑800‑MEDICARE (TTY 1‑877‑486‑2048).</p>
+        </div>
+
+        <!-- Page-local provenance line: it must be able to say "sample" while the
+             dataset is sample, which the shared provenance-strip partial cannot. -->
+        <p class="datasource" id="pd-provenance" data-verified="{{DATA_UPDATED}}">
+          <span class="badge badge--warn">Sample data — not real plan figures</span>
+          <span class="badge badge--neutral">Built to match the CMS Landscape &amp; Crosswalk layout</span>
+        </p>
 
         <form id="plandiff-form" novalidate>
           <div class="field-row field-row--2">
             <div class="field">
               <label for="f-state">1. Your state</label>
-              <select class="input" id="f-state" name="state">
-                <option value="">Select your state…</option>
+              <select class="input" id="f-state" name="state" disabled>
+                <option value="">Loading the plan list…</option>
               </select>
+              <span class="hint" id="pd-coverage">This checker covers a limited list of counties. If yours is not listed, use the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or call 1‑800‑MEDICARE.</span>
             </div>
             <div class="field">
               <label for="f-county">2. Your county</label>
@@ -69,11 +87,14 @@ changefreq: weekly
 
         <!-- Error state -->
         <p class="error-text" id="plandiff-error" role="alert" hidden></p>
+        <p id="plandiff-retry" style="margin:0.6rem 0 0;" hidden><button class="btn btn--ghost" id="pd-retry" type="button">Try loading the data again</button></p>
 
         <!-- Result -->
         <div class="result" id="plandiff-results" hidden>
           <div class="result__head" id="pd-headline">Your plan comparison</div>
           <div class="result__body">
+            <!-- Travels with the numbers, including onto the printed page. -->
+            <p id="pd-sample-inline" style="margin:0 0 0.9rem;font-weight:700;">Sample numbers — these figures are made up to show how the tool works. They are not your plan's real numbers.</p>
             <p style="margin:0 0 0.75rem;"><span class="badge badge--neutral" id="pd-status">Status</span></p>
             <div class="grid grid--2" style="gap:1rem;margin-bottom:0.5rem;">
               <div>
@@ -103,8 +124,9 @@ changefreq: weekly
                 <tbody id="pd-tbody"></tbody>
               </table>
             </div>
+            <ul id="pd-notes" style="margin:1.1rem 0 0;padding-left:1.2rem;" hidden></ul>
             <p style="margin:1.1rem 0 0;"><button class="btn btn--ghost" id="pd-print" type="button"><svg class="icon" aria-hidden="true" focusable="false"><use href="#ic-doc-gov" xlink:href="#ic-doc-gov"/></svg> Print or save these numbers</button></p>
-            <p class="muted" style="margin:1rem 0 0;font-size:0.95rem;">Red means the change costs you more or drops a benefit; green means it's in your favor. Always confirm on the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> before enrolling.</p>
+            <p class="muted" style="margin:1rem 0 0;font-size:0.95rem;">Red means the change costs you more or drops a benefit; green means it's in your favor. A change shown in plain dark text — such as a switch from PPO to HMO — is neither, but it still matters: read it. Always confirm on the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> before enrolling.</p>
           </div>
         </div>
         <p class="visually-hidden" id="pd-live" aria-live="polite"></p>
@@ -179,7 +201,7 @@ changefreq: weekly
     <details class="faq">
       <summary>Why don't I see 2027 numbers yet?</summary>
       <div class="faq__body">
-        <p>CMS releases the {{COLA_PROJECTED_YEAR}} Landscape and Crosswalk files in late September or early October. Until the official files are published, this tool runs on a structurally identical sample dataset so you can see exactly how the comparison works. The moment CMS posts the real files, we load them and the numbers become live. See <a href="/how-it-works">How it works</a>.</p>
+        <p>CMS releases the <span data-year-next>2027</span> Landscape and Crosswalk files in late September or early October. Until the official files are published, this tool runs on a structurally identical sample dataset so you can see exactly how the comparison works. The moment CMS posts the real files, we load them and the numbers become live. See <a href="/how-it-works">How it works</a>.</p>
       </div>
     </details>
   </div>
