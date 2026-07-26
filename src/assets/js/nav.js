@@ -19,6 +19,16 @@
       }
     });
 
+    // Close when the page behind it is tapped. While open, the header plus the
+    // panel can cover the whole viewport on a small screen and swallow every
+    // pointer event, so "tap away to dismiss" has to work.
+    document.addEventListener("click", function (e) {
+      if (!nav.classList.contains("is-open")) return;
+      if (e.target.closest(".site-header")) return;
+      nav.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+    });
+
     // Close on Escape.
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && nav.classList.contains("is-open")) {
