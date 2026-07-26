@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseCsv, toRows, deriveAep } from "../scripts/build-aep-data.mjs";
@@ -100,6 +100,27 @@ test("a malformed date is rejected rather than rendered as-is", () => {
   assert.throws(() => derive(row({ window_start: "15-10-2026" })), /must be an ISO date/);
   assert.throws(() => derive(row({ window_start: "" })), /must be an ISO date/);
   assert.throws(() => derive(row({ window_start: "2026-13-01" })), /not a real date/);
+});
+
+/* The defect these guard against: markup that looks data-bound but is not.
+   `data-year-*` spans are only rewritten by plan-diff.js, which loads on the
+   plan tool page alone — so on every other page the fallback text was the
+   number people actually read, frozen at whatever year it was typed in. */
+const pageFiles = readdirSync(PAGES).filter((f) => f.endsWith(".html"));
+
+test("no page hardcodes a year inside a data-year span", () => {
+  const offenders = pageFiles.filter((f) =>
+    /data-year-[a-z]+>\s*\d{4}/.test(readFileSync(join(PAGES, f), "utf8"))
+  );
+  assert.deepEqual(offenders, [], `hardcoded year in a data-year span: ${offenders.join(", ")}`);
+});
+
+test("data-year spans only appear on pages that actually load plan-diff.js", () => {
+  const offenders = pageFiles.filter((f) => {
+    const src = readFileSync(join(PAGES, f), "utf8");
+    return src.includes("data-year-") && !/^scripts:.*plan-diff\.js/m.test(src);
+  });
+  assert.deepEqual(offenders, [], `data-year span with no script to fill it: ${offenders.join(", ")}`);
 });
 
 test("the AEP guide states no enrolment date except through the data layer", () => {
