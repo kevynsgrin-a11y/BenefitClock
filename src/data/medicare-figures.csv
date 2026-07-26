@@ -1,0 +1,5 @@
+year,part_b_premium,part_b_deductible,part_d_oop_cap,status,source_updated,source
+2023,164.90,226,,official,2022-09-27,CMS annual Medicare Parts A & B premiums and deductibles
+2024,174.70,240,,official,2023-10-12,CMS annual Medicare Parts A & B premiums and deductibles
+2025,185.00,257,2000,official,2024-11-08,CMS annual Medicare Parts A & B premiums and deductibles; Inflation Reduction Act Part D cap
+2026,202.90,283,2100,official,2025-11-14,CMS annual Medicare Parts A & B premiums and deductibles; Part D cap indexed annually
