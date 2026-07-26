@@ -159,6 +159,15 @@ function build() {
   } catch (err) {
     throw new Error(`Could not read src/data/medicare-figures.json — Part B and Part D figures come from it. (${err.message})`);
   }
+  /* The plan tool compares its own pair of years, which roll on the CMS
+     schedule — not with the COLA or the Part B figures. Borrowing any of those
+     tokens for plan-year copy would read wrong for weeks at each roll point. */
+  let planManifest;
+  try {
+    planManifest = JSON.parse(read(join(SRC, "data", "manifest.json")));
+  } catch (err) {
+    throw new Error(`Could not read src/data/manifest.json — the plan-comparison years come from it. (${err.message})`);
+  }
 
   const longDate = (iso) => {
     const [y, m, d] = String(iso || "").split("-").map(Number);
@@ -202,6 +211,10 @@ function build() {
     PART_B_DEDUCTIBLE: whole(requireFigure(figures.partBDeductible, "PART_B_DEDUCTIBLE", "Add the current year's part_b_deductible to src/data/medicare-figures.csv.")),
     PART_D_OOP_CAP: whole(requireFigure(figures.partDOopCap, "PART_D_OOP_CAP", "Add the current year's part_d_oop_cap to src/data/medicare-figures.csv.")),
     MEDICARE_FIGURES_YEAR: requireFigure(figures.currentYear, "MEDICARE_FIGURES_YEAR", "src/data/medicare-figures.csv has no official row."),
+
+    // Plan-comparison years, straight from the plan data the tool actually loads.
+    PLAN_YEAR_CURRENT: requireFigure(planManifest.currentYear, "PLAN_YEAR_CURRENT", "src/data/manifest.json has no currentYear — check scripts/build-plan-data.mjs."),
+    PLAN_YEAR_NEXT: requireFigure(planManifest.nextYear, "PLAN_YEAR_NEXT", "src/data/manifest.json has no nextYear — check scripts/build-plan-data.mjs."),
   };
 
   // Site-level tokens that front matter may also reference (titles, descriptions).
