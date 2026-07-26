@@ -3,7 +3,10 @@
    Progressive enhancement: the page is readable without JS; this makes the
    calculator live. No network calls, no tracking, nothing leaves the browser.
    ========================================================================== */
-import { projectBenefit, usd, usdCents, signedUsd } from "./lib/cola-core.js";
+import {
+  projectBenefit, usd, usdCents, signedUsd,
+  validateBenefit, validatePartB, validateColaPercent, roundColaPercent,
+} from "./lib/cola-core.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -56,6 +59,9 @@ ready(() => {
     partb: $("f-partb"),
     partbNext: $("f-partb-next"),
     benefitError: $("f-benefit-error"),
+    customError: $("f-cola-custom-error"),
+    partbError: $("f-partb-error"),
+    partbNextError: $("f-partb-next-error"),
     results: $("cola-results"),
     headline: $("r-headline"),
     newGross: $("r-new-gross"),
@@ -65,58 +71,140 @@ ready(() => {
     kept: $("r-kept"),
     colaEcho: $("r-cola-echo"),
     chart: $("cola-chart"),
+    legend: $("r-legend"),
+    printWrap: $("r-print-wrap"),
+    note: $("r-note"),
     print: $("r-print"),
     live: $("cola-live"),
   };
 
-  function effectiveCola() {
-    const preset = els.preset ? els.preset.value : "2.8";
-    if (preset === "custom") {
-      const v = parseFloat(els.custom && els.custom.value);
-      return Number.isFinite(v) ? v : 0;
-    }
-    return parseFloat(preset) || 0;
+  // Several of these elements carry a `display` rule in the stylesheet, which
+  // beats the browser's default [hidden] styling. Setting the inline style too
+  // keeps hiding reliable without depending on a CSS rule existing.
+  function setHidden(el, hide) {
+    if (!el) return;
+    el.hidden = !!hide;
+    el.style.display = hide ? "none" : "";
   }
 
-  function syncCustomVisibility() {
+  /* ---- Validation -------------------------------------------------------
+     Every field is checked before anything is drawn. A field we cannot read
+     is an error the person can see and a screen reader can hear — never a
+     silent fallback, because a confident wrong dollar figure is the worst
+     thing this page could show. */
+
+  function applyCheck(input, errorEl, check) {
+    if (input) input.setAttribute("aria-invalid", check.ok ? "false" : "true");
+    if (errorEl) {
+      if (!check.ok) errorEl.textContent = check.error;
+      setHidden(errorEl, check.ok);
+    }
+    return check;
+  }
+
+  function readForm() {
+    const benefit = applyCheck(els.benefit, els.benefitError, validateBenefit(els.benefit && els.benefit.value));
+    const partB = applyCheck(els.partb, els.partbError, validatePartB(els.partb && els.partb.value));
+    const partBNext = applyCheck(
+      els.partbNext, els.partbNextError,
+      validatePartB(els.partbNext && els.partbNext.value, { required: false })
+    );
+
+    const isCustom = !!els.preset && els.preset.value === "custom";
+    const cola = isCustom
+      ? validateColaPercent(els.custom && els.custom.value)
+      : { ok: true, value: roundColaPercent(parseFloat(els.preset ? els.preset.value : "0") || 0), error: null };
+    applyCheck(els.custom, els.customError, isCustom ? cola : { ok: true, value: cola.value, error: null });
+
+    return {
+      ok: benefit.ok && partB.ok && partBNext.ok && cola.ok,
+      firstInvalid: [
+        benefit.ok ? null : els.benefit,
+        isCustom && !cola.ok ? els.custom : null,
+        partB.ok ? null : els.partb,
+        partBNext.ok ? null : els.partbNext,
+      ].filter(Boolean)[0] || null,
+      priorGross: benefit.value,
+      colaPercent: cola.value,
+      priorPartB: partB.value,
+      newPartB: partBNext.value === null ? partB.value : partBNext.value,
+    };
+  }
+
+  function syncCustomVisibility(userInitiated) {
     if (!els.customWrap || !els.preset) return;
     const isCustom = els.preset.value === "custom";
-    els.customWrap.hidden = !isCustom;
-    if (isCustom && els.custom) els.custom.focus();
+    setHidden(els.customWrap, !isCustom);
+    /* WCAG 3.2.2: arrowing through the list must not yank focus out of it.
+       Only a pointer commit (clicking an option) moves focus; a keyboard user
+       reaches the field with Tab, which is the very next stop anyway. */
+    if (userInitiated && isCustom && presetIntent === "pointer" && els.custom) els.custom.focus();
   }
 
-  function num(el) {
-    if (!el) return 0;
-    const v = parseFloat(String(el.value).replace(/[^0-9.\-]/g, ""));
-    return Number.isFinite(v) ? v : 0;
+  /* The live region used to speak a full dollar sentence on every keystroke —
+     four announcements for "1847". Typing now settles first; a submit or a
+     menu choice is already a settled action, so those speak straight away. */
+  let liveTimer = null;
+  function announce(text, immediate) {
+    if (!els.live) return;
+    if (liveTimer) { clearTimeout(liveTimer); liveTimer = null; }
+    if (immediate) { els.live.textContent = text; return; }
+    liveTimer = setTimeout(() => { els.live.textContent = text; liveTimer = null; }, 900);
   }
 
-  function render() {
-    const priorGross = num(els.benefit);
+  /* No CSS rule keys off data-state, so an invalid entry has to blank the
+     figures itself. Leaving the last good numbers painted under a fresh error
+     is how someone ends up reading a dollar amount that answers nothing they
+     typed. */
+  function clearResults() {
+    if (els.results) els.results.setAttribute("data-state", "empty");
+    for (const el of [els.newGross, els.grossInc, els.newNet, els.netInc]) {
+      if (!el) continue;
+      el.textContent = "—";
+      el.classList.remove("figure__value--good", "figure__value--bad");
+    }
+    // The panel's title bar already reads "Your estimated raise"; this line is
+    // the answer sentence, so an empty state means no sentence.
+    if (els.headline) els.headline.textContent = "";
+    if (els.kept) els.kept.textContent = "Check the amounts above and we'll show your estimate here.";
+    if (els.chart) els.chart.innerHTML = "";
+    setHidden(els.legend, true);
+    setHidden(els.printWrap, true);
+    setHidden(els.note, true);
+    announce("", true);
+  }
 
-    // Validation: benefit must be a positive number.
-    const valid = priorGross > 0;
-    if (els.benefit) els.benefit.setAttribute("aria-invalid", valid ? "false" : "true");
-    if (els.benefitError) els.benefitError.hidden = valid || String(els.benefit.value).trim() === "";
+  function render(opts) {
+    const immediate = !!(opts && opts.immediate);
+    const silent = !!(opts && opts.silent);
+    const f = readForm();
 
-    if (!valid) {
-      if (els.results) els.results.setAttribute("data-state", "empty");
-      return;
+    if (!f.ok) {
+      clearResults();
+      return f;
     }
 
-    const colaPercent = effectiveCola();
+    const colaPercent = f.colaPercent;
     const r = projectBenefit({
-      priorGross,
+      priorGross: f.priorGross,
       colaPercent,
-      priorPartB: num(els.partb),
-      newPartB: els.partbNext && String(els.partbNext.value).trim() !== "" ? num(els.partbNext) : num(els.partb),
+      priorPartB: f.priorPartB,
+      newPartB: f.newPartB,
     });
 
     if (els.results) els.results.setAttribute("data-state", "ready");
+    setHidden(els.legend, false);
+    setHidden(els.printWrap, false);
+    setHidden(els.note, false);
     if (els.colaEcho) els.colaEcho.textContent = `${colaPercent.toFixed(1)}%`;
 
     if (els.newGross) els.newGross.textContent = usd(r.newGross);
-    if (els.grossInc) els.grossInc.textContent = signedUsd(r.grossIncrease);
+    if (els.grossInc) {
+      els.grossInc.textContent = signedUsd(r.grossIncrease);
+      // Colour follows the sign, so a fall never renders in the "good" green.
+      els.grossInc.classList.toggle("figure__value--good", r.grossIncrease > 0);
+      els.grossInc.classList.toggle("figure__value--bad", r.grossIncrease < 0);
+    }
     if (els.newNet) els.newNet.textContent = usdCents(r.newNet);
     if (els.netInc) {
       els.netInc.textContent = signedUsd(r.netIncrease, true);
@@ -142,28 +230,45 @@ ready(() => {
         : keep < 0
           ? `Your monthly deposit falls about ${usd(-keep)} after Part B.`
           : `Your monthly deposit stays about the same after Part B.`;
-      els.headline.textContent = `${lead} A ${colaPercent.toFixed(1)}% COLA lifts a ${usd(priorGross)} benefit to about ${usd(r.newGross)} before Part B.`;
+      els.headline.textContent = `${lead} A ${colaPercent.toFixed(1)}% COLA lifts a ${usd(f.priorGross)} benefit to about ${usd(r.newGross)} before Part B.`;
     }
-    if (els.live) {
-      els.live.textContent = `Estimated new gross benefit ${usd(r.newGross)} per month; net deposit ${usdCents(r.newNet)} after the Part B premium.`;
+    if (!silent) {
+      announce(
+        `Estimated new gross benefit ${usd(r.newGross)} per month; net deposit ${usdCents(r.newNet)} after the Part B premium.`,
+        immediate
+      );
     }
     if (els.chart) els.chart.innerHTML = flowChart(r);
+    return f;
+  }
+
+  // How the last change to the preset menu arrived, so focus is only moved on
+  // a deliberate pick — never while someone is arrowing down the list.
+  let presetIntent = "keyboard";
+  if (els.preset) {
+    els.preset.addEventListener("pointerdown", () => { presetIntent = "pointer"; });
+    els.preset.addEventListener("keydown", () => { presetIntent = "keyboard"; });
   }
 
   // Wire events — live updates on any change.
-  form.addEventListener("input", render);
+  form.addEventListener("input", () => render());
   form.addEventListener("change", (e) => {
-    if (e.target === els.preset) syncCustomVisibility();
-    render();
+    if (e.target === els.preset) syncCustomVisibility(true);
+    render({ immediate: true });
   });
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    render();
+    const f = render({ immediate: true });
+    if (!f.ok) {
+      if (f.firstInvalid) f.firstInvalid.focus();
+      return;
+    }
     if (els.results) els.results.scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
 
   if (els.print) els.print.addEventListener("click", () => window.print());
 
-  syncCustomVisibility();
-  render();
+  // First paint: fill the panel, but say nothing — nobody asked a question yet.
+  syncCustomVisibility(false);
+  render({ immediate: true, silent: true });
 });

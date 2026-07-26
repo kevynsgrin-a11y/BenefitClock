@@ -1,6 +1,6 @@
 <!--
-title: Plain-Language Guides to Social Security & Medicare | BenefitDial
-description: Clear, jargon-free guides to the 2027 Social Security COLA, Medicare Open Enrollment, what changed across Medicare, and how Part B affects your raise.
+title: Guides to Social Security & Medicare | BenefitDial
+description: Clear, jargon-free guides to the {{COLA_PROJECTED_YEAR}} Social Security COLA, Medicare Open Enrollment, what changed across Medicare, and how Part B affects your raise.
 slug: guides
 nav: guides
 ogtype: website
@@ -19,6 +19,7 @@ changefreq: monthly
 
 <section class="section" style="padding-top:1.75rem;">
   <div class="wrap">
+    <h2 class="visually-hidden">The guides</h2>
     <div class="grid grid--2">
       <a class="card card--link" href="/guides/2027-social-security-cola">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-coins-up" xlink:href="#ic-coins-up"/></svg></div>
@@ -35,7 +36,7 @@ changefreq: monthly
       <a class="card card--link" href="/guides/what-changed-medicare-2027">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-doc-gov" xlink:href="#ic-doc-gov"/></svg></div>
         <h3>What changed across Medicare for {{COLA_PROJECTED_YEAR}}</h3>
-        <p class="muted">Fewer plans on the shelf, formulary shifts, and the $2,000 Part D drug-cost cap — the big picture in plain language, straight from public CMS files.</p>
+        <p class="muted">Fewer plans on the shelf, formulary shifts, and the yearly Part D drug-cost cap — ${{PART_D_OOP_CAP}} in {{MEDICARE_FIGURES_YEAR}} — in plain language, straight from public CMS files.</p>
         <span class="badge badge--info">Read the guide →</span>
       </a>
       <a class="card card--link" href="/guides/part-b-premium-and-your-cola">
@@ -98,11 +99,11 @@ changefreq: monthly
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   "name": "Plain-language guides to Social Security & Medicare",
-  "description": "Clear, jargon-free guides to the 2027 Social Security COLA, Medicare Open Enrollment, what changed across Medicare, and how Part B affects your raise.",
+  "description": "Clear, jargon-free guides to the {{COLA_PROJECTED_YEAR}} Social Security COLA, Medicare Open Enrollment, what changed across Medicare, and how Part B affects your raise.",
   "hasPart": [
-    { "@type": "Article", "name": "The 2027 Social Security COLA, explained", "url": "{{SITE_URL}}/guides/2027-social-security-cola" },
+    { "@type": "Article", "name": "The {{COLA_PROJECTED_YEAR}} Social Security COLA, explained", "url": "{{SITE_URL}}/guides/2027-social-security-cola" },
     { "@type": "Article", "name": "Medicare Open Enrollment 2026: dates & how it works", "url": "{{SITE_URL}}/guides/medicare-aep-2026" },
-    { "@type": "Article", "name": "What changed across Medicare for 2027", "url": "{{SITE_URL}}/guides/what-changed-medicare-2027" },
+    { "@type": "Article", "name": "What changed across Medicare for {{COLA_PROJECTED_YEAR}}", "url": "{{SITE_URL}}/guides/what-changed-medicare-2027" },
     { "@type": "Article", "name": "How Medicare Part B eats into your COLA", "url": "{{SITE_URL}}/guides/part-b-premium-and-your-cola" }
   ]
 }
@@ -122,9 +123,9 @@ changefreq: monthly
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "Are these guides financial or medical advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. They are general education written in plain English and never recommend a specific plan. For your own coverage decisions, use the official Medicare Plan Finder, call 1-800-MEDICARE, or talk with a free local SHIP counselor." } },
-    { "@type": "Question", "name": "Where do the numbers in these guides come from?", "acceptedAnswer": { "@type": "Answer", "text": "From public-domain government files: CMS Landscape, Crosswalk, and Plan Benefit Package files for Medicare; the BLS CPI-W series for inflation; and the SSA for the official COLA." } },
-    { "@type": "Question", "name": "Will reading a guide sign me up for anything?", "acceptedAnswer": { "@type": "Answer", "text": "No. There is no form, login, or phone number. BenefitDial is not a broker or agent, takes no commissions, captures no personal information, and is supported only by display ads." } }
+    { "@type": "Question", "name": "Are these guides financial or medical advice?", "acceptedAnswer": { "@type": "Answer", "text": "No. They're general education, written to help you understand the benefits season in plain English. They are not financial, legal, or medical advice, and they never tell you which plan to pick. For decisions about your own coverage, use the official Medicare Plan Finder, call 1-800-MEDICARE, or talk with your free local State Health Insurance Assistance Program (SHIP) counselor." } },
+    { "@type": "Question", "name": "Where do the numbers in these guides come from?", "acceptedAnswer": { "@type": "Answer", "text": "All of them come from public-domain government files: the CMS Landscape, Crosswalk, and Plan Benefit Package files for Medicare; the BLS CPI-W series for inflation; and the SSA for the official COLA. We don't add our own spin, and we don't get paid to feature any plan. See How it works & data sources." } },
+    { "@type": "Question", "name": "Will reading a guide sign me up for anything?", "acceptedAnswer": { "@type": "Answer", "text": "No. There's no form, no login, and no phone number to give. BenefitDial isn't a broker or agent — we take no commissions, capture no personal information, and sell no leads. The site is free and supported only by display ads. Read our privacy pledge." } }
   ]
 }
 </script>

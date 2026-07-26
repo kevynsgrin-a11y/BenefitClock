@@ -60,6 +60,26 @@ scripts/                 # build.mjs, build-*-data.mjs, serve.mjs, verify-browse
 tests/                   # node --test unit tests
 ```
 
+### The build fails fast on purpose
+
+Every figure the pages quote about someone's money comes from the data layer, and
+the build refuses to substitute a plausible-looking literal when the data stops
+carrying one. `npm run build` exits non-zero — it does not warn — when:
+
+- **a required figure is missing**: the confirmed or projected COLA, the COLA
+  announcement date, the Part B premium/deductible, or the Part D cap. The
+  historical failure this prevents: promoting the projection to `official` in
+  `cola-history.csv` without adding the *next* year's projection row used to
+  leave the site quoting the previous estimate (`3.6%`) in 41 places, including
+  "A 3.6% COLA on a $2,000 benefit adds about $72 a month". Build exited 0 and
+  every test passed. Now it stops, and the error names the CSV row to add.
+- **a `{{TOKEN}}` survives into the output**, which would otherwise ship literal
+  braces in front of a reader.
+- **`SITE_URL` is not an absolute origin.** It must include the scheme —
+  `https://benefitdial.com`, not `benefitdial.com`. A protocol-less value used to
+  build cleanly while emitting relative canonicals and `og:image`, non-absolute
+  sitemap `<loc>` entries and broken JSON-LD `@id`s.
+
 ## Data sources (all public domain)
 
 | Source | Powers | Cadence |
@@ -69,10 +89,36 @@ tests/                   # node --test unit tests
 | CMS **PUF / PBP** files | Drug tiers, deductibles, supplemental benefits | Monthly / annual |
 | BLS **CPI-W** (`CWUR0000SA0`) | COLA calculation | Monthly |
 | SSA **COLA** announcement | Confirmed COLA figure | Announced Oct 14, 2026 |
+| CMS **Parts A & B premiums and deductibles** fact sheet | Part B standard premium + annual deductible | Published Nov, effective Jan 1 |
+| CMS **Part D redesign / annual parameters** | Part D out-of-pocket cap (IRA; indexed annually) | Annual |
 
 ### Updating the data each fall
 
-- **COLA:** edit `src/data/cola-history.csv` after the SSA announcement, then rebuild.
+Three data sets make up the whole annual update. Every CSV below is committed;
+the JSON they produce is generated and gitignored.
+
+- **COLA — `src/data/cola-history.csv`.** After the SSA announcement, promote the
+  estimate row to `status=official` **and add a new `status=projected` row for the
+  following year**, with its `source`. Both steps are required: the build now
+  *fails* when there is no projected row rather than silently reusing the previous
+  year's estimate in money copy. The error message names the row to add.
+- **Statutory Medicare figures — `src/data/medicare-figures.csv`.** One row per
+  year carrying `part_b_premium`, `part_b_deductible` and `part_d_oop_cap`. All
+  three are **indexed annually**, so none of them may be typed into page markup;
+  pages reference `{{PART_B_PREMIUM}}`, `{{PART_B_DEDUCTIBLE}}`,
+  `{{PART_D_OOP_CAP}}` and `{{MEDICARE_FIGURES_YEAR}}` instead. Add the new row
+  each November with `status=official` and the publication date in
+  `source_updated`; `scripts/build-medicare-figures.mjs` takes the latest official
+  row as current. The build fails if that row has no Part B premium.
+
+  > **Caveat — the 2026 row wants one primary-source confirmation.** `$202.90` (Part B
+  > standard premium) and `$2,100` (Part D cap) were corroborated only through web
+  > search across independent secondary sources — direct fetches to cms.gov,
+  > medicare.gov and federalregister.gov returned 403 from the environment the
+  > figures were gathered in, so no government page was read first-hand. Before
+  > relying on them in production, check the CMS "Medicare Parts A & B Premiums
+  > and Deductibles" fact sheet and the CMS Part D annual parameters directly, and
+  > correct the row if they differ.
 - **Medicare plans:** drop the real CMS CSVs into `src/data/` as
   `landscape-current.csv`, `landscape-next.csv`, and `crosswalk.csv`, then rebuild.
   `scripts/build-plan-data.mjs` ingests them automatically. **Until those files are
@@ -84,11 +130,22 @@ tests/                   # node --test unit tests
 
 - **Build command:** `npm run build`
 - **Build output directory:** `dist`
-- **Environment:** set `SITE_URL` to the production origin (defaults to
-  `https://benefitdial.com`) so canonical URLs, the sitemap, and `robots.txt` are correct.
+- **Environment:** set `SITE_URL` to the production **origin including the scheme**
+  (`https://benefitdial.com` — the default). A protocol-less value is rejected by
+  the build, because it would otherwise emit relative canonicals and `og:image`,
+  non-absolute sitemap `<loc>` entries, and broken JSON-LD `@id`s while exiting 0.
 
 `_headers` sets security headers (HSTS, `X-Content-Type-Options`, a restrictive
 `Permissions-Policy`, etc.) and cache policies. `_redirects` maps friendly aliases.
+
+**Cache policy note.** Assets are *not* content-hashed — `/assets/css/site.css`
+keeps its URL forever — so `/assets/*` and `/data/*` are served
+`max-age=0, must-revalidate`: bytes stay in cache, but every request revalidates,
+so an unchanged file costs a 304 and a changed one can never lag the HTML that
+references it. The previous `stale-while-revalidate=604800` meant a returning
+visitor could get up to **8 days** of new HTML rendered against old CSS. If asset
+filenames ever gain content hashes, switch those blocks to
+`max-age=31536000, immutable` (there is a note in `_headers` at the spot).
 
 There are two ways to deploy; either alone is sufficient:
 
@@ -98,9 +155,35 @@ There are two ways to deploy; either alone is sufficient:
    wrangler on every push to `main`, independent of the Git integration. Enable it
    by adding two repository secrets: `CLOUDFLARE_API_TOKEN` (Pages: Edit permission)
    and `CLOUDFLARE_ACCOUNT_ID`; optionally set the `CLOUDFLARE_PAGES_PROJECT`
-   repository variable if the Pages project isn't named `benefitdial`. Until the
-   secrets exist, the workflow validates the build and skips the deploy step
-   with a notice.
+   repository variable if the Pages project isn't named `benefitdial`, and
+   `SITE_URL` if the origin isn't `https://benefitdial.com`.
+
+   **If those secrets are missing the workflow fails.** It used to finish green
+   with only a `::notice`, which meant `main` showed a passing check while
+   production kept serving the previous build. If you do not want CI deploys yet,
+   disable the workflow (Settings → Actions) rather than leaving it reporting a
+   success it never performed.
+
+### How CI gates the deploy
+
+`deploy.yml` does not duplicate the checks — it *calls* `ci.yml` as a reusable
+workflow (`verify`), and its `deploy` job `needs: verify`. So:
+
+- a red CI genuinely blocks production, instead of racing it in a parallel workflow;
+- there is one gate definition, so deploy's checks cannot drift out of sync with
+  CI's (deploy's copy had already lost the COLA-calculator / plan-diff page
+  existence checks and the unresolved-`{{`-token grep);
+- both use the Node version in `.nvmrc`, not one pinned literal each;
+- checkout uses `fetch-depth: 0`, because sitemap `<lastmod>` is read from
+  `git log -1 --format=%cs` per page and is omitted entirely at depth 1;
+- `verify` uploads the `dist/` it validated and `deploy` downloads *that*
+  artifact, so the bytes published are the bytes that passed.
+
+The gate is: unit tests, a clean build, the five must-exist output files, ≥13
+pages, no unresolved `{{TOKEN}}` in the emitted HTML, and a check that every
+internal `href`/`src` in the built pages resolves to a real file — which is what
+catches a typo'd `slug:` that still produces 13 pages while the nav link to one
+of them 404s.
 
 ## Monetization & compliance stance
 

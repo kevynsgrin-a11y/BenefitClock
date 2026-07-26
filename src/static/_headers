@@ -8,14 +8,44 @@
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), interest-cohort=()
+  # Permissions-Policy: every token below was checked with
+  # document.featurePolicy.allowsFeature() in Chromium and reports false. One
+  # unparseable directive silently voids the WHOLE header, so re-measure after
+  # editing this line rather than eyeballing it. interest-cohort (FLoC) is
+  # retired but harmless to keep. The interest-based-advertising family is
+  # denied because the site's own copy promises it never sells or shares visitor
+  # data; when an ad network is switched on, relax only the tokens that network
+  # genuinely needs, deliberately, rather than dropping the whole group.
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), interest-cohort=(), browsing-topics=(), join-ad-interest-group=(), run-ad-auction=(), attribution-reporting=(), shared-storage=(), private-aggregation=()
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Cross-Origin-Opener-Policy: same-origin
 
-# Long-cache fingerprint-free static assets (safe: content is stable, cheap to purge).
+# Assets are NOT content-hashed: /assets/css/site.css keeps the same URL across
+# every deploy. That makes a cache grace period a correctness bug rather than a
+# perf win — a returning visitor gets new HTML with whatever CSS/JS their cache
+# still holds. The previous policy here (max-age=86400 +
+# stale-while-revalidate=604800) served a stale stylesheet for up to 8 days:
+# rebuilding the last release's HTML against the prior CSS put the footer legal
+# disclaimer at 2.19:1 instead of 7.62:1, so shipped WCAG fixes stayed invisible
+# to exactly the returning readers they were written for. CI cannot catch it,
+# because a cold cache always gets the new CSS.
+#
+# max-age=0, must-revalidate keeps the bytes in cache but forces a conditional
+# request, so an unchanged asset costs a 304 and a changed one can never lag the
+# HTML that references it. Cloudflare Pages applies the same default policy to
+# HTML, which is the point: a document and its subresources share one freshness
+# lifetime and can never be mixed across deploys.
+#
+# The real unlock is content-hashed asset filenames (site.<hash>.css). Once
+# build.mjs emits those, this block should become
+# `Cache-Control: public, max-age=31536000, immutable` on the hashed paths.
 /assets/*
-  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+  Cache-Control: public, max-age=0, must-revalidate
 
-# Data JSON refreshes each fall — keep it short.
+# Same reasoning for the generated JSON: its shape is defined by the parser in
+# /assets/js, so a cached payload must never outlive the code that reads it.
+# (plan-diff.js currently fetches with cache:"no-store", which bypasses this
+# header entirely — if that is ever relaxed, this is what keeps data and parser
+# on the same deploy.)
 /data/*
-  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Cache-Control: public, max-age=0, must-revalidate

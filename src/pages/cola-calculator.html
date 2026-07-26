@@ -1,6 +1,6 @@
 <!--
-title: 2027 Social Security COLA Calculator | BenefitDial
-description: Estimate your 2027 Social Security increase from the projected COLA, then subtract your Medicare Part B premium to see the raise you actually keep.
+title: {{COLA_PROJECTED_YEAR}} Social Security COLA Calculator | BenefitDial
+description: Estimate your {{COLA_PROJECTED_YEAR}} Social Security increase from the projected COLA, then subtract your Medicare Part B premium to see the raise you actually keep.
 slug: cola-calculator
 nav: cola
 scripts: cola.js
@@ -38,7 +38,7 @@ changefreq: weekly
                        value="2000" autocomplete="off" aria-describedby="f-benefit-hint f-benefit-error">
               </div>
               <span class="hint" id="f-benefit-hint">This is your gross benefit — the amount before Medicare Part B is taken out. You'll find it on your SSA benefit statement.</span>
-              <p class="error-text" id="f-benefit-error" hidden>Please enter your benefit amount as a positive number.</p>
+              <p class="error-text" id="f-benefit-error" hidden>Please enter your current monthly benefit.</p>
             </div>
 
             <div class="field">
@@ -48,12 +48,15 @@ changefreq: weekly
                 <option value="{{COLA_CONFIRMED}}">{{COLA_CONFIRMED_YEAR}} confirmed COLA — {{COLA_CONFIRMED}}%</option>
                 <option value="custom">Enter my own percentage…</option>
               </select>
-              <span class="hint">The {{COLA_PROJECTED_YEAR}} figure is an early estimate. The official COLA is announced on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>.</span>
-              <div id="cola-custom-wrap" hidden style="margin-top:0.75rem;">
+              <span class="hint">The {{COLA_PROJECTED_YEAR}} figure is an early estimate. The official COLA is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>.</span>
+              <div class="field" id="cola-custom-wrap" hidden style="margin:0.75rem 0 0;">
+                <label for="f-cola-custom">Your own COLA percentage</label>
                 <div class="input-group">
-                  <input class="input" id="f-cola-custom" type="text" inputmode="decimal" value="3.6" aria-label="Custom COLA percentage">
+                  <input class="input" id="f-cola-custom" type="text" inputmode="decimal" value="{{COLA_PROJECTED}}" autocomplete="off" aria-describedby="f-cola-custom-hint f-cola-custom-error">
                   <span class="input-group__addon" style="border-radius:0 10px 10px 0;border-left:0;border-right:2px solid var(--bc-line);" aria-hidden="true">%</span>
                 </div>
+                <span class="hint" id="f-cola-custom-hint">Enter a number from 0 to 20 — for example 2.8. We round to one decimal place, the way Social Security does.</span>
+                <p class="error-text" id="f-cola-custom-error" hidden>Please enter a COLA percentage, like 2.8.</p>
               </div>
             </div>
           </div>
@@ -63,18 +66,20 @@ changefreq: weekly
               <label for="f-partb">Your current Medicare Part B premium</label>
               <div class="input-group">
                 <span class="input-group__addon" aria-hidden="true">$</span>
-                <input class="input" id="f-partb" name="partb" type="text" inputmode="decimal" value="185.00" autocomplete="off" aria-describedby="f-partb-hint">
+                <input class="input" id="f-partb" name="partb" type="text" inputmode="decimal" value="{{PART_B_PREMIUM}}" autocomplete="off" aria-describedby="f-partb-hint f-partb-error">
               </div>
-              <span class="hint" id="f-partb-hint">Most people pay the standard amount, which CMS sets each fall. Edit this to match what's withheld from your check.</span>
+              <span class="hint" id="f-partb-hint">The standard premium for {{MEDICARE_FIGURES_YEAR}} is ${{PART_B_PREMIUM}} a month, and that is what we start with. People with higher incomes pay more. Some people pay less, and a few pay nothing. Change it to match what comes out of your check.</span>
+              <p class="error-text" id="f-partb-error" hidden>Please enter your Part B premium, or 0 if nothing is withheld.</p>
             </div>
 
             <div class="field">
               <label for="f-partb-next">Next year's Part B premium <span class="muted">(optional)</span></label>
               <div class="input-group">
                 <span class="input-group__addon" aria-hidden="true">$</span>
-                <input class="input" id="f-partb-next" name="partbNext" type="text" inputmode="decimal" placeholder="Leave blank if unknown" autocomplete="off" aria-describedby="f-partb-next-hint">
+                <input class="input" id="f-partb-next" name="partbNext" type="text" inputmode="decimal" placeholder="Leave blank if unknown" autocomplete="off" aria-describedby="f-partb-next-hint f-partb-next-error">
               </div>
               <span class="hint" id="f-partb-next-hint">If Part B goes up, it eats into your raise. Leave blank to assume it stays the same.</span>
+              <p class="error-text" id="f-partb-next-error" hidden>Please use numbers only, like 202.90.</p>
             </div>
           </div>
 
@@ -82,8 +87,12 @@ changefreq: weekly
         </form>
 
         <div class="result" id="cola-results" data-state="ready">
-          <div class="result__head" id="r-headline">Your estimated raise</div>
+          <div class="result__head">Your estimated raise</div>
           <div class="result__body">
+            <!-- The plain-language answer belongs in the body, not the title
+                 bar: .result__head is reversed out on teal, which clipped the
+                 sentence and printed at 2.30:1. -->
+            <p class="result__headline" id="r-headline"></p>
             <div class="figure-row">
               <div class="figure">
                 <div class="figure__label">New monthly benefit (gross)</div>
@@ -92,7 +101,7 @@ changefreq: weekly
               </div>
               <div class="figure">
                 <div class="figure__label">Monthly raise</div>
-                <div class="figure__value figure__value--good" id="r-gross-increase">—</div>
+                <div class="figure__value" id="r-gross-increase">—</div>
                 <div class="figure__sub">gross increase</div>
               </div>
               <div class="figure">
@@ -107,13 +116,13 @@ changefreq: weekly
               </div>
             </div>
             <div id="cola-chart" class="bc-chart" style="max-width:none;margin:1.4rem 0 0.25rem;" aria-hidden="true"></div>
-            <div class="bc-legend" aria-hidden="true">
+            <div class="bc-legend" id="r-legend" aria-hidden="true">
               <span><i class="keep"></i> Deposited to you</span>
               <span><i class="partb"></i> Withheld for Medicare Part B</span>
             </div>
             <p style="margin:1.1rem 0 0;" id="r-kept"></p>
-            <p style="margin:1rem 0 0;"><button class="btn btn--ghost" id="r-print" type="button"><svg class="icon" aria-hidden="true" focusable="false"><use href="#ic-doc-gov" xlink:href="#ic-doc-gov"/></svg> Print or save these numbers</button></p>
-            <p class="muted" style="margin:0.5rem 0 0;font-size:0.95rem;">Based on a <strong id="r-cola-echo">3.6%</strong> COLA. Estimates only; SSA rounds your monthly benefit down to the next whole dollar and your exact figures depend on your benefit and Part B amount.</p>
+            <p style="margin:1rem 0 0;" id="r-print-wrap"><button class="btn btn--ghost" id="r-print" type="button"><svg class="icon" aria-hidden="true" focusable="false"><use href="#ic-doc-gov" xlink:href="#ic-doc-gov"/></svg> Print or save these numbers</button></p>
+            <p class="muted" id="r-note" style="margin:0.5rem 0 0;font-size:0.95rem;">Based on a <strong id="r-cola-echo">{{COLA_PROJECTED}}%</strong> COLA. Estimates only; SSA rounds your monthly benefit down to the next whole dollar and your exact figures depend on your benefit and Part B amount.</p>
           </div>
         </div>
         <p class="visually-hidden" id="cola-live" aria-live="polite"></p>
@@ -130,7 +139,7 @@ changefreq: weekly
       <a class="card card--link" href="/key-dates">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-calendar-check" xlink:href="#ic-calendar-check"/></svg></div>
         <h3>Key dates for this fall</h3>
-        <p class="muted">The COLA is announced {{COLA_ANNOUNCE_DATE_LONG}}. Medicare Open Enrollment runs Oct 15 – Dec 7. Here's the full calendar.</p>
+        <p class="muted">The COLA is expected {{COLA_ANNOUNCE_DATE_LONG}}. Medicare Open Enrollment runs Oct 15 – Dec 7. Here's the full calendar.</p>
         <span class="badge badge--info">See the timeline →</span>
       </a>
     </div>
@@ -142,7 +151,7 @@ changefreq: weekly
     <h2>How the COLA and Part B work together</h2>
     <p>Each year, Social Security benefits rise by a <strong>cost-of-living adjustment (COLA)</strong> tied to inflation. But the headline percentage isn't the whole story. Two things determine what you actually keep:</p>
     <ul>
-      <li><strong>The gross raise</strong> — your benefit multiplied by the COLA. A {{COLA_PROJECTED}}% COLA on a $2,000 benefit adds about $72 a month before anything is taken out.</li>
+      <li><strong>The gross raise</strong> — your benefit multiplied by the COLA. Put your own benefit in the calculator above to see what the {{COLA_PROJECTED}}% estimate adds each month before anything is taken out.</li>
       <li><strong>Your Medicare Part B premium</strong> — for most people this is deducted straight from the Social Security check. When Part B rises, it quietly claws back part of the raise. In some years, a higher Part B premium has eaten up half of a retiree's COLA increase.</li>
     </ul>
 
@@ -162,7 +171,7 @@ changefreq: weekly
     <details class="faq">
       <summary>When is the {{COLA_PROJECTED_YEAR}} COLA officially announced?</summary>
       <div class="faq__body">
-        <p>The Social Security Administration announces the official COLA right after the Bureau of Labor Statistics releases September inflation data. For the {{COLA_PROJECTED_YEAR}} adjustment, that release is scheduled for <strong>{{COLA_ANNOUNCE_DATE_LONG}} at 8:30&nbsp;a.m. ET</strong>. Until then, the {{COLA_PROJECTED}}% figure is an early projection, not a guarantee.</p>
+        <p>The Social Security Administration announces the official COLA right after the Bureau of Labor Statistics releases September inflation data, normally at 8:30&nbsp;a.m. ET. For the {{COLA_PROJECTED_YEAR}} adjustment that is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, but the date can move: the {{COLA_CONFIRMED_YEAR}} COLA was not announced until {{COLA_CONFIRMED_ANNOUNCED_LONG}}. Until then, the {{COLA_PROJECTED}}% figure is an early projection, not a guarantee.</p>
       </div>
     </details>
 
@@ -176,7 +185,7 @@ changefreq: weekly
     <details class="faq">
       <summary>Why does my raise look smaller after Part B?</summary>
       <div class="faq__body">
-        <p>Because Medicare Part B is usually withheld from your Social Security payment. If your gross benefit goes up 3.6% but your Part B premium also rises, the increase to your <em>deposit</em> is smaller than the headline COLA. That gap is exactly what this tool makes visible.</p>
+        <p>Because Medicare Part B is usually withheld from your Social Security payment. If your gross benefit goes up {{COLA_PROJECTED}}% but your Part B premium also rises, the increase to your <em>deposit</em> is smaller than the headline COLA. That gap is exactly what this tool makes visible.</p>
       </div>
     </details>
 
@@ -205,9 +214,10 @@ changefreq: weekly
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "When is the 2027 Social Security COLA announced?", "acceptedAnswer": { "@type": "Answer", "text": "The SSA announces the official COLA after the BLS September CPI-W release, scheduled for October 14, 2026 at 8:30 a.m. ET." } },
-    { "@type": "Question", "name": "How is the Social Security COLA calculated?", "acceptedAnswer": { "@type": "Answer", "text": "The COLA equals the percentage increase in the average CPI-W for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth of a percent." } },
-    { "@type": "Question", "name": "Why is my raise smaller after Medicare Part B?", "acceptedAnswer": { "@type": "Answer", "text": "Medicare Part B premiums are usually withheld from your Social Security payment, so when Part B rises it reduces the net increase to your deposit." } }
+    { "@type": "Question", "name": "When is the {{COLA_PROJECTED_YEAR}} COLA officially announced?", "acceptedAnswer": { "@type": "Answer", "text": "The Social Security Administration announces the official COLA right after the Bureau of Labor Statistics releases September inflation data, normally at 8:30 a.m. ET. For the {{COLA_PROJECTED_YEAR}} adjustment that is expected on {{COLA_ANNOUNCE_DATE_LONG}}, but the date can move: the {{COLA_CONFIRMED_YEAR}} COLA was not announced until {{COLA_CONFIRMED_ANNOUNCED_LONG}}. Until then, the {{COLA_PROJECTED}}% figure is an early projection, not a guarantee." } },
+    { "@type": "Question", "name": "How is the COLA actually calculated?", "acceptedAnswer": { "@type": "Answer", "text": "By law, the COLA equals the percentage increase in the average CPI-W (the Consumer Price Index for Urban Wage Earners and Clerical Workers) for July, August, and September of this year compared with the same three months of the last year a COLA took effect — rounded to the nearest tenth of a percent. We walk through a worked example on our How it works page." } },
+    { "@type": "Question", "name": "Why does my raise look smaller after Part B?", "acceptedAnswer": { "@type": "Answer", "text": "Because Medicare Part B is usually withheld from your Social Security payment. If your gross benefit goes up {{COLA_PROJECTED}}% but your Part B premium also rises, the increase to your deposit is smaller than the headline COLA. That gap is exactly what this tool makes visible." } },
+    { "@type": "Question", "name": "Do you store the numbers I enter?", "acceptedAnswer": { "@type": "Answer", "text": "No. The entire calculation runs in your web browser. We don't have a server that receives your benefit amount, we don't use it for advertising, and we never ask for your name, email, or phone number. See our privacy pledge." } }
   ]
 }
 </script>

@@ -1,0 +1,18 @@
+# Statutory Medicare figures. All of these are indexed annually — never inline
+# them in page markup, or they go stale a year at a time without any signal.
+#
+# Refresh each autumn:
+#   part_b_premium / part_b_deductible — CMS "Medicare Parts A & B Premiums and
+#     Deductibles" fact sheet (published ~November, effective January 1).
+#   part_d_oop_cap — CMS Part D annual parameters (Inflation Reduction Act cap,
+#     indexed each year; it is NOT fixed at its original $2,000).
+#
+# CAVEAT on the 2026 row: these figures were corroborated from secondary
+# sources only. Direct fetches to cms.gov, medicare.gov and federalregister.gov
+# were blocked (403) when this row was added, so confirm against the CMS fact
+# sheet before relying on them in published copy.
+year,part_b_premium,part_b_deductible,part_d_oop_cap,status,source_updated,source
+2023,164.90,226,,official,2022-09-27,CMS annual Medicare Parts A & B premiums and deductibles
+2024,174.70,240,,official,2023-10-12,CMS annual Medicare Parts A & B premiums and deductibles
+2025,185.00,257,2000,official,2024-11-08,CMS annual Medicare Parts A & B premiums and deductibles; Inflation Reduction Act Part D cap
+2026,202.90,283,2100,official,2025-11-14,CMS annual Medicare Parts A & B premiums and deductibles; Part D cap indexed annually

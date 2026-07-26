@@ -15,6 +15,11 @@
    a DETERMINISTIC, structurally-faithful sample dataset is generated so the tool
    works before the official 2027 files drop. Sample rows are clearly flagged in
    the manifest (sample:true) and every plan carries sample:true.
+
+   The sample dataset deliberately uses INVENTED carrier names (every one starts
+   with the word "Sample") and placeholder contract IDs. Made-up premiums must
+   never be printed next to a real company's name or a real CMS contract number:
+   the numbers are generated, so the identities have to look generated too.
    ========================================================================== */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -62,21 +67,25 @@ const GEO = [
   { state: "IL", counties: [["Cook", "17031"], ["DuPage", "17043"]] },
 ];
 
-/* ---- carriers ---------------------------------------------------------- */
+/* ---- carriers ----------------------------------------------------------
+   INVENTED carriers only. Every name begins with "Sample" so the word appears
+   in the plan list, in the results panel and in anything a reader prints.
+   Contract-ID bases sit 100 apart so the per-state offset below can never make
+   two sample carriers collide. -------------------------------------------- */
 const MA_CARRIERS = [
-  { org: "UnitedHealthcare", prefix: "H", base: 5253, tiers: ["Complete", "Patriot", "Giveback"] },
-  { org: "Humana", prefix: "H", base: 1036, tiers: ["Gold Plus", "Value", "Honor"] },
-  { org: "Aetna Medicare", prefix: "H", base: 1610, tiers: ["Eagle", "Premier", "Value"] },
-  { org: "Cigna Healthcare", prefix: "H", base: 4513, tiers: ["Preferred", "Achieve", "Essential"] },
-  { org: "Wellcare by Centene", prefix: "H", base: 1416, tiers: ["Giveback", "Assist", "No Premium"] },
-  { org: "Devoted Health", prefix: "H", base: 8173, tiers: ["Core", "Choice"] },
-  { org: "Blue Cross Blue Shield", prefix: "H", base: 3312, tiers: ["Vantage", "Select"] },
+  { org: "Sample Care One", prefix: "H", base: 9010, tiers: ["Complete", "Patriot", "Giveback"] },
+  { org: "Sample Health Alliance", prefix: "H", base: 9110, tiers: ["Gold Plus", "Value", "Honor"] },
+  { org: "Sample Mutual Medicare", prefix: "H", base: 9210, tiers: ["Eagle", "Premier", "Value"] },
+  { org: "Sample Valley Health", prefix: "H", base: 9310, tiers: ["Preferred", "Achieve", "Essential"] },
+  { org: "Sample Ridge Medicare", prefix: "H", base: 9410, tiers: ["Giveback", "Assist", "No Premium"] },
+  { org: "Sample Coast Health", prefix: "H", base: 9510, tiers: ["Core", "Choice"] },
+  { org: "Sample Prairie Health", prefix: "H", base: 9610, tiers: ["Vantage", "Select"] },
 ];
-const KAISER = { org: "Kaiser Permanente", prefix: "H", base: 524, tiers: ["Senior Advantage", "Medicare Plus"], onlyStates: ["CA"] };
+const KAISER = { org: "Sample Bay Health", prefix: "H", base: 9710, tiers: ["Senior Advantage", "Medicare Plus"], onlyStates: ["CA"] };
 const PDP_CARRIERS = [
-  { org: "SilverScript (Aetna)", prefix: "S", base: 5601, tiers: ["SmartSaver", "Choice"] },
-  { org: "Wellcare", prefix: "S", base: 4802, tiers: ["Value Script", "Classic"] },
-  { org: "UnitedHealthcare", prefix: "S", base: 5820, tiers: ["Part D Saver", "Preferred"] },
+  { org: "Sample Script Rx", prefix: "S", base: 9010, tiers: ["SmartSaver", "Choice"] },
+  { org: "Sample Rx Direct", prefix: "S", base: 9110, tiers: ["Value Script", "Classic"] },
+  { org: "Sample Preferred Rx", prefix: "S", base: 9210, tiers: ["Part D Saver", "Preferred"] },
 ];
 
 const PREMIUMS_MA = [0, 0, 0, 9, 18, 26, 39, 54, 78];
@@ -86,6 +95,9 @@ const DEDUCTIBLES_NEXT = [0, 0, 300, 470, 615];     // 2027: higher max
 const MOOP_CUR = [3450, 4500, 5500, 6700, 7550, 8850];
 const STARS = [2.5, 3.0, 3.0, 3.5, 3.5, 4.0, 4.0, 4.5, 5.0];
 
+/* Placeholder contract IDs. Real CMS contracts are issued in low number bands;
+   the sample set stays in the 9xxx band and is attached only to invented
+   carriers, so no generated dollar figure ever sits under a real plan's ID. */
 function contractId(carrier, state) {
   const stateIdx = GEO.findIndex((g) => g.state === state);
   const n = (carrier.base + stateIdx * 7) % 10000;
@@ -151,26 +163,23 @@ function expandToCounties(product, geo) {
 }
 
 /* ---- decide next-year status + build successor ------------------------- */
-function nextYearFor(product, currentRowsByCounty) {
+function statusFor(product) {
   const rng = rngFor(`${product.contractId}|${product.planId}|status`);
   const roll = rng();
-  let status;
-  if (roll < 0.72) status = "renewal";
-  else if (roll < 0.84) status = "consolidation";
-  else if (roll < 0.92) status = "service-area-reduction";
-  else status = "termination";
+  if (roll < 0.72) return "renewal";
+  if (roll < 0.84) return "consolidation";
+  if (roll < 0.92) return "service-area-reduction";
+  return "termination";
+}
 
-  if (status === "termination") {
-    return { status, toContractId: null, toPlanId: null, rows: [] };
-  }
-
-  // Consolidation redirects to planId+1 within the same contract (successor).
-  let toPlanId = product.planId;
-  if (status === "consolidation") {
-    const n = (Number(product.planId) % 9) + 1;
-    toPlanId = String(n).padStart(3, "0");
-  }
-
+/* Next-year rows for a plan that keeps its own contract+plan ID. Plans that
+   consolidate produce NO rows of their own: they merge into a sibling plan
+   that continues, which is what CMS consolidation actually means. Emitting a
+   row for both would put two different plans under one contract|plan|county
+   identity — and whichever the tool picked, half the users would be compared
+   against a plan that is not theirs. */
+function renewRows(product, currentRowsByCounty) {
+  const toPlanId = product.planId;
   const rows = [];
   for (const cur of currentRowsByCounty) {
     const rng2 = rngFor(`${product.contractId}|${toPlanId}|${cur.county}|next`);
@@ -202,7 +211,44 @@ function nextYearFor(product, currentRowsByCounty) {
       sample: true,
     });
   }
-  return { status, toContractId: product.contractId, toPlanId, rows };
+  return rows;
+}
+
+/**
+ * Resolve one carrier's product line for next year.
+ * Rules that keep every contract|plan|county identity unique:
+ *   - renewal / service-area reduction: the plan keeps its ID and emits rows.
+ *   - consolidation: no rows of its own; the crosswalk points at a sibling
+ *     plan that is continuing.
+ *   - termination: no rows, no successor.
+ * If every plan in a contract would consolidate, the lowest-numbered one is
+ * promoted to a renewal so the others have something real to merge into.
+ */
+function resolveProductLine(entries) {
+  const survives = (e) => e.status === "renewal" || e.status === "service-area-reduction";
+  if (entries.some((e) => e.status === "consolidation") && !entries.some(survives)) {
+    const promote = entries.filter((e) => e.status === "consolidation")[0];
+    promote.status = "renewal";
+  }
+  const survivors = entries.filter(survives);
+  for (const e of entries) {
+    if (e.status === "termination") {
+      e.emitsRows = false;
+      e.toContractId = null;
+      e.toPlanId = null;
+    } else if (survives(e)) {
+      e.emitsRows = true;
+      e.toContractId = e.product.contractId;
+      e.toPlanId = e.product.planId;
+    } else {
+      // consolidation → merge into a continuing sibling
+      const target = survivors.find((s) => s.product.planId !== e.product.planId) || survivors[0];
+      e.emitsRows = false;
+      e.toContractId = target.product.contractId;
+      e.toPlanId = target.product.planId;
+    }
+  }
+  return entries;
 }
 
 /* ---- generate the whole sample dataset --------------------------------- */
@@ -221,19 +267,21 @@ function generate() {
     for (const { c, type } of carriers) {
       const kind = type === "PDP" ? "PDP" : "MAPD";
       const products = makeProducts(c, geo.state, kind === "PDP" ? "PDP" : "MAPD");
-      for (const product of products) {
+      const entries = products.map((product) => {
         const curRows = expandToCounties(product, geo);
         current.push(...curRows);
+        return { product, curRows, status: statusFor(product) };
+      });
 
-        const ny = nextYearFor(product, curRows);
+      for (const e of resolveProductLine(entries)) {
         crosswalk.push({
-          fromContractId: product.contractId,
-          fromPlanId: product.planId,
-          toContractId: ny.toContractId,
-          toPlanId: ny.toPlanId,
-          status: ny.status,
+          fromContractId: e.product.contractId,
+          fromPlanId: e.product.planId,
+          toContractId: e.toContractId,
+          toPlanId: e.toPlanId,
+          status: e.status,
         });
-        next.push(...ny.rows);
+        if (e.emitsRows) next.push(...renewRows(e.product, e.curRows));
       }
     }
   }

@@ -1,9 +1,23 @@
 name: CI
 
+# The single source of truth for "is this commit shippable?".
+#
+# deploy.yml calls this workflow (workflow_call) and only runs its deploy job
+# after this one is green, so there is exactly one gate definition — the two
+# workflows can no longer drift apart, and a red CI can no longer race a deploy
+# to production. Because deploy.yml covers main, the push trigger here skips
+# main to avoid running the same checks twice against the same commit.
+
 on:
   push:
-    branches: ["**"]
+    branches-ignore: [main]
   pull_request:
+  workflow_call:
+    inputs:
+      upload-dist:
+        description: "Upload the verified dist/ as an artifact so a downstream deploy job can ship exactly these bytes."
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -14,29 +28,91 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history: sitemap <lastmod> comes from `git log -1 --format=%cs`
+          # per page file. At the default fetch-depth of 1 that lookup finds
+          # nothing and every <lastmod> is silently omitted from the sitemap.
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          # .nvmrc, not a pinned literal — CI and deploy must agree on the
+          # runtime that produced the artifact being shipped.
+          node-version-file: ".nvmrc"
 
       # The project has zero runtime/dev dependencies, so there is nothing to install.
       - name: Unit tests (COLA + plan-diff logic)
         run: node --test
 
       - name: Build the static site
+        env:
+          # Optional repository variable. Empty falls back to the build's own
+          # default; build.mjs rejects anything that is not an absolute origin.
+          SITE_URL: ${{ vars.SITE_URL }}
         run: npm run build
 
       - name: Sanity-check the build output
         run: |
-          test -f dist/index.html || { echo "missing dist/index.html"; exit 1; }
-          test -f dist/cola-calculator.html || { echo "missing COLA page"; exit 1; }
-          test -f dist/medicare-plan-changes.html || { echo "missing plan-diff page"; exit 1; }
-          test -f dist/sitemap.xml || { echo "missing sitemap"; exit 1; }
+          set -euo pipefail
+          fail() { echo "::error title=Build gate::$1"; exit 1; }
+
+          # Files whose absence is invisible in the build log: build.mjs happily
+          # emits 13 pages with a typo'd `slug:`, and the nav link to the missing
+          # one then 404s in production.
+          for f in dist/index.html dist/cola-calculator.html \
+                   dist/medicare-plan-changes.html dist/sitemap.xml dist/robots.txt; do
+            test -f "$f" || fail "missing $f"
+          done
+
           pages=$(find dist -name '*.html' | wc -l)
           echo "Built $pages HTML pages."
-          test "$pages" -ge 13 || { echo "expected >=13 pages, got $pages"; exit 1; }
-          if grep -rl '{{' dist --include='*.html' | grep .; then
-            echo "Unresolved template tokens found in build output"; exit 1
+          test "$pages" -ge 13 || fail "expected >=13 pages, got $pages"
+
+          # build.mjs already fails on unresolved tokens; keep this as
+          # belt-and-braces on the emitted bytes themselves.
+          if grep -rlF '{{' dist --include='*.html'; then
+            fail "unresolved template tokens in build output"
           fi
+
           echo "Build output looks good."
+
+      - name: Check every internal link and asset resolves
+        run: |
+          set -euo pipefail
+          node --input-type=module -e '
+            import { readdirSync, existsSync, statSync, readFileSync } from "node:fs";
+            import { join } from "node:path";
+
+            const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+              e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)]);
+            const pages = walk("dist").filter((f) => f.endsWith(".html"));
+            const broken = [];
+
+            for (const file of pages) {
+              const refs = [...readFileSync(file, "utf8").matchAll(/(?:href|src)="([^"]+)"/g)].map((m) => m[1]);
+              for (const raw of new Set(refs)) {
+                if (!raw.startsWith("/")) continue;          // external, mailto:, #anchor, relative
+                const path = raw.split(/[?#]/)[0];
+                if (path === "" || path === "/") continue;    // dist/index.html, checked above
+                const hit = [join("dist", path), join("dist", path + ".html"), join("dist", path, "index.html")]
+                  .some((c) => existsSync(c) && statSync(c).isFile());
+                if (!hit) broken.push(file + " -> " + raw);
+              }
+            }
+            if (broken.length) {
+              console.log("::error title=Broken internal links::" + broken.length + " unresolvable target(s)");
+              for (const b of broken) console.log("  " + b);
+              process.exit(1);
+            }
+            console.log("All internal link/asset targets resolve across " + pages.length + " pages.");
+          '
+
+      - name: Upload the verified dist/
+        if: inputs.upload-dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 7
+          if-no-files-found: error

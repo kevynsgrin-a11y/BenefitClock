@@ -4,6 +4,7 @@ description: Part B is withheld from your Social Security check, so a raise and 
 slug: guides/part-b-premium-and-your-cola
 nav: guides
 ogtype: article
+head: <meta property="article:published_time" content="{{PAGE_PUBLISHED}}"><meta property="article:modified_time" content="{{PAGE_MODIFIED}}"><meta property="article:section" content="Social Security & Medicare"><meta property="article:tag" content="Medicare Part B">
 priority: 0.8
 changefreq: monthly
 -->
@@ -12,7 +13,7 @@ changefreq: monthly
     <p class="eyebrow">Guide · Social Security &amp; Medicare</p>
     <h1>How Medicare Part B eats into your Social Security COLA</h1>
     <p class="lead prose">Each fall you learn two numbers close together: your Social Security cost-of-living raise, and your new Medicare Part B premium. Because Part B is usually pulled straight out of your Social Security check, those two numbers land in the same place — your monthly deposit. This guide shows, in plain terms, why your raise can feel smaller than the headline, and how to figure out the amount you actually keep.</p>
-    <p class="prose"><span class="badge badge--info">Illustrative estimates only</span> <span class="muted">CMS sets the standard Part B premium each fall; the {{COLA_PROJECTED_YEAR}} COLA is announced {{COLA_ANNOUNCE_DATE_LONG}}.</span></p>
+    <p class="prose"><span class="badge badge--info">Worked example uses round numbers</span> <span class="muted">The standard Part B premium for {{MEDICARE_FIGURES_YEAR}} is ${{PART_B_PREMIUM}} a month; CMS resets it each fall. The {{COLA_PROJECTED_YEAR}} COLA is expected {{COLA_ANNOUNCE_DATE_LONG}}.</span></p>
   </div>
 </section>
 
@@ -31,11 +32,11 @@ changefreq: monthly
       <p class="callout__title">The one formula that matters</p>
       <p style="margin:0;">Net deposit = (your current benefit × (1 + COLA)) − your Medicare Part B premium.</p>
     </div>
-    <p>Let's walk through it with round, illustrative numbers. Say your current monthly benefit is <strong>$2,000</strong>, and we apply the <strong>{{COLA_PROJECTED_YEAR}} estimated COLA of {{COLA_PROJECTED}}%</strong>. Remember: that {{COLA_PROJECTED}}% is an early estimate, not the official figure, and the Part B amounts below are round illustrations, not a premium CMS has announced.</p>
+    <p>Let's walk through it with round, made-up numbers, so the arithmetic is easy to follow. Say your monthly benefit is <strong>$2,000</strong> and the raise that year is <strong>3%</strong>. Every figure in the table below is invented for the example — the real {{COLA_PROJECTED_YEAR}} estimate is {{COLA_PROJECTED}}%, and the real standard Part B premium for {{MEDICARE_FIGURES_YEAR}} is ${{PART_B_PREMIUM}} a month. What matters here is the shape of the subtraction, not the amounts.</p>
 
     <div class="table-scroll">
       <table class="data">
-        <caption>Illustrative example: a $2,000 benefit with the estimated {{COLA_PROJECTED}}% COLA</caption>
+        <caption>Made-up example: a $2,000 benefit with a round 3% raise</caption>
         <thead>
           <tr>
             <th scope="col">Step</th>
@@ -48,38 +49,38 @@ changefreq: monthly
             <td class="num">$2,000.00</td>
           </tr>
           <tr>
-            <td>Gross raise ($2,000 × {{COLA_PROJECTED}}%)</td>
-            <td class="num">+$72.00</td>
+            <td>Gross raise ($2,000 × 3%)</td>
+            <td class="num">+$60.00</td>
           </tr>
           <tr>
             <td>New monthly benefit (gross)</td>
-            <td class="num">$2,072.00</td>
+            <td class="num">$2,060.00</td>
           </tr>
           <tr>
-            <td>Illustrative Part B premium this year</td>
-            <td class="num">−$185.00</td>
+            <td>Made-up Part B premium this year</td>
+            <td class="num">−$180.00</td>
           </tr>
           <tr>
-            <td>Illustrative Part B premium next year</td>
-            <td class="num">−$200.00</td>
+            <td>Made-up Part B premium next year</td>
+            <td class="num">−$195.00</td>
           </tr>
           <tr>
-            <td>Deposit this year ($2,000 − $185)</td>
-            <td class="num">$1,815.00</td>
+            <td>Deposit this year ($2,000 − $180)</td>
+            <td class="num">$1,820.00</td>
           </tr>
           <tr>
-            <td>Deposit next year ($2,072 − $200)</td>
-            <td class="num">$1,872.00</td>
+            <td>Deposit next year ($2,060 − $195)</td>
+            <td class="num">$1,865.00</td>
           </tr>
           <tr>
-            <td><strong>Raise you actually keep</strong> ($1,872 − $1,815)</td>
-            <td class="num"><strong>+$57.00</strong></td>
+            <td><strong>Raise you actually keep</strong> ($1,865 − $1,820)</td>
+            <td class="num"><strong>+$45.00</strong></td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p class="muted" style="font-size:0.95rem;">Every dollar figure above is a round, made-up illustration to show how the subtraction works. The $185 and $200 Part B amounts are <strong>not</strong> official — CMS sets the real standard premium each fall, and the {{COLA_PROJECTED}}% COLA is an early estimate until the Social Security Administration announces the official number on {{COLA_ANNOUNCE_DATE_LONG}}.</p>
-    <p>Notice the two figures the example produces. The <strong>gross raise</strong> was $72 a month. But because Part B also went up — from $185 to $200 in this illustration — the <strong>raise you keep</strong> was only $57. The $15 Part B increase quietly clawed back part of the COLA. Your benefit still rose by the full {{COLA_PROJECTED}}%; your <em>deposit</em> rose by less. That gap is the entire point of this page.</p>
+    <p class="muted" style="font-size:0.95rem;">Every dollar figure above is round and made up, purely to show how the subtraction works. The 3% raise and the $180 and $195 Part B amounts are <strong>not</strong> official. The real standard Part B premium for {{MEDICARE_FIGURES_YEAR}} is <strong>${{PART_B_PREMIUM}}</strong> a month, CMS resets it each fall, and the {{COLA_PROJECTED}}% {{COLA_PROJECTED_YEAR}} COLA stays an early estimate until the Social Security Administration announces the official number, expected {{COLA_ANNOUNCE_DATE_LONG}}.</p>
+    <p>Notice the two figures the example produces. The <strong>gross raise</strong> was $60 a month. But because Part B also went up — from $180 to $195 in this example — the <strong>raise you keep</strong> was only $45. The $15 Part B increase quietly clawed back part of the raise. Your benefit still rose by the full 3%; your <em>deposit</em> rose by less. That gap is the entire point of this page.</p>
 
     {{> ad-inline }}
 
@@ -127,7 +128,7 @@ changefreq: monthly
     <details class="faq">
       <summary>What is the standard Part B premium this year?</summary>
       <div class="faq__body">
-        <p>CMS sets the standard Part B premium each fall, and it can change from year to year. We don't publish a fixed dollar figure here because it's official government information that's updated annually — check the current amount on the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare</a> site, or look at what's withheld from your own Social Security statement, and enter that number in our calculator.</p>
+        <p>For {{MEDICARE_FIGURES_YEAR}} the standard Part B premium is <strong>${{PART_B_PREMIUM}}</strong> a month, and the Part B deductible is <strong>${{PART_B_DEDUCTIBLE}}</strong> for the year. CMS resets both every fall, so they change from one year to the next. Many people pay a different amount: a higher one if the IRMAA surcharge applies, or a lower one if hold-harmless protects them. Check what is actually withheld from your own Social Security statement, or the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare</a> site, and enter that number in our calculator.</p>
       </div>
     </details>
 
@@ -174,11 +175,11 @@ changefreq: monthly
   "articleSection": "Social Security & Medicare",
   "inLanguage": "en-US",
   "isAccessibleForFree": true,
-  "publisher": {
-    "@type": "Organization",
-    "name": "BenefitDial",
-    "url": "{{SITE_URL}}/"
-  },
+  "datePublished": "{{PAGE_PUBLISHED}}",
+  "dateModified": "{{PAGE_MODIFIED}}",
+  "image": "{{SITE_URL}}/assets/img/og-default.png",
+  "author": { "@id": "{{SITE_URL}}/#org" },
+  "publisher": { "@id": "{{SITE_URL}}/#org" },
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": "{{SITE_URL}}/guides/part-b-premium-and-your-cola"
@@ -190,10 +191,11 @@ changefreq: monthly
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "Why did my Social Security deposit go up by less than the COLA?", "acceptedAnswer": { "@type": "Answer", "text": "Medicare Part B is usually withheld from your payment before it reaches your bank. Your gross benefit rises by the full COLA, but if the Part B premium also increases, the change to your actual deposit is smaller." } },
-    { "@type": "Question", "name": "What is the standard Medicare Part B premium this year?", "acceptedAnswer": { "@type": "Answer", "text": "CMS sets the standard Part B premium each fall and it can change annually. Check the current amount on the official Medicare site or on your own Social Security statement." } },
-    { "@type": "Question", "name": "Can Medicare Part B ever make my Social Security check smaller than last year?", "acceptedAnswer": { "@type": "Answer", "text": "For most people, no. The hold-harmless provision generally prevents the dollar rise in Part B from exceeding the dollar rise in your Social Security benefit, so your net deposit should not drop. It does not cover everyone, including people new to Medicare and higher-income beneficiaries who pay IRMAA." } },
-    { "@type": "Question", "name": "What is IRMAA?", "acceptedAnswer": { "@type": "Answer", "text": "IRMAA is the Income-Related Monthly Adjustment Amount, an extra charge added to standard Part B and Part D premiums for higher-income beneficiaries. It is based on a prior tax return and rises in steps as income increases. Thresholds are set by the government and change each year." } }
+    { "@type": "Question", "name": "Why did my Social Security deposit go up by less than the COLA?", "acceptedAnswer": { "@type": "Answer", "text": "Because Medicare Part B is usually withheld from your payment before it reaches your bank. Your gross benefit rises by the full COLA, but if the Part B premium also increases, the change to your actual deposit is smaller. The difference between those two numbers is exactly what our COLA calculator makes visible." } },
+    { "@type": "Question", "name": "What is the standard Part B premium this year?", "acceptedAnswer": { "@type": "Answer", "text": "For {{MEDICARE_FIGURES_YEAR}} the standard Part B premium is ${{PART_B_PREMIUM}} a month, and the Part B deductible is ${{PART_B_DEDUCTIBLE}} for the year. CMS resets both every fall, so they change from one year to the next. Many people pay a different amount: a higher one if the IRMAA surcharge applies, or a lower one if hold-harmless protects them. Check what is actually withheld from your own Social Security statement, or the official Medicare site, and enter that number in our calculator." } },
+    { "@type": "Question", "name": "Can Part B ever make my check smaller than last year?", "acceptedAnswer": { "@type": "Answer", "text": "For most people, no. The hold-harmless provision generally prevents the dollar rise in Part B from exceeding the dollar rise in your Social Security benefit, so your net deposit shouldn't drop just because Part B went up. It doesn't cover everyone, though — people new to Medicare and higher-income beneficiaries who pay the IRMAA surcharge may not be fully protected." } },
+    { "@type": "Question", "name": "What is IRMAA?", "acceptedAnswer": { "@type": "Answer", "text": "IRMAA is the Income-Related Monthly Adjustment Amount — an extra charge added to the standard Part B and Part D premiums for people with higher incomes. It's based on your tax return from a couple of years earlier and rises in steps as income increases. If it applies to you, your Part B deduction is larger, so more of your COLA can be absorbed. The income thresholds are set by the government and change each year." } },
+    { "@type": "Question", "name": "Does BenefitDial sell my information or recommend a plan?", "acceptedAnswer": { "@type": "Answer", "text": "Never. BenefitDial is an independent public utility. We take no commissions, sell no leads or data, and never ask for your name, phone number, or email. We don't recommend a specific plan for payment. To enroll or compare plans, always use the official Medicare Plan Finder or call 1-800-MEDICARE. Read how it works." } }
   ]
 }
 </script>

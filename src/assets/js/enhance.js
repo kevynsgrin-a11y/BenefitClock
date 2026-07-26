@@ -71,10 +71,66 @@
     });
   }
 
+  /* Publish the sticky header's real height as --bc-header-h. The stylesheet
+     uses it for scroll-padding-top (so the skip link and every in-page anchor
+     stop landing behind the header) and to cap the mobile menu panel, which is
+     absolutely positioned inside the header and otherwise runs off-screen.
+     The CSS fallback (4.25rem) covers the no-JS case. */
+  function headerHeight() {
+    var hdr = document.querySelector('.site-header');
+    if (!hdr) return;
+    function set() {
+      document.documentElement.style.setProperty('--bc-header-h', hdr.offsetHeight + 'px');
+    }
+    set();
+    if ('ResizeObserver' in window) new ResizeObserver(set).observe(hdr);
+    else addEventListener('resize', set);
+  }
+
+  /* Horizontally scrollable regions (wide data tables, and charts that are
+     given a legible minimum width on phones) need three things the markup
+     cannot provide on its own: a visible affordance, a tab stop so keyboard
+     users can scroll them at all, and a name. Apply all three only while the
+     content genuinely overflows. */
+  function scrollables() {
+    var els = document.querySelectorAll('.table-scroll, .bc-chart');
+    els.forEach(function (el) {
+      if (el.closest('[aria-hidden="true"]')) return;   // never focus hidden content
+      function sync() {
+        var slack = el.scrollWidth - el.clientWidth;
+        var over = slack > 2;
+        el.classList.toggle('is-scrollable', over);
+        el.classList.toggle('at-start', el.scrollLeft <= 1);
+        el.classList.toggle('at-end', el.scrollLeft >= slack - 1);
+        if (over && el.getAttribute('tabindex') === null) {
+          el.setAttribute('tabindex', '0');
+          if (!el.getAttribute('role')) el.setAttribute('role', 'region');
+          if (!el.getAttribute('aria-label') && !el.getAttribute('aria-labelledby')) {
+            var cap = el.querySelector('caption, figcaption');
+            var name = cap ? cap.textContent.trim() : 'Table';
+            el.setAttribute('aria-label', name + ' — scrollable sideways');
+          }
+        }
+      }
+      sync();
+      el.addEventListener('scroll', sync, { passive: true });
+      if ('ResizeObserver' in window) {
+        var ro = new ResizeObserver(sync);
+        ro.observe(el);
+        var inner = el.firstElementChild;
+        if (inner) ro.observe(inner);        // rows injected later change scrollWidth
+      } else {
+        addEventListener('resize', sync);
+      }
+    });
+  }
+
   function init() {
+    headerHeight();
     reveal();
     countUp();
     textSize();
+    scrollables();
   }
 
   if (document.readyState === 'loading') {

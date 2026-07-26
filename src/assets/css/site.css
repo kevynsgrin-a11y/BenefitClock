@@ -2,6 +2,14 @@
    BenefitDial design system
    Built for a 65+ audience: large type, high contrast, big targets, calm layout.
    Single authoritative stylesheet — no framework, no runtime dependencies.
+
+   Layering, top to bottom:
+     1. Raw ramps      (--bc-teal-*, --bc-amber-* …) — fixed hues, never flip.
+     2. Neutrals       (--bc-ink, --bc-surface …)    — flip with the theme.
+     3. Semantic roles (--bc-heading, --bc-link …)   — flip with the theme.
+     4. Scales         (--bc-fs-*, --bc-space-*)     — theme-independent.
+   Components style against layers 2-4 only. Dark mode remaps layers 2-3 and
+   nothing else, so a component that uses a role token is themed for free.
    ========================================================================== */
 
 /* ----- Design tokens ---------------------------------------------------- */
@@ -20,35 +28,99 @@
   --bc-green-100: #dcfce7;
   --bc-red-700: #b91c1c;
   --bc-red-100: #fee2e2;
-  --bc-blue-700: #1d4ed8;
 
   /* Neutrals */
   --bc-ink: #16211f;          /* body text — near-black with a warm cast */
   --bc-ink-soft: #3f4d4a;     /* secondary text */
-  --bc-ink-faint: #5c6b67;    /* captions, meta */
-  --bc-line: #d5ddda;         /* borders */
+  --bc-ink-faint: #5c6b67;    /* captions, meta, placeholders */
+  --bc-line: #d5ddda;         /* decorative borders (cards, rules, dividers) */
   --bc-line-soft: #e7ecea;
   --bc-surface: #ffffff;
   --bc-surface-2: #f4f7f6;    /* section wash */
   --bc-surface-3: #eef2f1;
   --bc-bg: #fbfcfc;
 
-  /* Semantic */
-  --bc-primary: var(--bc-teal-700);
-  --bc-primary-strong: var(--bc-teal-800);
+  /* ---- Semantic roles ---------------------------------------------------
+     Every colour that has to change meaning between themes lives here. The
+     dark block below remaps this block and (almost) nothing else — the
+     .nav-toggle bug (H5) existed because it hard-coded --bc-teal-900 as a text
+     colour and the dark block had to remember to override that one class. */
+  --bc-heading: var(--bc-teal-900);   /* headings + teal text on page surfaces */
+  --bc-accent: var(--bc-teal-700);    /* icons, chart bars, small accents */
+  --bc-accent-2: var(--bc-teal-600);  /* eyebrow, timeline dots */
+  --bc-accent-on-tint: var(--bc-teal-800); /* text on a --bc-teal-050 tint */
+  --bc-link: var(--bc-teal-700);
+  --bc-link-hover: var(--bc-teal-800);
+  --bc-good: var(--bc-green-700);
+  --bc-bad: var(--bc-red-700);
+  --bc-bad-ring: rgba(185, 28, 28, 0.16);
+  --bc-warn: var(--bc-amber-600);
   --bc-focus: #0a6cff;
+  /* Interactive-control borders are a separate token from decorative ones:
+     WCAG 1.4.11 wants >=3:1 against the control's own fill, and --bc-line
+     (1.38:1) is deliberately quiet because it also draws card edges. */
+  --bc-control-line: #7f918d;
+  --bc-chart-bar: var(--bc-teal-600);
+  --bc-chart-bar-prev: var(--bc-teal-800);
+  --bc-callout-warn-bg: #fffbf2;
+  --bc-adstripe-a: #f6f8f8;
+  --bc-adstripe-b: #f1f4f4;
 
-  /* Type scale — generous for readability */
+  /* Status chips */
+  --bc-chip-good-bg: var(--bc-green-100);   --bc-chip-good-fg: var(--bc-green-700);
+  --bc-chip-warn-bg: var(--bc-amber-100);   --bc-chip-warn-fg: var(--bc-amber-600);
+  --bc-chip-bad-bg: var(--bc-red-100);      --bc-chip-bad-fg: var(--bc-red-700);
+  --bc-chip-info-bg: var(--bc-teal-050);    --bc-chip-info-fg: var(--bc-teal-700);
+  --bc-chip-neutral-bg: var(--bc-surface-3); --bc-chip-neutral-fg: var(--bc-ink-soft);
+
+  /* ---- Type ladder ------------------------------------------------------
+     One authoritative, monotonic set of steps. Every font-size below picks a
+     step; nothing invents its own value. All steps are in rem, and the rem
+     itself is what the A/A/A control scales (see --bc-fs-root), so the whole
+     ladder moves together and the relative scale can never invert (H6). */
   --bc-font-sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   --bc-font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, Consolas, monospace;
-  --bc-fs-base: 1.1875rem;    /* 19px */
+  --bc-fs-3xs: 0.72rem;
+  --bc-fs-2xs: 0.8rem;
+  --bc-fs-xs: 0.82rem;
+  --bc-fs-s: 0.9rem;
+  --bc-fs-s2: 0.92rem;
+  --bc-fs-sm: 0.95rem;
+  --bc-fs-m: 1rem;
+  --bc-fs-m2: 1.02rem;
+  --bc-fs-ml: 1.05rem;
+  --bc-fs-l: 1.1rem;
+  --bc-fs-l2: 1.15rem;
+  --bc-fs-base: 1.1875rem;    /* 19px — body */
+  --bc-fs-lg: 1.2rem;         /* smallest heading step — must stay > base */
+  --bc-fs-xl: 1.28rem;
+  --bc-fs-2xl: 1.35rem;
+  --bc-fs-3xl: 1.5rem;
+  --bc-fs-4xl: 1.9rem;
   --bc-lh-base: 1.65;
 
-  /* Spacing */
+  /* ---- Spacing scale ----------------------------------------------------
+     Named steps for the values that recur across components. One-off values
+     (mostly clamp()ed section rhythm) stay literal on purpose. */
+  --bc-space-3xs: 0.15rem;
+  --bc-space-xs: 0.35rem;
+  --bc-space-s: 0.5rem;
+  --bc-space-sm: 0.6rem;
+  --bc-space-m: 0.75rem;
+  --bc-space-ml: 0.9rem;
+  --bc-space-l: 1rem;
+  --bc-space-xl: 1.25rem;
+  --bc-space-2xl: 1.5rem;
+  --bc-space-3xl: 1.6rem;
+  --bc-space-4xl: 2rem;
+  --bc-space-5xl: 3rem;
+
+  /* Shape + depth */
   --bc-radius: 12px;
   --bc-radius-lg: 18px;
   --bc-shadow-sm: 0 1px 2px rgba(11, 59, 63, 0.06), 0 1px 3px rgba(11, 59, 63, 0.08);
   --bc-shadow-md: 0 4px 14px rgba(11, 59, 63, 0.10);
+  --bc-shadow-lg: 0 12px 30px -8px rgba(11, 59, 63, 0.18), 0 4px 10px rgba(11, 59, 63, 0.08);
   --bc-maxw: 68rem;
   --bc-maxw-prose: 44rem;
 
@@ -60,29 +132,41 @@
   --bc-ill-accent: var(--bc-amber-500);
   --bc-ill-gold: var(--bc-gold);
   --bc-ill-paper: var(--bc-surface);
-
-  /* Depth */
-  --bc-shadow-lg: 0 12px 30px -8px rgba(11, 59, 63, 0.18), 0 4px 10px rgba(11, 59, 63, 0.08);
-  --bc-line-onteal: rgba(255, 255, 255, 0.14);
-  --bc-amber-glow: rgba(245, 196, 81, 0.28);
   --bc-hero-mesh:
     radial-gradient(120% 80% at 85% -10%, rgba(245, 196, 81, 0.16), transparent 55%),
     radial-gradient(90% 70% at 8% 115%, rgba(42, 145, 153, 0.38), transparent 60%),
     linear-gradient(160deg, var(--bc-teal-800), var(--bc-teal-900));
 
-  /* Motion + display rhythm */
+  /* Motion */
   --bc-reveal-dur: 560ms;
   --bc-reveal-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --bc-lh-tight: 1.12;
+
+  /* Sticky-header height. enhance.js measures the real header and overwrites
+     this; the literal is the no-JS fallback, set to the measured desktop height (a
+     generous value only drops the anchor slightly low; a short one hides it). */
+  --bc-header-h: 7.25rem;
 }
 
-/* User-controlled text size (see enhance/textsize JS). Scales the rem system. */
-:root[data-textsize="l"]  { --bc-fs-base: 1.3125rem; }
-:root[data-textsize="xl"] { --bc-fs-base: 1.4375rem; }
+/* User-controlled text size (see enhance/textsize JS).
+   This scales the ROOT font size, not body's — the site is sized almost
+   entirely in rem, so scaling body alone froze ~50% of all characters and
+   inverted the type scale at the largest setting (H6). Percentages keep the
+   user's own browser default as the baseline. Chosen so body lands on the
+   same 19 / 21 / 23px it always did. */
+:root { --bc-fs-root: 100%; }
+:root[data-textsize="l"]  { --bc-fs-root: 110.5%; }
+:root[data-textsize="xl"] { --bc-fs-root: 121%; }
 
 /* ----- Reset-ish -------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html {
+  font-size: var(--bc-fs-root);
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* The skip link (and every in-page anchor) used to land behind the sticky
+     header — ~111px of the target was covered. */
+  scroll-padding-top: calc(var(--bc-header-h) + var(--bc-space-l));
+}
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
@@ -96,21 +180,35 @@ body {
   background: var(--bc-bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* An email address or a long compound word must never paint outside its own
+     box; at 320px these pushed whole pages into horizontal scroll. */
+  overflow-wrap: break-word;
 }
 img, svg { max-width: 100%; height: auto; display: block; }
-h1, h2, h3, h4 { line-height: 1.2; color: var(--bc-teal-900); margin: 0 0 0.5em; font-weight: 700; }
+h1, h2, h3, h4 { line-height: 1.2; color: var(--bc-heading); margin: 0 0 0.5em; font-weight: 700; }
 h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3rem); letter-spacing: -0.01em; }
 h2 { font-size: clamp(1.6rem, 1.25rem + 1.5vw, 2.15rem); letter-spacing: -0.01em; }
-h3 { font-size: 1.35rem; }
-h4 { font-size: 1.12rem; }
+h3 { font-size: var(--bc-fs-2xl); }
+/* h4 sits on --bc-fs-lg, not below --bc-fs-base: a heading that renders
+   smaller than the body text it introduces is a scale inversion (H6). */
+h4 { font-size: var(--bc-fs-lg); }
 p { margin: 0 0 1em; }
-a { color: var(--bc-teal-700); text-underline-offset: 0.16em; text-decoration-thickness: 0.08em; }
-a:hover { color: var(--bc-teal-800); }
+a { color: var(--bc-link); text-underline-offset: 0.16em; text-decoration-thickness: 0.08em; }
+a:hover { color: var(--bc-link-hover); }
 strong { font-weight: 700; }
 ul, ol { padding-left: 1.35em; }
 li { margin-bottom: 0.4em; }
 hr { border: 0; border-top: 1px solid var(--bc-line); margin: 2.5rem 0; }
 code, kbd, samp { font-family: var(--bc-font-mono); font-size: 0.95em; }
+
+/* Grid and flex items default to min-width:auto, which floors a track at the
+   widest unbreakable word — that is what forced 320px pages to scroll
+   sideways. Letting tracks shrink hands the problem to overflow-wrap above,
+   which breaks the token inside the box instead of outside it. */
+.grid > *, .figure-row > *, .field-row > *, .footer-grid > *,
+.hero__grid > *, .steps > *, .step > *, .provenance__chip,
+.site-header__inner > *, .site-header__end > *, .brand > span,
+.trust-bar__inner > *, .hero__promise > *, .bc-legend > * { min-width: 0; }
 
 /* ----- Accessibility helpers ------------------------------------------- */
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
@@ -122,12 +220,12 @@ code, kbd, samp { font-family: var(--bc-font-mono); font-size: 0.95em; }
 .section--teal :focus-visible, .site-footer :focus-visible, .trust-bar :focus-visible { outline-color: #fff; }
 .skip-link {
   position: absolute;
-  left: 0.75rem;
+  left: var(--bc-space-m);
   top: -3.5rem;
   z-index: 200;
   background: var(--bc-teal-800);
   color: #fff;
-  padding: 0.75rem 1.1rem;
+  padding: var(--bc-space-m) 1.1rem;
   border-radius: 0 0 var(--bc-radius) var(--bc-radius);
   font-weight: 700;
   transition: top 0.15s ease;
@@ -155,7 +253,7 @@ code, kbd, samp { font-family: var(--bc-font-mono); font-size: 0.95em; }
 table.visually-hidden { white-space: normal; }
 
 /* ----- Layout primitives ----------------------------------------------- */
-.wrap { width: 100%; max-width: var(--bc-maxw); margin-inline: auto; padding-inline: 1.25rem; }
+.wrap { width: 100%; max-width: var(--bc-maxw); margin-inline: auto; padding-inline: var(--bc-space-xl); }
 .prose { max-width: var(--bc-maxw-prose); }
 .section { padding-block: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); }
 .section--wash { background: var(--bc-surface-2); border-block: 1px solid var(--bc-line-soft); }
@@ -164,8 +262,7 @@ table.visually-hidden { white-space: normal; }
   color: #eaf6f6;
 }
 .section--teal h1, .section--teal h2, .section--teal h3 { color: #ffffff; }
-.stack > * + * { margin-top: 1rem; }
-.grid { display: grid; gap: 1.5rem; }
+.grid { display: grid; gap: var(--bc-space-2xl); }
 @media (min-width: 46rem) {
   .grid--2 { grid-template-columns: repeat(2, 1fr); }
   .grid--3 { grid-template-columns: repeat(3, 1fr); }
@@ -173,13 +270,13 @@ table.visually-hidden { white-space: normal; }
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.82rem;
+  font-size: var(--bc-fs-xs);
   font-weight: 700;
-  color: var(--bc-teal-600);
-  margin: 0 0 0.6rem;
+  color: var(--bc-accent-2);
+  margin: 0 0 var(--bc-space-sm);
 }
 .section--teal .eyebrow { color: #a5e3e6; }
-.lead { font-size: 1.28rem; color: var(--bc-ink-soft); }
+.lead { font-size: var(--bc-fs-xl); color: var(--bc-ink-soft); }
 .section--teal .lead { color: #e3f4f4; }
 .muted { color: var(--bc-ink-faint); }
 .center { text-align: center; }
@@ -189,15 +286,21 @@ table.visually-hidden { white-space: normal; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: var(--bc-space-s);
   min-height: 3.25rem;         /* large tap target */
-  padding: 0.75rem 1.5rem;
+  padding: var(--bc-space-m) var(--bc-space-2xl);
   border-radius: 999px;
-  font-size: 1.1rem;
+  font-size: var(--bc-fs-l);
   font-weight: 700;
   text-decoration: none;
   border: 2px solid transparent;
   cursor: pointer;
+  /* A label plus two 1.5rem paddings can exceed a 320px screen once the text
+     scale is turned up; let the button cap at its container and wrap. */
+  max-width: 100%;
+  flex-wrap: wrap;
+  text-align: center;
+  overflow-wrap: anywhere;
   transition: background-color 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
 }
 .btn:active { transform: translateY(1px); }
@@ -205,50 +308,62 @@ table.visually-hidden { white-space: normal; }
 .btn--primary:hover { background: var(--bc-amber-600); color: #fff; }
 .btn--solid { background: var(--bc-teal-700); color: #fff; }
 .btn--solid:hover { background: var(--bc-teal-800); color: #fff; }
-.btn--ghost { background: transparent; color: var(--bc-teal-800); border-color: var(--bc-line); }
+.btn--ghost { background: transparent; color: var(--bc-teal-800); border-color: var(--bc-control-line); }
 .btn--ghost:hover { background: var(--bc-teal-050); }
 .btn--onteal { background: #ffffff; color: var(--bc-teal-900); }
 .btn--onteal:hover { background: var(--bc-teal-050); color: var(--bc-teal-900); }
-.btn--lg { min-height: 3.75rem; font-size: 1.2rem; padding: 0.9rem 2rem; }
-.btn--block { display: flex; width: 100%; }
+.btn--lg { min-height: 3.75rem; font-size: var(--bc-fs-lg); padding: var(--bc-space-ml) var(--bc-space-4xl); }
 
 /* ----- Cards ------------------------------------------------------------ */
 .card {
   background: var(--bc-surface);
   border: 1px solid var(--bc-line);
   border-radius: var(--bc-radius-lg);
-  padding: 1.6rem;
+  padding: var(--bc-space-3xl);
   box-shadow: var(--bc-shadow-sm);
 }
 .card h3 { margin-top: 0; }
-.card--link { display: block; text-decoration: none; color: inherit; transition: box-shadow 0.15s ease, transform 0.1s ease, border-color 0.15s ease; }
-.card--link:hover { box-shadow: var(--bc-shadow-md); transform: translateY(-2px); border-color: var(--bc-teal-500); color: inherit; }
+.card--link {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
+}
+.card--link:hover { box-shadow: var(--bc-shadow-lg); transform: translateY(-2px); border-color: var(--bc-teal-500); color: inherit; }
+.card--link::before { content: ""; position: absolute; left: 0; top: 0; height: 4px; width: 100%; background: linear-gradient(90deg, var(--bc-teal-500), var(--bc-amber-500)); transform: scaleX(0); transform-origin: left; }
+@media (prefers-reduced-motion: no-preference) {
+  .card--link::before { transition: transform 0.32s var(--bc-reveal-ease); }
+  .card--link:hover::before, .card--link:focus-within::before { transform: scaleX(1); }
+}
 .card__icon {
   width: 3rem; height: 3rem;
   display: grid; place-items: center;
   border-radius: 12px;
   background: var(--bc-teal-050);
-  color: var(--bc-teal-700);
-  margin-bottom: 1rem;
+  color: var(--bc-accent);
+  margin-bottom: var(--bc-space-l);
   font-size: 1.6rem;
+  box-shadow: inset 0 0 0 1px var(--bc-teal-050);
 }
 
 /* ----- Badges / pills --------------------------------------------------- */
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.75rem;
+  gap: var(--bc-space-xs);
+  padding: 0.3rem var(--bc-space-m);
   border-radius: 999px;
-  font-size: 0.9rem;
+  font-size: var(--bc-fs-s);
   font-weight: 700;
   line-height: 1.2;
 }
-.badge--good { background: var(--bc-green-100); color: var(--bc-green-700); }
-.badge--warn { background: var(--bc-amber-100); color: var(--bc-amber-600); }
-.badge--bad  { background: var(--bc-red-100); color: var(--bc-red-700); }
-.badge--info { background: var(--bc-teal-050); color: var(--bc-teal-700); }
-.badge--neutral { background: var(--bc-surface-3); color: var(--bc-ink-soft); }
+.badge--good { background: var(--bc-chip-good-bg); color: var(--bc-chip-good-fg); }
+.badge--warn { background: var(--bc-chip-warn-bg); color: var(--bc-chip-warn-fg); }
+.badge--bad  { background: var(--bc-chip-bad-bg); color: var(--bc-chip-bad-fg); }
+.badge--info { background: var(--bc-chip-info-bg); color: var(--bc-chip-info-fg); }
+.badge--neutral { background: var(--bc-chip-neutral-bg); color: var(--bc-chip-neutral-fg); }
 
 /* ----- Header / nav ----------------------------------------------------- */
 .site-header {
@@ -264,12 +379,12 @@ table.visually-hidden { white-space: normal; }
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.6rem 1rem;
+  gap: var(--bc-space-sm) var(--bc-space-l);
   min-height: 4.25rem;
 }
-.site-header__end { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.6rem; }
-.brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--bc-teal-900); font-weight: 800; font-size: 1.28rem; padding-block: 0.3rem; margin-block: -0.3rem; }
-.brand:hover { color: var(--bc-teal-900); }
+.site-header__end { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--bc-space-sm); }
+.brand { display: inline-flex; align-items: center; gap: var(--bc-space-sm); text-decoration: none; color: var(--bc-heading); font-weight: 800; font-size: var(--bc-fs-xl); padding-block: 0.3rem; margin-block: -0.3rem; }
+.brand:hover { color: var(--bc-heading); }
 .brand__mark {
   width: 2.25rem; height: 2.25rem;
   border-radius: 9px;
@@ -278,24 +393,24 @@ table.visually-hidden { white-space: normal; }
   display: grid; place-items: center;
   flex: none;
 }
-.brand__mark svg { width: 1.5rem; height: 1.5rem; }
-.brand small { display: block; font-size: 0.72rem; font-weight: 600; color: var(--bc-ink-faint); letter-spacing: 0.02em; }
+.brand__mark svg { width: var(--bc-fs-3xl); height: var(--bc-fs-3xl); }
+.brand small { display: block; font-size: var(--bc-fs-3xs); font-weight: 600; color: var(--bc-ink-faint); letter-spacing: 0.02em; }
 
 .nav-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--bc-space-s);
   background: transparent;
-  border: 2px solid var(--bc-line);
+  border: 2px solid var(--bc-control-line);
   border-radius: 10px;
   min-height: 3rem;
-  padding: 0 0.9rem;
+  padding: 0 var(--bc-space-ml);
   font-weight: 700;
-  font-size: 1rem;
-  color: var(--bc-teal-900);
+  font-size: var(--bc-fs-m);
+  color: var(--bc-heading);
   cursor: pointer;
 }
-.primary-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.35rem; align-items: center; }
+.primary-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--bc-space-xs); align-items: center; }
 .primary-nav a {
   display: inline-flex;
   align-items: center;
@@ -306,8 +421,8 @@ table.visually-hidden { white-space: normal; }
   font-weight: 600;
   color: var(--bc-ink);
 }
-.primary-nav a:hover { background: var(--bc-teal-050); color: var(--bc-teal-900); }
-.primary-nav a[aria-current="page"] { color: var(--bc-teal-800); background: var(--bc-teal-050); box-shadow: inset 0 -3px 0 var(--bc-teal-600); }
+.primary-nav a:hover { background: var(--bc-teal-050); color: var(--bc-heading); }
+.primary-nav a[aria-current="page"] { color: var(--bc-accent-on-tint); background: var(--bc-teal-050); box-shadow: inset 0 -3px 0 var(--bc-accent-2); }
 
 @media (max-width: 52rem) {
   .nav-toggle { display: inline-flex; }
@@ -319,29 +434,46 @@ table.visually-hidden { white-space: normal; }
     background: var(--bc-surface);
     border-bottom: 1px solid var(--bc-line);
     box-shadow: var(--bc-shadow-md);
-    padding: 0.75rem 1.25rem 1.25rem;
+    padding: var(--bc-space-m) var(--bc-space-xl) var(--bc-space-xl);
+    /* The panel is absolutely positioned inside a sticky header, so without a
+       cap it simply extends past the bottom of the screen and the last
+       destinations become unreachable by pointer. Cap it to whatever is left
+       below the header and let it scroll. */
+    max-height: calc(100vh - var(--bc-header-h) - var(--bc-space-l));
+    max-height: calc(100dvh - var(--bc-header-h) - var(--bc-space-l));
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .primary-nav.is-open { display: block; }
-  .primary-nav ul { flex-direction: column; align-items: stretch; gap: 0.15rem; }
-  .primary-nav a { min-height: 3.25rem; font-size: 1.1rem; padding: 0.6rem 0.85rem; }
+  .primary-nav ul { flex-direction: column; align-items: stretch; gap: var(--bc-space-3xs); }
+  .primary-nav a { min-height: 3.25rem; font-size: var(--bc-fs-l); padding: var(--bc-space-sm) 0.85rem; }
 }
 @media (min-width: 52.01rem) {
   .nav-toggle { display: none; }
   .primary-nav { display: block !important; position: static; }
+}
+/* A sticky header that owns half the screen is worse than no sticky header: at
+   844x390 it took 51.3% of the viewport, and 44% of a 256px-tall one at 400%
+   zoom (WCAG 1.4.10). On short viewports let it scroll away — `relative`, not
+   `static`, because .primary-nav's mobile panel is positioned against it. */
+@media (max-height: 32rem) {
+  .site-header { position: relative; }
+  html { scroll-padding-top: 0; }
+  .primary-nav { max-height: none; }
 }
 
 /* ----- Trust bar -------------------------------------------------------- */
 .trust-bar {
   background: var(--bc-teal-900);
   color: #e6f5f5;
-  font-size: 0.98rem;
+  font-size: var(--bc-fs-m);
 }
 .trust-bar__inner {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem 1.6rem;
+  gap: 0.4rem var(--bc-space-3xl);
   justify-content: center;
-  padding-block: 0.6rem;
+  padding-block: var(--bc-space-sm);
   text-align: center;
 }
 .trust-bar strong { color: #fff; }
@@ -349,29 +481,39 @@ table.visually-hidden { white-space: normal; }
 
 /* ----- Hero ------------------------------------------------------------- */
 .hero { position: relative; overflow: hidden; }
-.hero__inner { padding-block: clamp(2.75rem, 1.5rem + 6vw, 5rem); }
+.hero.section--teal { background: var(--bc-hero-mesh); }
+.hero__inner { padding-block: clamp(2.75rem, 1.5rem + 6vw, 5rem); position: relative; z-index: 1; }
 .hero h1 { max-width: 18ch; }
 .hero .lead { max-width: 46ch; }
-.hero__cta { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.75rem; }
+.hero__cta { display: flex; flex-wrap: wrap; gap: var(--bc-space-l); margin-top: 1.75rem; }
+.hero__grid { display: grid; gap: var(--bc-space-4xl); align-items: center; }
+@media (min-width: 56rem) { .hero__grid { grid-template-columns: 1.05fr 0.95fr; gap: 2.75rem; } }
+.hero__art { display: none; }
+@media (min-width: 56rem) {
+  .hero__art { display: block; }
+  .hero__art-svg { width: 100%; height: auto; max-width: 30rem; margin-inline: auto; filter: drop-shadow(0 20px 44px rgba(4, 24, 26, 0.42)); }
+}
 .hero__promise {
-  margin-top: 2rem;
+  margin-top: var(--bc-space-4xl);
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem 1.4rem;
+  gap: var(--bc-space-sm) 1.4rem;
 }
 .hero__promise li {
   list-style: none;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--bc-space-s);
   font-weight: 600;
   margin: 0;
 }
 .hero__promise .tick {
   color: #8bf0d6;
   font-weight: 900;
-  font-size: 1.2rem;
+  font-size: var(--bc-fs-lg);
 }
+.cta-reassure { margin: var(--bc-space-l) 0 0; font-weight: 600; color: #e6f5f5; display: inline-flex; align-items: center; gap: var(--bc-space-s); }
+.cta-reassure .icon { width: 1.15rem; height: 1.15rem; color: var(--bc-gold); }
 
 /* ----- Tool / form styling --------------------------------------------- */
 .tool {
@@ -379,71 +521,102 @@ table.visually-hidden { white-space: normal; }
   border: 1px solid var(--bc-line);
   border-radius: var(--bc-radius-lg);
   box-shadow: var(--bc-shadow-sm);
-  overflow: hidden;
 }
-.tool__head { padding: 1.4rem 1.6rem; border-bottom: 1px solid var(--bc-line-soft); background: var(--bc-surface-2); }
+/* The panel headers carry the radius themselves rather than relying on an
+   overflow:hidden on the shell — a clipping shell is what silently amputated
+   dollar figures at 320px (H1) and the FAQ focus ring (H10). */
+.tool__head {
+  padding: 1.4rem var(--bc-space-3xl);
+  border-bottom: 1px solid var(--bc-line-soft);
+  background: var(--bc-surface-2);
+  border-radius: calc(var(--bc-radius-lg) - 1px) calc(var(--bc-radius-lg) - 1px) 0 0;
+}
 .tool__head h2 { margin: 0; }
-.tool__body { padding: 1.6rem; }
+.tool__body { padding: var(--bc-space-3xl); }
 .field { margin-bottom: 1.35rem; }
-.field > label, .field > .field__label {
+.field > label {
   display: block;
   font-weight: 700;
-  color: var(--bc-teal-900);
+  color: var(--bc-heading);
   margin-bottom: 0.4rem;
-  font-size: 1.05rem;
+  font-size: var(--bc-fs-ml);
 }
-.field .hint { display: block; color: var(--bc-ink-faint); font-size: 0.95rem; font-weight: 400; margin-top: 0.15rem; }
+.field .hint { display: block; color: var(--bc-ink-faint); font-size: var(--bc-fs-sm); font-weight: 400; margin-top: var(--bc-space-3xs); }
 .input, select.input, textarea.input {
   width: 100%;
   min-height: 3.25rem;
-  padding: 0.7rem 0.9rem;
-  font-size: 1.15rem;
+  padding: 0.7rem var(--bc-space-ml);
+  font-size: var(--bc-fs-l2);
   font-family: inherit;
   color: var(--bc-ink);
   background: var(--bc-surface);
-  border: 2px solid var(--bc-line);
+  border: 2px solid var(--bc-control-line);
   border-radius: 10px;
+}
+.input::placeholder, textarea.input::placeholder {
+  /* UA default placeholder grey is 3.63:1 on the dark surface. */
+  color: var(--bc-ink-faint);
+  opacity: 1;
 }
 .input:focus, select.input:focus { border-color: var(--bc-teal-600); }
 .input-group { display: flex; align-items: stretch; }
 .input-group__addon {
   display: inline-flex;
   align-items: center;
-  padding: 0 0.9rem;
+  padding: 0 var(--bc-space-ml);
   background: var(--bc-surface-3);
-  border: 2px solid var(--bc-line);
+  border: 2px solid var(--bc-control-line);
   border-right: 0;
   border-radius: 10px 0 0 10px;
   font-weight: 700;
   color: var(--bc-ink-soft);
-  font-size: 1.15rem;
+  font-size: var(--bc-fs-l2);
 }
 .input-group .input { border-radius: 0 10px 10px 0; }
 select.input {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23146066' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 0.9rem center;
+  background-position: right var(--bc-space-ml) center;
   padding-right: 2.6rem;
 }
 .field-row { display: grid; gap: 1.35rem; }
 @media (min-width: 40rem) { .field-row--2 { grid-template-columns: 1fr 1fr; } }
-.error-text { color: var(--bc-red-700); font-weight: 700; margin-top: 0.35rem; }
-.input[aria-invalid="true"] { border-color: var(--bc-red-700); }
+.error-text { color: var(--bc-bad); font-weight: 700; margin-top: var(--bc-space-xs); }
+/* Invalid-input hooks. `aria-invalid` is the semantic source of truth; the
+   `.is-invalid` alias exists for controls that cannot carry it. */
+.input[aria-invalid="true"], select.input[aria-invalid="true"], .input.is-invalid {
+  border-color: var(--bc-bad);
+  box-shadow: 0 0 0 3px var(--bc-bad-ring);
+}
+/* Stale-result masking: a tool sets data-state="empty" (or .is-stale) when the
+   figures on screen no longer answer what is currently typed. Without a rule
+   the previous answer stayed fully painted and looked current. */
+[data-state="empty"] .figure__value,
+.is-stale .figure__value { color: var(--bc-ink-faint); }
+[data-state="empty"] .figure-row,
+[data-state="empty"] .bc-chart,
+.is-stale .figure-row { opacity: 0.45; }
 
 /* ----- Result panels ---------------------------------------------------- */
 .result {
-  margin-top: 1.5rem;
+  margin-top: var(--bc-space-2xl);
   border: 1px solid var(--bc-line);
   border-radius: var(--bc-radius);
-  overflow: hidden;
 }
 .result[hidden] { display: none; }
-.result__head { background: var(--bc-teal-800); color: #fff; padding: 1rem 1.3rem; font-weight: 700; font-size: 1.15rem; }
+.result__head {
+  background: var(--bc-teal-800);
+  color: #fff;
+  padding: var(--bc-space-l) 1.3rem;
+  font-weight: 700;
+  font-size: var(--bc-fs-l2);
+  border-radius: calc(var(--bc-radius) - 1px) calc(var(--bc-radius) - 1px) 0 0;
+}
 .result__body { padding: 1.3rem; }
 .figure-row {
   display: grid;
-  gap: 1rem;
+  gap: var(--bc-space-l);
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
 }
 .figure {
@@ -453,72 +626,144 @@ select.input {
   padding: 1.1rem;
   text-align: center;
 }
-.figure__label { font-size: 0.92rem; color: var(--bc-ink-faint); font-weight: 600; }
-.figure__value { font-size: 1.9rem; font-weight: 800; color: var(--bc-teal-900); font-variant-numeric: tabular-nums; margin-top: 0.15rem; }
-.figure__value--good { color: var(--bc-green-700); }
-.figure__value--bad { color: var(--bc-red-700); }
-.figure__sub { font-size: 0.9rem; color: var(--bc-ink-faint); }
-.pd-planname { font-weight: 700; color: var(--bc-teal-900); font-size: 1.1rem; }
+.figure__label { font-size: var(--bc-fs-s2); color: var(--bc-ink-faint); font-weight: 600; }
+/* A money figure must never be silently truncated: a clipped "+$158.50" reads
+   as a finished "+$15". It may wrap and it may shrink, but the last digit is
+   always on screen. */
+.figure__value {
+  font-size: clamp(var(--bc-fs-2xl), 1.05rem + 1.6vw, var(--bc-fs-4xl));
+  font-weight: 800;
+  color: var(--bc-heading);
+  font-variant-numeric: tabular-nums;
+  margin-top: var(--bc-space-3xs);
+  overflow-wrap: break-word;
+  hyphens: none;
+}
+.figure__value--good { color: var(--bc-good); }
+.figure__value--bad { color: var(--bc-bad); }
+.figure__sub { font-size: var(--bc-fs-s); color: var(--bc-ink-faint); }
+.pd-planname { font-weight: 700; color: var(--bc-heading); font-size: var(--bc-fs-l); }
+/* Result outcome headline (plain-language bottom line before the figures).
+   Carries the calculator's plain-language answer, inside .result__body — the
+   title bar above it is reversed out on teal and is not a place for a sentence. */
+.result__headline { font-size: clamp(var(--bc-fs-2xl), 1.1rem + 1vw, 1.65rem); line-height: 1.25; color: var(--bc-heading); font-weight: 800; font-variant-numeric: tabular-nums; margin: 0 0 var(--bc-space-ml); }
+
+/* At the narrowest viewport four nested paddings leave a ~62px content box for
+   a figure, which is where the truncation started. Trim the nesting instead of
+   the number. */
+@media (max-width: 21rem) {
+  .wrap { padding-inline: var(--bc-space-ml); }
+  .tool__body { padding: var(--bc-space-l); }
+  .result__body { padding: var(--bc-space-ml); }
+  .figure { padding: var(--bc-space-ml) var(--bc-space-s); }
+  /* "BenefitDial" is one unbreakable word; at the largest text setting on the
+     narrowest screen it alone is wider than the header. Step the wordmark down
+     rather than let it break mid-word or scroll the page. */
+  .brand { font-size: var(--bc-fs-l); }
+  .brand__mark { width: 2rem; height: 2rem; }
+  .btn { padding-inline: var(--bc-space-l); }
+  .btn--lg { padding-inline: var(--bc-space-xl); }
+}
 
 /* ----- Tables ----------------------------------------------------------- */
-.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  /* enhance.js adds .is-scrollable (plus tabindex/role, so the region is
+     keyboard-reachable) only when the table really overflows, and toggles
+     .at-start/.at-end as it scrolls. */
+}
+.table-scroll.is-scrollable {
+  box-shadow: inset -1.15rem 0 0.9rem -1rem rgba(11, 59, 63, 0.5),
+              inset 1.15rem 0 0.9rem -1rem rgba(11, 59, 63, 0.5);
+  scrollbar-color: var(--bc-teal-600) var(--bc-surface-3);
+}
+.table-scroll.is-scrollable.at-start { box-shadow: inset -1.15rem 0 0.9rem -1rem rgba(11, 59, 63, 0.5); }
+.table-scroll.is-scrollable.at-end { box-shadow: inset 1.15rem 0 0.9rem -1rem rgba(11, 59, 63, 0.5); }
+.table-scroll.is-scrollable.at-start.at-end { box-shadow: none; }
 table.data {
   width: 100%;
   border-collapse: collapse;
-  font-size: 1.02rem;
+  font-size: var(--bc-fs-m2);
 }
-table.data caption { text-align: left; font-weight: 700; color: var(--bc-teal-900); margin-bottom: 0.6rem; }
+table.data caption { text-align: left; font-weight: 700; color: var(--bc-heading); margin-bottom: var(--bc-space-sm); }
 table.data th, table.data td {
   text-align: left;
-  padding: 0.8rem 0.9rem;
+  padding: 0.8rem var(--bc-space-ml);
   border-bottom: 1px solid var(--bc-line-soft);
   vertical-align: top;
 }
-table.data thead th { background: var(--bc-surface-2); color: var(--bc-teal-900); border-bottom: 2px solid var(--bc-line); white-space: nowrap; }
+table.data thead th { background: var(--bc-surface-2); color: var(--bc-heading); border-bottom: 2px solid var(--bc-line); white-space: nowrap; }
 table.data tbody tr:hover { background: var(--bc-surface-2); }
 table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .cell-change { font-weight: 700; }
-.cell-change--up { color: var(--bc-red-700); }
-.cell-change--down { color: var(--bc-green-700); }
+.cell-change--up { color: var(--bc-bad); }
+.cell-change--down { color: var(--bc-good); }
 .cell-change--flat { color: var(--bc-ink-faint); }
 
 /* ----- Callouts --------------------------------------------------------- */
 .callout {
   border: 1px solid var(--bc-line);
-  border-left: 6px solid var(--bc-teal-600);
+  border-left: 6px solid var(--bc-accent-2);
   background: var(--bc-surface);
   border-radius: var(--bc-radius);
   padding: 1.1rem 1.3rem;
 }
 .callout > :last-child { margin-bottom: 0; }
-.callout--warn { border-left-color: var(--bc-amber-500); background: #fffbf2; }
-.callout--info { border-left-color: var(--bc-teal-600); background: var(--bc-teal-050); }
-.callout__title { font-weight: 800; color: var(--bc-teal-900); margin-bottom: 0.35rem; }
+.callout--warn { border-left-color: var(--bc-amber-500); background: var(--bc-callout-warn-bg); }
+.callout--info { border-left-color: var(--bc-accent-2); background: var(--bc-teal-050); }
+/* Louder variant for a caveat that qualifies the numbers themselves (e.g. a
+   "these are sample figures" banner) — it has to read as part of the answer,
+   not as page furniture. */
+.callout--sample {
+  border: 2px solid var(--bc-amber-500);
+  border-left-width: 6px;
+  background: var(--bc-callout-warn-bg);
+  box-shadow: var(--bc-shadow-sm);
+}
+.callout--sample .callout__title { color: var(--bc-warn); }
+.callout__title { font-weight: 800; color: var(--bc-heading); margin-bottom: var(--bc-space-xs); }
 
 /* ----- Ad slots (the honest business model, labelled clearly) ----------- */
 .ad-slot {
   margin-inline: auto;
   max-width: var(--bc-maxw);
-  padding-inline: 1.25rem;
+  padding-inline: var(--bc-space-xl);
 }
+/* Reserve the REAL IAB creative height, in px, per breakpoint. The old
+   min-height was placeholder-derived (104-181px, matching no IAB unit), so
+   inserting an actual creative moved everything below it — up to 195px of
+   shove and CLS over the 0.1 threshold. Fixed height (not min-height) is the
+   point: the box must not be content-sized, or the placeholder copy sets it. */
 .ad-slot__frame {
   display: grid;
   place-items: center;
+  height: 100px;                /* 320x100 large mobile banner */
+  overflow: hidden;
   border: 1px dashed var(--bc-line);
   border-radius: var(--bc-radius);
-  background: repeating-linear-gradient(45deg, #f6f8f8, #f6f8f8 12px, #f1f4f4 12px, #f1f4f4 24px);
+  background: repeating-linear-gradient(45deg, var(--bc-adstripe-a), var(--bc-adstripe-a) 12px, var(--bc-adstripe-b) 12px, var(--bc-adstripe-b) 24px);
   color: var(--bc-ink-faint);
   text-align: center;
-  min-height: 6.5rem;
-  padding: 1rem;
+  padding: 8px 12px;
+  /* px, like the box itself: the frame is a fixed px ad rectangle, so its
+     placeholder chrome must fit it at any root font size. It is replaced
+     wholesale by the creative once a network is live. */
+  font-size: 13px;
+  line-height: 1.35;
+}
+.ad-slot--in-article .ad-slot__frame { height: 250px; }   /* 300x250 medium rectangle */
+@media (min-width: 48rem) {
+  .ad-slot__frame { height: 90px; }                        /* 728x90 leaderboard */
+  .ad-slot--in-article .ad-slot__frame { height: 280px; }  /* 336x280 large rectangle */
 }
 .ad-slot__label {
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  font-size: 0.68rem;
+  font-size: 11px;
   font-weight: 700;
   color: var(--bc-ink-faint);
-  margin-bottom: 0.25rem;
+  margin-bottom: 4px;
 }
 .ad-slot--in-article { margin-block: 2.25rem; }
 
@@ -535,12 +780,12 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
   content: "";
   position: absolute;
   left: 0.2rem; top: 0.3rem;
-  width: 1rem; height: 1rem;
+  width: var(--bc-space-l); height: var(--bc-space-l);
   border-radius: 50%;
-  background: var(--bc-teal-600);
+  background: var(--bc-accent-2);
   box-shadow: 0 0 0 4px var(--bc-teal-050);
 }
-.timeline .date { font-weight: 800; color: var(--bc-teal-800); display: block; }
+.timeline .date { font-weight: 800; color: var(--bc-heading); display: block; }
 
 /* ----- FAQ / details ---------------------------------------------------- */
 details.faq {
@@ -548,22 +793,29 @@ details.faq {
   border-radius: var(--bc-radius);
   background: var(--bc-surface);
   margin-bottom: 0.85rem;
-  overflow: hidden;
+  /* No overflow:hidden here: it clipped 100% of the summary's focus ring,
+     leaving 47 tab stops across the site with no visible focus indicator. */
 }
 details.faq > summary {
   cursor: pointer;
   list-style: none;
   padding: 1.05rem 1.3rem;
   font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--bc-teal-900);
+  font-size: var(--bc-fs-l);
+  color: var(--bc-heading);
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  gap: var(--bc-space-l);
   align-items: center;
+  border-radius: calc(var(--bc-radius) - 1px);
+  /* `anywhere` rather than `break-word`: only `anywhere` lowers the intrinsic
+     minimum size, which is what lets this flex line shrink to the box instead
+     of pushing the page sideways. Renders identically when there is room. */
+  overflow-wrap: anywhere;
 }
+details.faq[open] > summary { border-radius: calc(var(--bc-radius) - 1px) calc(var(--bc-radius) - 1px) 0 0; }
 details.faq > summary::-webkit-details-marker { display: none; }
-details.faq > summary::after { content: "+"; font-size: 1.5rem; color: var(--bc-teal-600); font-weight: 400; line-height: 1; }
+details.faq > summary::after { content: "+"; flex: none; font-size: var(--bc-fs-3xl); color: var(--bc-accent-2); font-weight: 400; line-height: 1; }
 details.faq[open] > summary::after { content: "\2013"; }
 details.faq .faq__body { padding: 0 1.3rem 1.2rem; }
 details.faq .faq__body > :last-child { margin-bottom: 0; }
@@ -572,8 +824,8 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
 .site-footer {
   background: var(--bc-teal-900);
   color: #d3ecec;
-  padding-block: 3rem 2rem;
-  margin-top: 3rem;
+  padding-block: var(--bc-space-5xl) var(--bc-space-4xl);
+  margin-top: var(--bc-space-5xl);
 }
 /* .muted (--bc-ink-faint) is tuned for light page surfaces; the footer is
    always dark regardless of theme, so it needs its own light-on-dark muted
@@ -581,109 +833,81 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
 .site-footer .muted { color: #a9d4d3; }
 .site-footer a { color: #d7f0f0; }
 .site-footer a:hover { color: #fff; }
-.site-footer h4 { color: #fff; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.06em; }
-.footer-grid { display: grid; gap: 2rem; grid-template-columns: 1fr; }
+/* h3 as well as h4: the footer column headings are h3 so the document never
+   skips a level, but they are styled as small caps labels either way. */
+.site-footer h3, .site-footer h4 { color: #fff; text-transform: uppercase; letter-spacing: 0.06em; }
+.footer-grid { display: grid; gap: var(--bc-space-4xl); grid-template-columns: 1fr; }
 @media (min-width: 42rem) { .footer-grid { grid-template-columns: 1.6fr 1fr 1fr; } }
 .site-footer ul { list-style: none; padding: 0; margin: 0; }
-.site-footer li { margin-bottom: 0.5rem; }
+.site-footer li { margin-bottom: var(--bc-space-s); }
 .footer-disclaimer {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
+  margin-top: var(--bc-space-4xl);
+  padding-top: var(--bc-space-2xl);
   border-top: 1px solid rgba(255,255,255,0.15);
-  font-size: 0.92rem;
+  font-size: var(--bc-fs-s2);
   color: #b8d8d8;
 }
-.footer-disclaimer p { margin-bottom: 0.75rem; }
+.footer-disclaimer p { margin-bottom: var(--bc-space-m); }
 
 /* ----- Misc utilities --------------------------------------------------- */
-.tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
-.dl-clean { margin: 0; }
-.dl-clean div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.55rem 0; border-bottom: 1px solid var(--bc-line-soft); }
-.dl-clean dt { color: var(--bc-ink-soft); }
-.dl-clean dd { margin: 0; font-weight: 700; color: var(--bc-teal-900); text-align: right; }
-.print-hint { display: none; }
-
 /* ----- Charts (inline SVG, dependency-free, accessible) ----------------- */
 .bc-chart { margin: 1.75rem 0; max-width: 42rem; }
 .bc-chart svg { width: 100%; height: auto; display: block; overflow: visible; }
-.bc-chart figcaption { font-size: 0.95rem; color: var(--bc-ink-faint); margin-top: 0.75rem; }
+.bc-chart figcaption { font-size: var(--bc-fs-sm); color: var(--bc-ink-faint); margin-top: var(--bc-space-m); }
 .bc-gridline { stroke: var(--bc-line-soft); stroke-width: 1; }
 .bc-axis { stroke: var(--bc-line); stroke-width: 1.5; }
-.bc-bar { fill: var(--bc-teal-600); }
-.bc-bar--prev { fill: var(--bc-teal-800); }
+.bc-bar { fill: var(--bc-chart-bar); }
+.bc-bar--prev { fill: var(--bc-chart-bar-prev); }
 .bc-bar--accent { fill: var(--bc-amber-500); }
 .bc-bar--est { fill: var(--bc-teal-500); opacity: 0.5; }
-.bc-bar-value { fill: var(--bc-teal-900); font-weight: 800; font-size: 19px; font-family: var(--bc-font-sans); }
+.bc-bar-value { fill: var(--bc-heading); font-weight: 800; font-size: 19px; font-family: var(--bc-font-sans); }
 .bc-bar-label { fill: var(--bc-ink-soft); font-weight: 700; font-size: 17px; font-family: var(--bc-font-sans); }
-.bc-bar-sub { fill: var(--bc-amber-600); font-weight: 700; font-size: 14px; font-family: var(--bc-font-sans); }
+.bc-bar-sub { fill: var(--bc-warn); font-weight: 700; font-size: 14px; font-family: var(--bc-font-sans); }
 @media (prefers-reduced-motion: no-preference) {
   .bc-bar, .bc-flow-seg--keep, .bc-flow-seg--partb { transition: y 0.5s ease, height 0.5s ease, x 0.5s ease, width 0.5s ease; }
+}
+/* Chart text is sized in user units inside a fixed 720-wide viewBox, so a
+   320px phone scales every label down to 5-9px. Until the generator sizes its
+   viewBox to the container (scripts/lib/svgcharts.mjs), give narrow screens a
+   scrollable chart at a legible floor rather than an unreadable fitted one.
+   The visually-hidden data table stays the primary accessible path. */
+@media (max-width: 34rem) {
+  .bc-chart { overflow-x: auto; overscroll-behavior-x: contain; }
+  .bc-chart svg { min-width: 30rem; }
 }
 
 /* Live COLA "where your raise goes" flow chart */
 .bc-flow-track { fill: var(--bc-surface-3); }
 .bc-flow-seg--keep { fill: var(--bc-green-700); }
 .bc-flow-seg--partb { fill: var(--bc-amber-600); }
-.bc-flow-tick { stroke: var(--bc-ink-soft); stroke-width: 2; stroke-dasharray: 3 3; }
 .bc-flow-rowlabel { fill: var(--bc-ink-soft); font-weight: 700; font-size: 15px; font-family: var(--bc-font-sans); }
 .bc-flow-value { fill: #ffffff; font-weight: 800; font-size: 15px; font-family: var(--bc-font-sans); }
-.bc-flow-cap { fill: var(--bc-ink-faint); font-size: 13px; font-family: var(--bc-font-sans); }
-.bc-legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-top: 0.85rem; font-size: 0.95rem; color: var(--bc-ink-soft); }
+.bc-legend { display: flex; flex-wrap: wrap; gap: var(--bc-space-s) var(--bc-space-xl); margin-top: 0.85rem; font-size: var(--bc-fs-sm); color: var(--bc-ink-soft); }
 .bc-legend span { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 600; }
 .bc-legend i { width: 0.95rem; height: 0.95rem; border-radius: 3px; display: inline-block; flex: none; }
 .bc-legend i.keep { background: var(--bc-green-700); }
 .bc-legend i.partb { background: var(--bc-amber-600); }
 
-/* ----- Dark mode (opt-in via prefers-color-scheme; light stays primary) - */
 /* ======================================================================
    Visual enhancements — icons, hero art, provenance, depth, steps, motion
-   Colors route through tokens; dark overrides live in the dark-mode block.
    ====================================================================== */
 
 /* Inline-SVG icon system */
-.icon { width: 1.5rem; height: 1.5rem; flex: none; display: inline-block; vertical-align: -0.18em; fill: none; stroke: currentColor; }
+.icon { width: var(--bc-fs-3xl); height: var(--bc-fs-3xl); flex: none; display: inline-block; vertical-align: -0.18em; fill: none; stroke: currentColor; }
 .card__icon .icon { width: 1.75rem; height: 1.75rem; }
-.btn .icon { width: 1.2rem; height: 1.2rem; }
-.card__icon { box-shadow: inset 0 0 0 1px var(--bc-teal-050); }
-
-/* Hero: mesh bg, two-column, focal art, reassurance line */
-.hero.section--teal { background: var(--bc-hero-mesh); }
-.hero__inner { position: relative; z-index: 1; }
-.hero__grid { display: grid; gap: 2rem; align-items: center; }
-@media (min-width: 56rem) { .hero__grid { grid-template-columns: 1.05fr 0.95fr; gap: 2.75rem; } }
-.hero__art { display: none; }
-@media (min-width: 56rem) {
-  .hero__art { display: block; }
-  .hero__art-svg { width: 100%; height: auto; max-width: 30rem; margin-inline: auto; filter: drop-shadow(0 20px 44px rgba(4, 24, 26, 0.42)); }
-}
-.cta-reassure { margin: 1rem 0 0; font-weight: 600; color: #e6f5f5; display: inline-flex; align-items: center; gap: 0.5rem; }
-.cta-reassure .icon { width: 1.15rem; height: 1.15rem; color: var(--bc-gold); }
-
-/* Result outcome headline (plain-language bottom line before the figures) */
-.result__headline { font-size: clamp(1.35rem, 1.1rem + 1vw, 1.65rem); line-height: 1.25; color: var(--bc-teal-900); font-weight: 800; font-variant-numeric: tabular-nums; margin: 0 0 0.9rem; }
+.btn .icon { width: var(--bc-fs-lg); height: var(--bc-fs-lg); }
 
 /* Data provenance — full band + compact strip */
-.provenance { border: 1px solid var(--bc-line); background: var(--bc-surface); border-radius: var(--bc-radius-lg); padding: 1.4rem 1.6rem; box-shadow: var(--bc-shadow-sm); }
-.provenance__chips { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; margin-bottom: 0.9rem; }
-.provenance__chip { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 700; color: var(--bc-teal-900); font-size: 1rem; }
-.provenance__mono { display: inline-grid; place-items: center; min-width: 2.7rem; height: 2.1rem; padding: 0 0.5rem; border-radius: 9px; background: var(--bc-ill-fill); color: var(--bc-teal-800); border: 1px solid var(--bc-teal-050); font-weight: 800; letter-spacing: 0.02em; font-size: 0.92rem; }
+.provenance { border: 1px solid var(--bc-line); background: var(--bc-surface); border-radius: var(--bc-radius-lg); padding: 1.4rem var(--bc-space-3xl); box-shadow: var(--bc-shadow-sm); }
+.provenance__chips { display: flex; flex-wrap: wrap; gap: var(--bc-space-m) var(--bc-space-xl); margin-bottom: var(--bc-space-ml); }
+/* wrap, not nowrap: a single chip was 291px wide inside a 181px box at 320px
+   and dragged the whole page into horizontal scroll. */
+.provenance__chip { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--bc-space-sm); font-weight: 700; color: var(--bc-heading); font-size: var(--bc-fs-m); }
+.provenance__mono { display: inline-grid; place-items: center; min-width: 2.7rem; height: 2.1rem; padding: 0 var(--bc-space-s); border-radius: 9px; background: var(--bc-ill-fill); color: var(--bc-accent-on-tint); border: 1px solid var(--bc-teal-050); font-weight: 800; letter-spacing: 0.02em; font-size: var(--bc-fs-s2); }
 .provenance__note { margin: 0; color: var(--bc-ink-soft); }
-.datasource { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.85rem; margin: 0 0 1.1rem; font-size: 0.95rem; }
+.datasource { display: flex; flex-wrap: wrap; align-items: center; gap: var(--bc-space-s) 0.85rem; margin: 0 0 1.1rem; font-size: var(--bc-fs-sm); }
 .datasource__fresh { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; color: var(--bc-ink-soft); }
-.datasource__fresh .icon { width: 1.05rem; height: 1.05rem; color: var(--bc-teal-600); }
-
-/* Card depth + hover accent bar */
-.card--link { position: relative; overflow: hidden; }
-.card--link:hover { box-shadow: var(--bc-shadow-lg); }
-.card--link::before { content: ""; position: absolute; left: 0; top: 0; height: 4px; width: 100%; background: linear-gradient(90deg, var(--bc-teal-500), var(--bc-amber-500)); transform: scaleX(0); transform-origin: left; }
-@media (prefers-reduced-motion: no-preference) {
-  .card--link::before { transition: transform 0.32s var(--bc-reveal-ease); }
-  .card--link:hover::before, .card--link:focus-within::before { transform: scaleX(1); }
-}
-
-/* Section arc dividers — set color to the NEIGHBOR section's background */
-svg.section-divider { display: block; width: 100%; height: 52px; color: var(--bc-surface); }
-.section-divider path { fill: currentColor; }
+.datasource__fresh .icon { width: var(--bc-fs-ml); height: var(--bc-fs-ml); color: var(--bc-accent-2); }
 
 /* Decorative clock-ripple on teal panels */
 .section--teal { position: relative; }
@@ -694,9 +918,9 @@ svg.section-divider { display: block; width: 100%; height: 52px; color: var(--bc
 /* Numbered steps */
 .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1rem; }
 .steps li { margin: 0; }
-.step { display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start; }
-.step__num { width: 2.75rem; height: 2.75rem; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--bc-teal-700); color: #fff; font-weight: 800; font-size: 1.2rem; box-shadow: 0 0 0 4px var(--bc-teal-050); }
-.step__title { font-weight: 800; color: var(--bc-teal-900); margin: 0.15rem 0 0.15rem; font-size: 1.12rem; }
+.step { display: grid; grid-template-columns: auto 1fr; gap: var(--bc-space-l); align-items: start; }
+.step__num { width: 2.75rem; height: 2.75rem; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--bc-teal-700); color: #fff; font-weight: 800; font-size: var(--bc-fs-lg); box-shadow: 0 0 0 4px var(--bc-teal-050); }
+.step__title { font-weight: 800; color: var(--bc-heading); margin: var(--bc-space-3xs) 0; font-size: var(--bc-fs-lg); }
 .step p { margin: 0; }
 
 /* Scroll-reveal — base fully visible; only JS arms the hidden state */
@@ -708,15 +932,24 @@ svg.section-divider { display: block; width: 100%; height: 52px; color: var(--bc
 
 /* Header text-size control */
 .textsize { display: inline-flex; align-items: center; gap: 0.2rem; }
-.textsize__label { font-size: 0.8rem; font-weight: 700; color: var(--bc-ink-faint); margin-right: 0.15rem; }
-.textsize__btn { min-width: 2.75rem; min-height: 2.75rem; display: grid; place-items: center; border: 2px solid var(--bc-line); background: var(--bc-surface); color: var(--bc-teal-800); border-radius: 9px; font-weight: 800; cursor: pointer; line-height: 1; }
+.textsize__label { font-size: var(--bc-fs-2xs); font-weight: 700; color: var(--bc-ink-faint); margin-right: var(--bc-space-3xs); }
+.textsize__btn { min-width: 2.75rem; min-height: 2.75rem; display: grid; place-items: center; border: 2px solid var(--bc-control-line); background: var(--bc-surface); color: var(--bc-teal-800); border-radius: 9px; font-weight: 800; cursor: pointer; line-height: 1; }
 .textsize__btn:hover { border-color: var(--bc-teal-600); }
 .textsize__btn[aria-pressed="true"] { background: var(--bc-teal-700); color: #fff; border-color: var(--bc-teal-700); }
-.textsize__btn.s1 { font-size: 0.82rem; } .textsize__btn.s2 { font-size: 1rem; } .textsize__btn.s3 { font-size: 1.18rem; }
+.textsize__btn.s1 { font-size: var(--bc-fs-xs); } .textsize__btn.s2 { font-size: var(--bc-fs-m); } .textsize__btn.s3 { font-size: var(--bc-fs-lg); }
 @media (max-width: 30rem) { .textsize__label { display: none; } }
 
-@media (prefers-color-scheme: dark) {
+/* ----- Dark mode -------------------------------------------------------
+   Scoped to `screen` on purpose: Chromium keeps prefers-color-scheme:dark
+   active while printing, and a dark theme on white paper printed headings at
+   2.48:1. Nothing in here can reach the print stylesheet.
+
+   This block remaps TOKENS. Component rules live above and are theme-agnostic;
+   the handful of rules at the end are cases where dark needs a different
+   relationship, not just a different value. */
+@media screen and (prefers-color-scheme: dark) {
   :root {
+    /* Neutrals */
     --bc-ink: #e9f1ef;
     --bc-ink-soft: #b8c7c4;
     --bc-ink-faint: #90a29e;
@@ -727,6 +960,32 @@ svg.section-divider { display: block; width: 100%; height: 52px; color: var(--bc
     --bc-surface-3: #1e2d2b;
     --bc-teal-050: #10302f;
     --bc-bg: #0d1615;
+
+    /* Semantic roles */
+    --bc-heading: #eefaf9;
+    --bc-accent: #8fe0e2;
+    --bc-accent-2: #7fd3d6;
+    --bc-accent-on-tint: #8fe0e2;
+    --bc-link: #7ecbd0;
+    --bc-link-hover: #a5e3e6;
+    --bc-good: #6ee7a8;
+    --bc-bad: #fca5a5;
+    --bc-bad-ring: rgba(252, 165, 165, 0.22);
+    --bc-warn: #f5c451;
+    --bc-control-line: #5d706c;
+    --bc-chart-bar: var(--bc-teal-500);
+    --bc-chart-bar-prev: var(--bc-teal-600);
+    --bc-callout-warn-bg: #241d0f;
+    --bc-adstripe-a: #16211f;
+    --bc-adstripe-b: #1a2725;
+
+    /* Status chips — these used to stay light-mode chips in dark. */
+    --bc-chip-good-bg: #102b1c;              --bc-chip-good-fg: #6ee7a8;
+    --bc-chip-warn-bg: #33270d;              --bc-chip-warn-fg: #f5c451;
+    --bc-chip-bad-bg: #3a1717;               --bc-chip-bad-fg: #fca5a5;
+    --bc-chip-info-bg: var(--bc-teal-050);   --bc-chip-info-fg: #8fe0e2;
+    --bc-chip-neutral-bg: var(--bc-surface-3); --bc-chip-neutral-fg: var(--bc-ink-soft);
+
     /* Illustration + depth tokens, dark theme */
     --bc-ill-line: #8fe0e2;
     --bc-ill-fill: #10302f;
@@ -738,62 +997,46 @@ svg.section-divider { display: block; width: 100%; height: 52px; color: var(--bc
       radial-gradient(90% 70% at 8% 115%, rgba(42, 145, 153, 0.22), transparent 60%),
       linear-gradient(160deg, #0f4b50, #0a2f32);
   }
-  body { color: var(--bc-ink); background: var(--bc-bg); }
-  h1, h2, h3, h4 { color: #eefaf9; }
+  /* Relationships that differ in dark, not just values. */
   .site-header { background: rgba(13, 22, 21, 0.9); }
-  .card, .tool, .callout { background: var(--bc-surface); }
-  .btn--primary { background: var(--bc-amber-500); color: #241402; }
-  .ad-slot__frame { background: repeating-linear-gradient(45deg, #16211f, #16211f 12px, #1a2725 12px, #1a2725 24px); }
-  .callout--warn { background: #241d0f; }
-
-  /* Text that hard-codes dark teal tokens as its COLOR must lighten in dark mode
-     (the tokens stay dark where they're used as opaque BACKGROUNDS). WCAG 1.4.3. */
-  h1, h2, h3, h4,
-  .field > label, .field > .field__label,
-  .figure__value,
-  .callout__title,
-  table.data caption, table.data thead th,
-  .timeline .date,
-  .dl-clean dd,
-  .brand, .brand:hover,
-  details.faq > summary,
-  .pd-planname { color: #eefaf9; }
-  .eyebrow { color: #7fd3d6; }
-  .figure__value--good { color: #6ee7a8; }
-  .figure__value--bad { color: #fca5a5; }
-  .cell-change--up { color: #fca5a5; }
-  .cell-change--down { color: #6ee7a8; }
-  .badge--info { background: #10302f; color: #8fe0e2; }
-  .badge--neutral { background: #1e2d2b; color: #cbd5d1; }
-  .primary-nav a[aria-current="page"] { color: #8fe0e2; }
-  .card__icon { color: #8fe0e2; }
+  .btn--primary { color: #241402; }
   .btn--ghost { color: #d7efef; }
-  a { color: #7ecbd0; }
-  .callout--info a, .card--link .badge { color: #8fe0e2; }
-  .bc-bar-value { fill: #eefaf9; }
-  .bc-bar-label { fill: #cbd5d1; }
-  .bc-bar-sub { fill: #f5c451; }
-  .bc-bar { fill: #2a9199; }
-  .bc-bar--prev { fill: #1a7a80; }
-  .bc-flow-track { fill: #1e2d2b; }
-  .bc-flow-seg--keep { fill: #15803d; }
-  .bc-flow-rowlabel { fill: #cbd5d1; }
-  .bc-flow-cap { fill: #90a29e; }
-  .bc-legend { color: #cbd5d1; }
-  .bc-legend i.keep { background: #15803d; }
-  /* Visual-enhancement components — light foreground on dark surfaces */
-  .provenance__chip, .step__title, .result__headline { color: #eefaf9; }
-  .provenance__mono { background: #10302f; color: #8fe0e2; border-color: #234a49; }
-  .cta-reassure { color: #e6f5f5; }
-  .textsize__btn { background: var(--bc-surface); color: #cfeaea; border-color: var(--bc-line); }
-  .textsize__btn[aria-pressed="true"] { background: var(--bc-teal-600); color: #fff; border-color: var(--bc-teal-600); }
+  .provenance__mono { border-color: #234a49; }
+  .textsize__btn { color: #cfeaea; }
+  .textsize__btn[aria-pressed="true"] { background: var(--bc-teal-600); border-color: var(--bc-teal-600); }
+  .callout--info a, .card--link .badge { color: var(--bc-accent); }
 }
 
-/* ----- Print ------------------------------------------------------------ */
+/* ----- Print ------------------------------------------------------------
+   Two separate problems are handled here: the dark theme (already excluded by
+   the `screen` scope above) and reversed-out surfaces. Printers drop
+   backgrounds by default, so white-on-teal panels print white-on-white; the
+   teal grounds have to be flattened, not just left alone. */
 @media print {
-  .site-header, .site-footer, .trust-bar, .ad-slot, .hero__cta, .nav-toggle, .btn { display: none !important; }
+  :root { color-scheme: light; }
+  .site-header, .site-footer, .trust-bar, .ad-slot, .hero__cta,
+  .nav-toggle, .btn, .bc-ripple { display: none !important; }
   body { font-size: 12pt; color: #000; background: #fff; }
-  .print-hint { display: block; }
+  /* Reversed-out surfaces → flat black on white. */
+  .section--teal, .hero.section--teal, .result__head {
+    background: none !important;
+    color: #000 !important;
+  }
+  .section--teal h1, .section--teal h2, .section--teal h3,
+  .section--teal .lead, .section--teal .eyebrow, .cta-reassure,
+  .hero__promise .tick, .trust-bar .tick { color: #000 !important; }
+  .result__head { border-bottom: 1pt solid #999; font-weight: 800; }
+  /* Everything that carries --bc-heading, spelled out so it cannot depend on
+     which theme the browser happened to be in. */
+  h1, h2, h3, h4, .figure__value, .pd-planname, .result__headline,
+  table.data caption, table.data thead th, .callout__title, .timeline .date,
+  .brand, details.faq > summary, .provenance__chip,
+  .step__title, .field > label { color: #000 !important; }
+  .muted, .figure__label, .figure__sub, .footer-disclaimer, .bc-chart figcaption { color: #333 !important; }
+  .badge { background: none !important; color: #000 !important; border: 1pt solid #666; }
+  .bc-bar-value { fill: #000; }
+  .bc-bar-label, .bc-flow-rowlabel, .bc-legend { fill: #333; color: #333; }
   .result, .card, .tool { break-inside: avoid; border-color: #999; }
+  .table-scroll { overflow: visible !important; box-shadow: none !important; }
   a[href]::after { content: " (" attr(href) ")"; font-size: 0.85em; color: #444; }
 }

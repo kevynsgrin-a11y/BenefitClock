@@ -1,4 +1,4 @@
-<svg class="hero__art-svg" viewBox="0 0 480 380" role="img" aria-label="Example: a Social Security payment slip and a Medicare plan card shown side by side, with a clock" preserveAspectRatio="xMidYMid meet">
+<svg class="hero__art-svg" viewBox="0 0 480 380" role="img" aria-label="Illustration: a sample Social Security payment slip showing the confirmed {{COLA_CONFIRMED_YEAR}} raise of {{COLA_CONFIRMED}} percent, next to a sample Medicare plan card, with a clock" preserveAspectRatio="xMidYMid meet">
   <!-- Social Security payment slip -->
   <g>
     <rect x="34" y="70" width="230" height="250" rx="16" fill="var(--bc-ill-line)" opacity=".18"/>
@@ -18,7 +18,7 @@
     <!-- gold pill -->
     <g>
       <rect x="150" y="286" width="132" height="30" rx="15" fill="var(--bc-ill-gold)"/>
-      <text x="216" y="306" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="14" font-weight="700" fill="var(--bc-teal-900)">+2.7% · +$61/mo</text>
+      <text x="216" y="306" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="14" font-weight="700" fill="var(--bc-teal-900)">{{COLA_CONFIRMED_YEAR}}: +{{COLA_CONFIRMED}}%</text>
     </g>
   </g>
 
@@ -48,9 +48,10 @@
     <circle cx="416" cy="70" r="3.5" fill="var(--bc-ill-gold)"/>
   </g>
 
-  <!-- Example badge, bottom-left corner -->
+  <!-- "Sample documents" badge, tucked against the slip it describes rather than
+       stranded in the far corner, so the mock-up never reads as a real statement. -->
   <g>
-    <rect x="18" y="336" width="94" height="28" rx="14" fill="var(--bc-teal-800)" stroke="var(--bc-ill-gold)" stroke-width="1.5"/>
-    <text x="65" y="354" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="13" font-weight="700" letter-spacing=".5" fill="var(--bc-ill-gold)">EXAMPLE</text>
+    <rect x="28" y="318" width="94" height="28" rx="14" fill="var(--bc-teal-800)" stroke="var(--bc-ill-gold)" stroke-width="1.5"/>
+    <text x="75" y="336" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="13" font-weight="700" letter-spacing=".5" fill="var(--bc-ill-gold)">SAMPLE</text>
   </g>
 </svg>
