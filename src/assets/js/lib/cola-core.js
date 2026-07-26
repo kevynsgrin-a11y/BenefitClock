@@ -109,6 +109,12 @@ export function projectBenefit(p) {
   };
 }
 
+/* The typographic minus sign. Intl formats negatives with an ASCII hyphen,
+   which is narrower and reads as a dash next to a real minus — so every
+   formatter here emits the same character in adjacent result tiles. */
+const MINUS = "−";
+const withRealMinus = (s) => s.replace(/-/g, MINUS);
+
 /**
  * Format a number as whole-dollar USD (no cents) — the friendliest form for
  * monthly benefit figures.
@@ -117,11 +123,11 @@ export function projectBenefit(p) {
  */
 export function usd(n) {
   const v = Number.isFinite(n) ? n : 0;
-  return v.toLocaleString("en-US", {
+  return withRealMinus(v.toLocaleString("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
-  });
+  }));
 }
 
 /**
@@ -131,12 +137,12 @@ export function usd(n) {
  */
 export function usdCents(n) {
   const v = Number.isFinite(n) ? n : 0;
-  return v.toLocaleString("en-US", {
+  return withRealMinus(v.toLocaleString("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  });
+  }));
 }
 
 /**
@@ -145,7 +151,129 @@ export function usdCents(n) {
  * @returns {string}
  */
 export function signedUsd(n, cents = false) {
-  const sign = n > 0 ? "+" : n < 0 ? "−" : "";
+  const sign = n > 0 ? "+" : n < 0 ? MINUS : "";
   const body = cents ? usdCents(Math.abs(n)) : usd(Math.abs(n));
   return `${sign}${body}`;
+}
+
+/* ==========================================================================
+   Reading what a person typed
+   People write money the way they say it: "2000", "2,000", "$2,000", "202.90",
+   "3.6%". They also mistype it: "185,00", "1e12", "-500", "". The rule here is
+   that anything we cannot read confidently comes back as null, so the caller
+   asks again instead of quietly salvaging digits and answering a question the
+   user never asked.
+   ========================================================================== */
+
+/** Bounds used by the validators below. Generous, but tight enough to catch a
+    slipped keystroke before it becomes a dollar figure on screen. */
+export const LIMITS = {
+  benefitMax: 25000,  // far above the largest Social Security benefit
+  partBMax: 1000,     // above the highest income-related (IRMAA) Part B amount
+  colaMax: 20,        // the largest COLA on record is 14.3% (1980)
+};
+
+/**
+ * Parse a dollar or percent amount typed by a person.
+ * Accepts optional sign, a leading "$", a trailing "%", and US thousands
+ * grouping. Rejects anything else — including a decimal comma ("185,00"),
+ * exponent notation ("1e12") and stray letters.
+ * @param {unknown} raw
+ * @returns {number|null} the number, or null if it is not readable as one
+ */
+export function parseAmount(raw) {
+  if (raw === undefined || raw === null) return null;
+  let s = String(raw).trim();          // trimmed, but a space *inside* a number is a typo
+  if (s === "") return null;
+
+  let sign = 1;
+  const first = s.charAt(0);
+  if (first === "-" || first === MINUS) { sign = -1; s = s.slice(1); }
+  else if (first === "+") s = s.slice(1);
+
+  if (s.charAt(0) === "$") s = s.slice(1);
+  if (s.charAt(s.length - 1) === "%") s = s.slice(0, -1);
+
+  // Digits, with optional US thousands grouping and optional decimals.
+  // The grouping alternative demands full groups of three, so "185,00" fails.
+  if (!/^(?:\d{1,3}(?:,\d{3})+|\d*)(?:\.\d*)?$/.test(s)) return null;
+  if (!/\d/.test(s)) return null;
+
+  const n = Number(s.replace(/,/g, ""));
+  return Number.isFinite(n) ? sign * n : null;
+}
+
+/**
+ * Round a COLA percentage to the nearest tenth, the way SSA does. Keeping the
+ * figure we compute with identical to the figure we print stops the result
+ * from contradicting its own caption.
+ * @param {number} percent
+ * @returns {number}
+ */
+export function roundColaPercent(percent) {
+  return Number(Number(percent).toFixed(1));
+}
+
+const ok = (value) => ({ ok: true, value, error: null });
+const bad = (error) => ({ ok: false, value: null, error });
+
+/**
+ * @typedef {{ ok: boolean, value: number|null, error: string|null }} FieldCheck
+ */
+
+/**
+ * Check a monthly benefit amount.
+ * @param {unknown} raw
+ * @returns {FieldCheck}
+ */
+export function validateBenefit(raw) {
+  const s = raw === undefined || raw === null ? "" : String(raw).trim();
+  if (s === "") return bad("Please enter your current monthly benefit.");
+  const n = parseAmount(s);
+  if (n === null) return bad("Please use numbers only, like 2000 or 2,000.50.");
+  if (n <= 0) return bad("Please enter an amount above $0.");
+  if (n > LIMITS.benefitMax) {
+    return bad(`That looks too high. Please enter ${usd(LIMITS.benefitMax)} a month or less.`);
+  }
+  return ok(n);
+}
+
+/**
+ * Check a Medicare Part B premium.
+ * @param {unknown} raw
+ * @param {{required?: boolean}} [opts] next year's premium is optional
+ * @returns {FieldCheck}
+ */
+export function validatePartB(raw, opts) {
+  const required = !opts || opts.required !== false;
+  const s = raw === undefined || raw === null ? "" : String(raw).trim();
+  if (s === "") {
+    return required
+      ? bad("Please enter your Part B premium, or 0 if nothing is withheld.")
+      : ok(null);
+  }
+  const n = parseAmount(s);
+  if (n === null) return bad("Please use numbers only, like 202.90.");
+  if (n < 0) return bad("Please enter 0 or more. A premium is never a negative amount.");
+  if (n > LIMITS.partBMax) {
+    return bad(`That looks too high for one month. Please enter ${usd(LIMITS.partBMax)} or less.`);
+  }
+  return ok(n);
+}
+
+/**
+ * Check a COLA percentage typed into the "enter my own" field.
+ * @param {unknown} raw
+ * @returns {FieldCheck} value is rounded to the nearest tenth of a percent
+ */
+export function validateColaPercent(raw) {
+  const s = raw === undefined || raw === null ? "" : String(raw).trim();
+  if (s === "") return bad("Please enter a COLA percentage, like 2.8.");
+  const n = parseAmount(s);
+  if (n === null) return bad("Please use numbers only, like 2.8.");
+  if (n < 0) return bad("Please enter 0% or more. A COLA never lowers your benefit.");
+  if (n > LIMITS.colaMax) {
+    return bad(`Please enter ${LIMITS.colaMax}% or less. The largest COLA ever was 14.3%, in 1980.`);
+  }
+  return ok(roundColaPercent(n));
 }

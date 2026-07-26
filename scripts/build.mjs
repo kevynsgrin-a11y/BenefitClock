@@ -204,6 +204,14 @@ function build() {
     MEDICARE_FIGURES_YEAR: requireFigure(figures.currentYear, "MEDICARE_FIGURES_YEAR", "src/data/medicare-figures.csv has no official row."),
   };
 
+  // Site-level tokens that front matter may also reference (titles, descriptions).
+  const SITE_TOKENS = {
+    SITE_URL: SITE.url,
+    SITE_NAME: SITE.name,
+    BUILD_YEAR: String(SITE.buildYear),
+    BUILD_DATE: SITE.buildDate,
+  };
+
   // Build-time inline-SVG charts (golden-fact data; no client JS, SEO-friendly).
   const chartTokens = {
     CHART_COLA_HISTORY: cola.history
@@ -240,9 +248,16 @@ function build() {
       .map((s) => `<script type="module" src="/assets/js/${s}"></script>`)
       .join("\n    ");
 
+    /* Front-matter values are substituted INTO the token map, so they are never
+       themselves scanned by applyTokens. Resolve them first, otherwise a title
+       or description can only ever hardcode a year that the body tokenises. */
+    const fm = (value, fallback) => applyTokens(String(value ?? fallback), { ...colaTokens, ...SITE_TOKENS });
+
     const tokens = {
-      TITLE: meta.title || SITE.name,
-      DESCRIPTION: (meta.description || SITE.tagline).replace(/"/g, "&quot;"),
+      // TITLE lands in <title> and in several quoted attributes (og:title,
+      // twitter:title, JSON-LD), so it needs the same escaping as DESCRIPTION.
+      TITLE: fm(meta.title, SITE.name).replace(/"/g, "&quot;"),
+      DESCRIPTION: fm(meta.description, SITE.tagline).replace(/"/g, "&quot;"),
       CANONICAL: canonical,
       SITE_URL: SITE.url,
       SITE_NAME: SITE.name,
