@@ -644,8 +644,8 @@ select.input {
 .figure__sub { font-size: var(--bc-fs-s); color: var(--bc-ink-faint); }
 .pd-planname { font-weight: 700; color: var(--bc-heading); font-size: var(--bc-fs-l); }
 /* Result outcome headline (plain-language bottom line before the figures).
-   NOTE: #r-headline currently carries .result__head, so the calculator's
-   plain-language answer renders in the panel's title bar instead of here. */
+   Carries the calculator's plain-language answer, inside .result__body — the
+   title bar above it is reversed out on teal and is not a place for a sentence. */
 .result__headline { font-size: clamp(var(--bc-fs-2xl), 1.1rem + 1vw, 1.65rem); line-height: 1.25; color: var(--bc-heading); font-weight: 800; font-variant-numeric: tabular-nums; margin: 0 0 var(--bc-space-ml); }
 
 /* At the narrowest viewport four nested paddings leave a ~62px content box for

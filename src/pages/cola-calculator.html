@@ -87,8 +87,12 @@ changefreq: weekly
         </form>
 
         <div class="result" id="cola-results" data-state="ready">
-          <div class="result__head" id="r-headline">Your estimated raise</div>
+          <div class="result__head">Your estimated raise</div>
           <div class="result__body">
+            <!-- The plain-language answer belongs in the body, not the title
+                 bar: .result__head is reversed out on teal, which clipped the
+                 sentence and printed at 2.30:1. -->
+            <p class="result__headline" id="r-headline"></p>
             <div class="figure-row">
               <div class="figure">
                 <div class="figure__label">New monthly benefit (gross)</div>

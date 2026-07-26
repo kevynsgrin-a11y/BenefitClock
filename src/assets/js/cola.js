@@ -163,7 +163,9 @@ ready(() => {
       el.textContent = "—";
       el.classList.remove("figure__value--good", "figure__value--bad");
     }
-    if (els.headline) els.headline.textContent = "Your estimated raise";
+    // The panel's title bar already reads "Your estimated raise"; this line is
+    // the answer sentence, so an empty state means no sentence.
+    if (els.headline) els.headline.textContent = "";
     if (els.kept) els.kept.textContent = "Check the amounts above and we'll show your estimate here.";
     if (els.chart) els.chart.innerHTML = "";
     setHidden(els.legend, true);
