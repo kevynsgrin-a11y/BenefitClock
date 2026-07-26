@@ -1,15 +1,27 @@
 name: Deploy to Cloudflare Pages
 
-# Deploys dist/ straight to Cloudflare Pages on every push to main (and on
-# demand via the Actions tab). This is independent of Cloudflare's own Git
-# integration — it works even if the Pages project was never connected to
-# the repo. It requires two repository secrets:
-#   CLOUDFLARE_API_TOKEN   — an API token with the "Cloudflare Pages: Edit" permission
+# Publishes the site to Cloudflare Pages on every push to main (and on demand
+# via the Actions tab). This is independent of Cloudflare's own Git integration —
+# it works even if the Pages project was never connected to the repo.
+#
+# The `verify` job below IS ci.yml, called as a reusable workflow. That is
+# deliberate: previously CI and deploy were two independent workflows running in
+# parallel, so a red CI did not stop a deploy, and deploy's own gate had quietly
+# drifted (it never checked that the COLA calculator or plan-diff pages existed,
+# nor for unresolved {{TOKEN}}s). Now there is one gate, `deploy` needs it, and
+# the artifact deploy ships is byte-for-byte the one that was verified.
+#
+# Required repository secrets:
+#   CLOUDFLARE_API_TOKEN   — API token with the "Cloudflare Pages: Edit" permission
 #   CLOUDFLARE_ACCOUNT_ID  — from the Cloudflare dashboard (right sidebar of any zone)
-# Optional repository variable:
-#   CLOUDFLARE_PAGES_PROJECT — the Pages project name (defaults to "benefitdial")
-# Until the secrets are added, the deploy step is skipped with a notice and the
-# workflow still validates the build.
+# Optional repository variables:
+#   CLOUDFLARE_PAGES_PROJECT — Pages project name (defaults to "benefitdial")
+#   SITE_URL                 — production origin used for canonicals/sitemap
+#
+# If the secrets are missing this workflow FAILS. It used to pass with only a
+# ::notice, which meant main showed a green check while production still served
+# the previous build. If deploys are not wanted yet, disable this workflow in
+# Settings -> Actions rather than letting it report a success it did not perform.
 
 on:
   push:
@@ -19,46 +31,43 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 jobs:
+  # Full CI gate. Nothing deploys unless this is green.
+  verify:
+    uses: ./.github/workflows/ci.yml
+    with:
+      upload-dist: true
+
   deploy:
+    needs: verify
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://benefitdial.com
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Download the verified dist/
+        uses: actions/download-artifact@v4
         with:
-          node-version-file: ".nvmrc"
+          name: dist
+          path: dist
 
-      - name: Unit tests
-        run: node --test
-
-      - name: Build the site
-        run: npm run build
-
-      - name: Sanity-check the build output
-        run: |
-          test -f dist/index.html && test -f dist/sitemap.xml && test -f dist/robots.txt
-          pages=$(find dist -name '*.html' | wc -l)
-          echo "Built $pages HTML pages for production."
-          test "$pages" -ge 13
-
-      - name: Check for Cloudflare credentials
-        id: creds
+      - name: Require Cloudflare credentials
         env:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          if [ -n "$CF_TOKEN" ] && [ -n "$CF_ACCOUNT" ]; then
-            echo "have=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "have=false" >> "$GITHUB_OUTPUT"
-            echo "::notice title=Cloudflare deploy skipped::Add the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets (Settings → Secrets and variables → Actions) to enable automatic deploys of dist/ to Cloudflare Pages."
+          set -euo pipefail
+          if [ -z "$CF_TOKEN" ] || [ -z "$CF_ACCOUNT" ]; then
+            echo "::error title=Deploy not performed::CLOUDFLARE_API_TOKEN and/or CLOUDFLARE_ACCOUNT_ID are missing, so nothing was published — production is still serving the previous build. Add both under Settings -> Secrets and variables -> Actions, or disable this workflow if deploys are not wanted yet."
+            exit 1
           fi
+          echo "Cloudflare credentials present."
 
       - name: Deploy dist/ to Cloudflare Pages
-        if: steps.creds.outputs.have == 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

@@ -20,14 +20,27 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
+  <!-- One shared social card, so the alt text describes that card, not the page.
+       If per-page og:image is ever added, this needs to become a token too. -->
+  <meta property="og:image:alt" content="BenefitDial social card: &quot;Your raise. Your plan. Side by side.&quot; — Social Security COLA plus Medicare plan changes, with no phone calls.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{TITLE}}">
   <meta name="twitter:description" content="{{DESCRIPTION}}">
   <meta name="twitter:image" content="{{OG_IMAGE}}">
+  <meta name="twitter:image:alt" content="BenefitDial social card: &quot;Your raise. Your plan. Side by side.&quot; — Social Security COLA plus Medicare plan changes, with no phone calls.">
 
+  <!--
+    Icons. /favicon.ico is a real 16+32px file: pre-Safari-16 clients ignore SVG
+    favicons, and plenty of crawlers request /favicon.ico directly no matter
+    what is linked here — it used to 404. mask-icon.svg must stay a monochrome
+    silhouette on a transparent background, because Safari fills every opaque
+    pixel with the `color` below; this link previously pointed at the
+    full-bleed multicolour favicon.svg, which Safari drew as a solid teal square.
+  -->
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="mask-icon" href="/favicon.svg" color="#0f4b50">
+  <link rel="mask-icon" href="/mask-icon.svg" color="#0f4b50">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="stylesheet" href="/assets/css/site.css">
 
@@ -42,7 +55,17 @@
         "name": "{{SITE_NAME}}",
         "url": "{{SITE_URL}}/",
         "description": "An independent, ad-supported public utility for Medicare and Social Security decisions. No phone numbers, no lead generation, no data sales.",
-        "slogan": "No phone number. No sales calls. Just the numbers."
+        "slogan": "No phone number. No sales calls. Just the numbers.",
+        "logo": {
+          "@type": "ImageObject",
+          "@id": "{{SITE_URL}}/#logo",
+          "url": "{{SITE_URL}}/apple-touch-icon.png",
+          "contentUrl": "{{SITE_URL}}/apple-touch-icon.png",
+          "width": 180,
+          "height": 180,
+          "caption": "{{SITE_NAME}}"
+        },
+        "image": { "@id": "{{SITE_URL}}/#logo" }
       },
       {
         "@type": "WebSite",
@@ -58,8 +81,12 @@
 
   <!--
     MONETIZATION NOTE (business model = programmatic display ads ONLY).
-    When an ad network is approved, its loader script goes here, e.g.:
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXX" crossorigin="anonymous"></script>
+    The approved ad network's loader <script> attaches at this point in <head>.
+    Adding it also means: allowing its hosts in script-src/frame-src/connect-src
+    in src/static/_headers, and revisiting the interest-based-advertising tokens
+    in that file's Permissions-Policy. No publisher ID is kept here — a real one
+    belongs in the tag when it is added, and a placeholder one only ships a fake
+    account number to 13 production pages.
     BenefitDial takes NO carrier/broker CPA and captures NO PII — this keeps
     the site outside the CMS "chain of enrollment" (TPMO) definition.
   -->
@@ -69,7 +96,13 @@
   {{> icons }}
   <a class="skip-link" href="#main">Skip to main content</a>
   {{> header }}
-  <main id="main">
+  <!-- tabindex="-1" makes the skip link move FOCUS here, not just the viewport.
+       Without it document.activeElement stays on BODY after activating the link
+       (measured), so a screen reader is never taken to the landmark and the
+       following Tab order is left to a browser heuristic. Not a tab stop — a
+       programmatic target only; site.css keys its ring off :focus-visible, so
+       clicking text inside main does not draw one. -->
+  <main id="main" tabindex="-1">
     {{CONTENT}}
   </main>
   {{> footer }}

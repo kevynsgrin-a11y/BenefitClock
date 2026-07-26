@@ -25,9 +25,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA = join(__dirname, "..", "src", "data");
 
 function parseCsv(text) {
-  const [head, ...lines] = text.trim().split(/\r?\n/);
+  // `#` lines are comments. Without this a caveat written into the file would
+  // silently parse as a data row — exactly the kind of quiet wrong number this
+  // whole data layer exists to prevent.
+  const lines = text.trim().split(/\r?\n/).filter((l) => l.trim() && !l.trim().startsWith("#"));
+  const [head, ...rows] = lines;
   const cols = head.split(",");
-  return lines.filter(Boolean).map((line) => {
+  return rows.map((line) => {
     const cells = line.split(",");
     const row = {};
     cols.forEach((c, i) => (row[c.trim()] = (cells[i] ?? "").trim()));

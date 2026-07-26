@@ -299,8 +299,12 @@ function build() {
     console.log(`  → ${url}  (${basename(dest)})`);
   }
 
-  // Assets & data
-  cpSync(join(SRC, "assets"), join(DIST, "assets"), { recursive: true });
+  // Assets & data. og-default.svg is the *source* the OG PNG is rendered from;
+  // shipping it too just serves ~1.7 KB nobody requests.
+  cpSync(join(SRC, "assets"), join(DIST, "assets"), {
+    recursive: true,
+    filter: (src) => basename(src) !== "og-default.svg",
+  });
   if (existsSync(join(SRC, "data"))) {
     mkdirSync(join(DIST, "data"), { recursive: true });
     for (const f of readdirSync(join(SRC, "data"))) {
