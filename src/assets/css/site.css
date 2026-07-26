@@ -48,7 +48,7 @@
   --bc-heading: var(--bc-teal-900);   /* headings + teal text on page surfaces */
   --bc-accent: var(--bc-teal-700);    /* icons, chart bars, small accents */
   --bc-accent-2: var(--bc-teal-600);  /* eyebrow, timeline dots */
-  --bc-accent-on-tint: var(--bc-teal-700); /* text on a --bc-teal-050 tint */
+  --bc-accent-on-tint: var(--bc-teal-800); /* text on a --bc-teal-050 tint */
   --bc-link: var(--bc-teal-700);
   --bc-link-hover: var(--bc-teal-800);
   --bc-good: var(--bc-green-700);
@@ -80,7 +80,6 @@
      ladder moves together and the relative scale can never invert (H6). */
   --bc-font-sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   --bc-font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, Consolas, monospace;
-  --bc-fs-micro: 0.68rem;
   --bc-fs-3xs: 0.72rem;
   --bc-fs-2xs: 0.8rem;
   --bc-fs-xs: 0.82rem;
@@ -104,7 +103,6 @@
      Named steps for the values that recur across components. One-off values
      (mostly clamp()ed section rhythm) stay literal on purpose. */
   --bc-space-3xs: 0.15rem;
-  --bc-space-2xs: 0.25rem;
   --bc-space-xs: 0.35rem;
   --bc-space-s: 0.5rem;
   --bc-space-sm: 0.6rem;
@@ -144,8 +142,9 @@
   --bc-reveal-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 
   /* Sticky-header height. enhance.js measures the real header and overwrites
-     this; the literal is the no-JS fallback (min-height + typical padding). */
-  --bc-header-h: 4.25rem;
+     this; the literal is the no-JS fallback, set to the measured desktop height (a
+     generous value only drops the anchor slightly low; a short one hides it). */
+  --bc-header-h: 7.25rem;
 }
 
 /* User-controlled text size (see enhance/textsize JS).
@@ -422,7 +421,7 @@ table.visually-hidden { white-space: normal; }
   font-weight: 600;
   color: var(--bc-ink);
 }
-.primary-nav a:hover { background: var(--bc-teal-050); color: var(--bc-accent-on-tint); }
+.primary-nav a:hover { background: var(--bc-teal-050); color: var(--bc-heading); }
 .primary-nav a[aria-current="page"] { color: var(--bc-accent-on-tint); background: var(--bc-teal-050); box-shadow: inset 0 -3px 0 var(--bc-accent-2); }
 
 @media (max-width: 52rem) {
@@ -652,7 +651,7 @@ select.input {
 /* At the narrowest viewport four nested paddings leave a ~62px content box for
    a figure, which is where the truncation started. Trim the nesting instead of
    the number. */
-@media (max-width: 26rem) {
+@media (max-width: 21rem) {
   .wrap { padding-inline: var(--bc-space-ml); }
   .tool__body { padding: var(--bc-space-l); }
   .result__body { padding: var(--bc-space-ml); }
@@ -746,8 +745,11 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
   background: repeating-linear-gradient(45deg, var(--bc-adstripe-a), var(--bc-adstripe-a) 12px, var(--bc-adstripe-b) 12px, var(--bc-adstripe-b) 24px);
   color: var(--bc-ink-faint);
   text-align: center;
-  padding: var(--bc-space-s) var(--bc-space-m);
-  font-size: var(--bc-fs-2xs);
+  padding: 8px 12px;
+  /* px, like the box itself: the frame is a fixed px ad rectangle, so its
+     placeholder chrome must fit it at any root font size. It is replaced
+     wholesale by the creative once a network is live. */
+  font-size: 13px;
   line-height: 1.35;
 }
 .ad-slot--in-article .ad-slot__frame { height: 250px; }   /* 300x250 medium rectangle */
@@ -758,10 +760,10 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .ad-slot__label {
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  font-size: var(--bc-fs-micro);
+  font-size: 11px;
   font-weight: 700;
   color: var(--bc-ink-faint);
-  margin-bottom: var(--bc-space-2xs);
+  margin-bottom: 4px;
 }
 .ad-slot--in-article { margin-block: 2.25rem; }
 
@@ -797,7 +799,7 @@ details.faq {
 details.faq > summary {
   cursor: pointer;
   list-style: none;
-  padding: var(--bc-space-ml) 1.3rem;
+  padding: 1.05rem 1.3rem;
   font-weight: 700;
   font-size: var(--bc-fs-l);
   color: var(--bc-heading);
@@ -831,7 +833,9 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
 .site-footer .muted { color: #a9d4d3; }
 .site-footer a { color: #d7f0f0; }
 .site-footer a:hover { color: #fff; }
-.site-footer h4 { color: #fff; text-transform: uppercase; letter-spacing: 0.06em; }
+/* h3 as well as h4: the footer column headings are h3 so the document never
+   skips a level, but they are styled as small caps labels either way. */
+.site-footer h3, .site-footer h4 { color: #fff; text-transform: uppercase; letter-spacing: 0.06em; }
 .footer-grid { display: grid; gap: var(--bc-space-4xl); grid-template-columns: 1fr; }
 @media (min-width: 42rem) { .footer-grid { grid-template-columns: 1.6fr 1fr 1fr; } }
 .site-footer ul { list-style: none; padding: 0; margin: 0; }
@@ -899,7 +903,7 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
 /* wrap, not nowrap: a single chip was 291px wide inside a 181px box at 320px
    and dragged the whole page into horizontal scroll. */
 .provenance__chip { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--bc-space-sm); font-weight: 700; color: var(--bc-heading); font-size: var(--bc-fs-m); }
-.provenance__mono { display: inline-grid; place-items: center; min-width: 2.7rem; height: 2.1rem; padding: 0 var(--bc-space-s); border-radius: 9px; background: var(--bc-ill-fill); color: var(--bc-chip-info-fg); border: 1px solid var(--bc-teal-050); font-weight: 800; letter-spacing: 0.02em; font-size: var(--bc-fs-s2); }
+.provenance__mono { display: inline-grid; place-items: center; min-width: 2.7rem; height: 2.1rem; padding: 0 var(--bc-space-s); border-radius: 9px; background: var(--bc-ill-fill); color: var(--bc-accent-on-tint); border: 1px solid var(--bc-teal-050); font-weight: 800; letter-spacing: 0.02em; font-size: var(--bc-fs-s2); }
 .provenance__note { margin: 0; color: var(--bc-ink-soft); }
 .datasource { display: flex; flex-wrap: wrap; align-items: center; gap: var(--bc-space-s) 0.85rem; margin: 0 0 1.1rem; font-size: var(--bc-fs-sm); }
 .datasource__fresh { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; color: var(--bc-ink-soft); }
