@@ -199,7 +199,7 @@ changefreq: weekly
     </details>
 
     <details class="faq">
-      <summary>Why don't I see 2027 numbers yet?</summary>
+      <summary>Why don't I see {{PLAN_YEAR_NEXT}} numbers yet?</summary>
       <div class="faq__body">
         <p>CMS releases the <span data-year-next>2027</span> Landscape and Crosswalk files in late September or early October. Until the official files are published, this tool runs on a structurally identical sample dataset so you can see exactly how the comparison works. The moment CMS posts the real files, we load them and the numbers become live. See <a href="/how-it-works">How it works</a>.</p>
       </div>
@@ -216,5 +216,17 @@ changefreq: weekly
   "operatingSystem": "Any (web browser)",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "description": "Compare your Medicare Advantage or Part D plan year over year using public CMS Landscape and Crosswalk data — premium, deductible, MOOP, star rating, and benefits."
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Where do I find my plan ID?", "acceptedAnswer": { "@type": "Answer", "text": "It's on your plan member ID card and on the Annual Notice of Change (ANOC) your plan mails every September. It looks like H1234-001 (or S/R followed by four digits for some plans). You can also just pick your plan by name from the dropdown." } },
+    { "@type": "Question", "name": "Is this the official government tool?", "acceptedAnswer": { "@type": "Answer", "text": "No — and we say so proudly. BenefitDial is an independent utility. We use the same public CMS data the government publishes, but we're not affiliated with Medicare or CMS. For enrollment, always use the official Medicare Plan Finder or call 1-800-MEDICARE." } },
+    { "@type": "Question", "name": "Will you ask for my phone number or sell my information?", "acceptedAnswer": { "@type": "Answer", "text": "Never. This tool doesn't collect your name, phone number, or email — there's no form to fill in and nothing is sent to a call center. That's the whole point of BenefitDial. Read our privacy pledge." } },
+    { "@type": "Question", "name": "Why don't I see {{PLAN_YEAR_NEXT}} numbers yet?", "acceptedAnswer": { "@type": "Answer", "text": "CMS releases the 2027 Landscape and Crosswalk files in late September or early October. Until the official files are published, this tool runs on a structurally identical sample dataset so you can see exactly how the comparison works. The moment CMS posts the real files, we load them and the numbers become live. See How it works." } }
+  ]
 }
 </script>

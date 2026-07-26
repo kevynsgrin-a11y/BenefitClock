@@ -48,7 +48,7 @@ changefreq: weekly
                 <option value="{{COLA_CONFIRMED}}">{{COLA_CONFIRMED_YEAR}} confirmed COLA — {{COLA_CONFIRMED}}%</option>
                 <option value="custom">Enter my own percentage…</option>
               </select>
-              <span class="hint">The {{COLA_PROJECTED_YEAR}} figure is an early estimate. The official COLA is announced on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>.</span>
+              <span class="hint">The {{COLA_PROJECTED_YEAR}} figure is an early estimate. The official COLA is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>.</span>
               <div class="field" id="cola-custom-wrap" hidden style="margin:0.75rem 0 0;">
                 <label for="f-cola-custom">Your own COLA percentage</label>
                 <div class="input-group">
@@ -135,7 +135,7 @@ changefreq: weekly
       <a class="card card--link" href="/key-dates">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-calendar-check" xlink:href="#ic-calendar-check"/></svg></div>
         <h3>Key dates for this fall</h3>
-        <p class="muted">The COLA is announced {{COLA_ANNOUNCE_DATE_LONG}}. Medicare Open Enrollment runs Oct 15 – Dec 7. Here's the full calendar.</p>
+        <p class="muted">The COLA is expected {{COLA_ANNOUNCE_DATE_LONG}}. Medicare Open Enrollment runs Oct 15 – Dec 7. Here's the full calendar.</p>
         <span class="badge badge--info">See the timeline →</span>
       </a>
     </div>
@@ -167,7 +167,7 @@ changefreq: weekly
     <details class="faq">
       <summary>When is the {{COLA_PROJECTED_YEAR}} COLA officially announced?</summary>
       <div class="faq__body">
-        <p>The Social Security Administration announces the official COLA right after the Bureau of Labor Statistics releases September inflation data. For the {{COLA_PROJECTED_YEAR}} adjustment, that release is scheduled for <strong>{{COLA_ANNOUNCE_DATE_LONG}} at 8:30&nbsp;a.m. ET</strong>. Until then, the {{COLA_PROJECTED}}% figure is an early projection, not a guarantee.</p>
+        <p>The Social Security Administration announces the official COLA right after the Bureau of Labor Statistics releases September inflation data, normally at 8:30&nbsp;a.m. ET. For the {{COLA_PROJECTED_YEAR}} adjustment that is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, but the date can move: the {{COLA_CONFIRMED_YEAR}} COLA was not announced until {{COLA_CONFIRMED_ANNOUNCED_LONG}}. Until then, the {{COLA_PROJECTED}}% figure is an early projection, not a guarantee.</p>
       </div>
     </details>
 
@@ -210,9 +210,10 @@ changefreq: weekly
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "When is the {{COLA_PROJECTED_YEAR}} Social Security COLA announced?", "acceptedAnswer": { "@type": "Answer", "text": "The SSA announces the official COLA after the BLS September CPI-W release, scheduled for {{COLA_ANNOUNCE_DATE_LONG}} at 8:30 a.m. ET. Until then, the {{COLA_PROJECTED}}% figure is an early projection." } },
-    { "@type": "Question", "name": "How is the Social Security COLA calculated?", "acceptedAnswer": { "@type": "Answer", "text": "The COLA equals the percentage increase in the average CPI-W for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth of a percent." } },
-    { "@type": "Question", "name": "Why is my raise smaller after Medicare Part B?", "acceptedAnswer": { "@type": "Answer", "text": "Medicare Part B premiums are usually withheld from your Social Security payment, so when Part B rises it reduces the net increase to your deposit." } }
+    { "@type": "Question", "name": "When is the {{COLA_PROJECTED_YEAR}} COLA officially announced?", "acceptedAnswer": { "@type": "Answer", "text": "The Social Security Administration announces the official COLA right after the Bureau of Labor Statistics releases September inflation data, normally at 8:30 a.m. ET. For the {{COLA_PROJECTED_YEAR}} adjustment that is expected on {{COLA_ANNOUNCE_DATE_LONG}}, but the date can move: the {{COLA_CONFIRMED_YEAR}} COLA was not announced until {{COLA_CONFIRMED_ANNOUNCED_LONG}}. Until then, the {{COLA_PROJECTED}}% figure is an early projection, not a guarantee." } },
+    { "@type": "Question", "name": "How is the COLA actually calculated?", "acceptedAnswer": { "@type": "Answer", "text": "By law, the COLA equals the percentage increase in the average CPI-W (the Consumer Price Index for Urban Wage Earners and Clerical Workers) for July, August, and September of this year compared with the same three months of the last year a COLA took effect — rounded to the nearest tenth of a percent. We walk through a worked example on our How it works page." } },
+    { "@type": "Question", "name": "Why does my raise look smaller after Part B?", "acceptedAnswer": { "@type": "Answer", "text": "Because Medicare Part B is usually withheld from your Social Security payment. If your gross benefit goes up {{COLA_PROJECTED}}% but your Part B premium also rises, the increase to your deposit is smaller than the headline COLA. That gap is exactly what this tool makes visible." } },
+    { "@type": "Question", "name": "Do you store the numbers I enter?", "acceptedAnswer": { "@type": "Answer", "text": "No. The entire calculation runs in your web browser. We don't have a server that receives your benefit amount, we don't use it for advertising, and we never ask for your name, email, or phone number. See our privacy pledge." } }
   ]
 }
 </script>
