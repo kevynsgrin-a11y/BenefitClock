@@ -28,8 +28,18 @@ function niceMax(v) {
 export function verticalBars(o) {
   const series = o.series;
   const n = series.length;
-  const W = 720, H = 300;
+  /* Label text is sized in user units, so its rendered size is the container
+     width divided by the viewBox width. A fixed 720-unit box therefore made
+     legibility a function of wherever the chart happened to be placed: the
+     two-bar plan-count charts sit in a two-column grid and were rendering
+     their labels at 7.6px on a desktop, smaller than on a phone. Sizing the
+     box to the content instead keeps that ratio near 1 — one slot per bar, at
+     the density the five-bar COLA chart already used (which lands it back on
+     exactly 720 and leaves that chart untouched). */
+  const SLOT = 137.6;
   const padL = 16, padR = 16, padT = 42, padB = 58;
+  const H = 300;
+  const W = Math.round(padL + padR + SLOT * n);
   const plotW = W - padL - padR;
   const plotH = H - padT - padB;
   const maxVal = o.max || niceMax(Math.max(...series.map((s) => s.value)));
@@ -66,7 +76,10 @@ export function verticalBars(o) {
   const table = `<table class="visually-hidden"><caption>${esc(o.caption)}</caption><thead><tr><th scope="col">Item</th><th scope="col">${esc(o.tableUnit || "Value")}</th></tr></thead><tbody>${rows}</tbody></table>`;
 
   return (
-    `<figure class="bc-chart">` +
+    /* The chart's natural width, so CSS can stop it scaling past 1:1 (which
+       would blow the labels up) and can skip the narrow-screen scroll floor
+       for charts already narrow enough to fit. */
+    `<figure class="bc-chart" style="--bc-chart-w:${W}px">` +
     `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.ariaLabel)}" preserveAspectRatio="xMidYMid meet">` +
     gridlines + baseline + bars +
     `</svg>` +

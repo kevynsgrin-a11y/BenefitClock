@@ -1,0 +1,85 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { verticalBars, planCountChart, colaHistoryChart } from "../scripts/lib/svgcharts.mjs";
+
+const bars = (n) =>
+  Array.from({ length: n }, (_, i) => ({ label: `L${i}`, value: i + 1, valueText: `${i + 1}` }));
+const chart = (n, o = {}) =>
+  verticalBars({ ariaLabel: "a", caption: "c", series: bars(n), ...o });
+const viewBoxW = (html) => Number(/viewBox="0 0 (\d+) /.exec(html)[1]);
+const declaredW = (html) => Number(/--bc-chart-w:(\d+)px/.exec(html)[1]);
+
+/* The defect: label text is sized in user units, so its rendered size is
+   containerWidth / viewBoxWidth. A fixed 720-unit box made legibility depend on
+   where the chart was placed — the two-bar charts sit in a two-column grid and
+   rendered their labels at 7.6px on a desktop, smaller than on a phone. */
+test("the viewBox grows with the bar count instead of being fixed", () => {
+  const w2 = viewBoxW(chart(2));
+  const w5 = viewBoxW(chart(5));
+  const w8 = viewBoxW(chart(8));
+  assert.ok(w2 < w5 && w5 < w8, `expected widths to grow: ${w2}, ${w5}, ${w8}`);
+});
+
+test("a two-bar chart is narrow enough to render near 1:1 in a grid column", () => {
+  // The two-column grid gives roughly 300-330px. Rendering near 1:1 is what
+  // keeps the 17px label at 17px rather than shrinking it to 7.6px.
+  const w = viewBoxW(chart(2));
+  assert.ok(w > 250 && w < 340, `two-bar viewBox should sit near a grid column width, got ${w}`);
+});
+
+test("the five-bar COLA chart is unchanged at 720", () => {
+  assert.equal(viewBoxW(chart(5)), 720);
+});
+
+test("each chart declares its own width for CSS to cap scaling at 1:1", () => {
+  for (const n of [2, 3, 5, 8]) {
+    const html = chart(n);
+    assert.equal(declaredW(html), viewBoxW(html), `--bc-chart-w must match the viewBox for ${n} bars`);
+  }
+});
+
+test("bars stay inside the plot area at every count", () => {
+  for (const n of [1, 2, 3, 5, 8, 12]) {
+    const html = chart(n);
+    const W = viewBoxW(html);
+    for (const m of html.matchAll(/<rect class="bc-bar[^"]*" x="([\d.]+)"[^>]*width="([\d.]+)"/g)) {
+      const x = Number(m[1]), w = Number(m[2]);
+      assert.ok(x >= 0, `bar starts left of the box at n=${n}: x=${x}`);
+      assert.ok(x + w <= W, `bar overflows the box at n=${n}: ${x}+${w} > ${W}`);
+    }
+  }
+});
+
+test("bar density is the same whatever the bar count", () => {
+  // Same slot per bar => a two-bar chart looks like two bars of a longer chart,
+  // rather than two bars stretched across a box built for five.
+  // Within rounding: the viewBox is rounded to whole units, which nudges the
+  // slot by a hundredth of a unit.
+  const widthOf = (html) => Number(/<rect class="bc-bar[^"]*"[^>]*width="([\d.]+)"/.exec(html)[1]);
+  for (const n of [3, 5, 8]) {
+    assert.ok(
+      Math.abs(widthOf(chart(2)) - widthOf(chart(n))) < 0.5,
+      `bar width should not depend on bar count: ${widthOf(chart(2))} vs ${widthOf(chart(n))} at n=${n}`
+    );
+  }
+});
+
+test("the real chart helpers carry the width declaration through", () => {
+  const plan = planCountChart({
+    ariaWhat: "Plans", caption: "c", fromYear: 2026, fromValue: 34, toYear: 2027, toValue: 32,
+  });
+  assert.equal(declaredW(plan), viewBoxW(plan));
+
+  const cola = colaHistoryChart(
+    [{ year: 2024, colaPct: 3.2, status: "official" }, { year: 2025, colaPct: 2.5, status: "official" }],
+    2025, 2026
+  );
+  assert.equal(declaredW(cola), viewBoxW(cola));
+});
+
+test("the accessible data table survives — it is the primary path on small screens", () => {
+  const html = chart(3);
+  assert.match(html, /<table class="visually-hidden">/);
+  assert.equal((html.match(/<tr><th scope="row">/g) || []).length, 3);
+  assert.match(html, /role="img"/);
+});

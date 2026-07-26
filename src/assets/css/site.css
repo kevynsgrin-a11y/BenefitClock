@@ -851,7 +851,10 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
 
 /* ----- Misc utilities --------------------------------------------------- */
 /* ----- Charts (inline SVG, dependency-free, accessible) ----------------- */
-.bc-chart { margin: 1.75rem 0; max-width: 42rem; }
+/* Never scale a chart past 1:1 — its text is in user units, so a box wider
+   than the chart's natural width magnifies every label. --bc-chart-w is the
+   viewBox width emitted by scripts/lib/svgcharts.mjs. */
+.bc-chart { margin: 1.75rem 0; max-width: min(42rem, var(--bc-chart-w, 42rem)); }
 .bc-chart svg { width: 100%; height: auto; display: block; overflow: visible; }
 .bc-chart figcaption { font-size: var(--bc-fs-sm); color: var(--bc-ink-faint); margin-top: var(--bc-space-m); }
 .bc-gridline { stroke: var(--bc-line-soft); stroke-width: 1; }
@@ -866,14 +869,17 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
 @media (prefers-reduced-motion: no-preference) {
   .bc-bar, .bc-flow-seg--keep, .bc-flow-seg--partb { transition: y 0.5s ease, height 0.5s ease, x 0.5s ease, width 0.5s ease; }
 }
-/* Chart text is sized in user units inside a fixed 720-wide viewBox, so a
-   320px phone scales every label down to 5-9px. Until the generator sizes its
-   viewBox to the container (scripts/lib/svgcharts.mjs), give narrow screens a
-   scrollable chart at a legible floor rather than an unreadable fitted one.
-   The visually-hidden data table stays the primary accessible path. */
+/* A chart wider than the screen still can't shrink to fit and stay readable,
+   so narrow screens get a scrollable chart at a legible floor rather than an
+   unreadable fitted one. The floor never exceeds the chart's own width, so a
+   chart that already fits (the two-bar ones) is not pushed into a needless
+   sideways scroll. The visually-hidden data table stays the primary
+   accessible path either way. */
 @media (max-width: 34rem) {
   .bc-chart { overflow-x: auto; overscroll-behavior-x: contain; }
-  .bc-chart svg { min-width: 30rem; }
+  /* Shrinking to 85% of natural width still leaves 17px labels at ~14.5px, so
+     allow that much fit before spending a sideways scroll on it. */
+  .bc-chart svg { min-width: min(30rem, calc(var(--bc-chart-w, 30rem) * 0.85)); }
 }
 
 /* Live COLA "where your raise goes" flow chart */
