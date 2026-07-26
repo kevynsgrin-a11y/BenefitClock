@@ -2,6 +2,11 @@
 
 **Date:** 2026-07-25 · **Commit audited:** `main` @ `732818a` · **Scope:** all 13 routes, source + built output + live browser
 
+> **Status: remediated.** All three criticals and every high are fixed; see
+> `docs/FRONTEND-AUDIT-REMEDIATION.md` for what changed, the re-measured numbers,
+> and the four items deliberately left open. This document is kept as the original
+> findings record — read it as history, not as the current state of the site.
+
 Ten dimension audits were run against both the source and the running site, then the
 highest-stakes claims were re-derived by independent verifiers instructed to **refute**
 them. Findings below are post-verification: several were downgraded, one was partly
