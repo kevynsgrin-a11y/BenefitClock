@@ -95,17 +95,23 @@ function applyTokens(html, tokens) {
 /* sitemap <lastmod> should describe when the page changed. Stamping every URL
    with the build date meant it re-fired on every rebuild and carried no signal.
    Fall back to omitting lastmod (it is optional) rather than inventing one. */
-function lastCommitDate(file) {
+function gitDate(args) {
   try {
-    const out = execFileSync("git", ["log", "-1", "--format=%cs", "--", file], {
-      cwd: ROOT,
-      stdio: ["ignore", "pipe", "ignore"],
-    }).toString().trim();
-    return /^\d{4}-\d{2}-\d{2}$/.test(out) ? out : null;
+    const out = execFileSync("git", args, { cwd: ROOT, stdio: ["ignore", "pipe", "ignore"] })
+      .toString().trim().split("\n").filter(Boolean);
+    const date = args.includes("--diff-filter=A") ? out[out.length - 1] : out[0];
+    return date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null;
   } catch {
     return null;
   }
 }
+
+const lastCommitDate = (file) => gitDate(["log", "-1", "--format=%cs", "--", file]);
+
+/* Article datePublished/dateModified describe the page, so derive them from the
+   page's own history rather than hardcoding a date that never moves again.
+   Degrades to null on a shallow clone, same as sitemap lastmod. */
+const firstCommitDate = (file) => gitDate(["log", "--diff-filter=A", "--format=%cs", "--", file]);
 
 function cleanUrl(slug) {
   if (!slug || slug === "index") return "/";
@@ -204,6 +210,8 @@ function build() {
     COLA_PROJECTED_SOURCE: requireFigure(cola.projectedSource, "COLA_PROJECTED_SOURCE", "The projected row in src/data/cola-history.csv needs a source."),
     COLA_ANNOUNCE_DATE: announce,
     COLA_ANNOUNCE_DATE_LONG: longDate(announce),
+    COLA_CONFIRMED_ANNOUNCED: requireFigure(cola.confirmedAnnounced, "COLA_CONFIRMED_ANNOUNCED", "The latest official row in src/data/cola-history.csv needs an `announced` date."),
+    COLA_CONFIRMED_ANNOUNCED_LONG: longDate(requireFigure(cola.confirmedAnnounced, "COLA_CONFIRMED_ANNOUNCED_LONG", "The latest official row in src/data/cola-history.csv needs an `announced` date.")),
     DATA_UPDATED: longDate(requireFigure(dataUpdated, "DATA_UPDATED", "No provenance dates found in the COLA history or Medicare figures.")),
 
     // Statutory Medicare figures — indexed annually, so never inline them in markup.
@@ -264,7 +272,12 @@ function build() {
     /* Front-matter values are substituted INTO the token map, so they are never
        themselves scanned by applyTokens. Resolve them first, otherwise a title
        or description can only ever hardcode a year that the body tokenises. */
-    const fm = (value, fallback) => applyTokens(String(value ?? fallback), { ...colaTokens, ...SITE_TOKENS });
+    const pageDates = {
+      PAGE_PUBLISHED: firstCommitDate(join(pagesDir, file)) || SITE.buildDate,
+      PAGE_MODIFIED: lastCommitDate(join(pagesDir, file)) || SITE.buildDate,
+    };
+    const fm = (value, fallback) =>
+      applyTokens(String(value ?? fallback), { ...colaTokens, ...SITE_TOKENS, ...pageDates, CANONICAL: canonical });
 
     const tokens = {
       // TITLE lands in <title> and in several quoted attributes (og:title,
@@ -279,7 +292,10 @@ function build() {
       BUILD_DATE: SITE.buildDate,
       BUILD_YEAR: String(SITE.buildYear),
       PAGE_SCRIPTS: scripts,
-      HEAD_EXTRA: meta.head || "",
+      // Resolved like title/description — head: carries article:* meta that
+      // needs the same tokens the body uses.
+      HEAD_EXTRA: fm(meta.head, ""),
+      ...pageDates,
       ROBOTS: meta.robots || "index, follow, max-image-preview:large",
       CONTENT: body.trim(),
       ...colaTokens,
