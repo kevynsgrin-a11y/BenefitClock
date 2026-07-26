@@ -125,9 +125,10 @@ function outPath(slug) {
 
 /* ---- data build -------------------------------------------------------- */
 function buildData() {
-  console.log("• Building data (CPI-W + CMS plan JSON + statutory figures)…");
+  console.log("• Building data (CPI-W + CMS plan JSON + statutory figures + AEP season)…");
   execFileSync(process.execPath, [join(__dirname, "build-cola-data.mjs")], { stdio: "inherit" });
   execFileSync(process.execPath, [join(__dirname, "build-medicare-figures.mjs")], { stdio: "inherit" });
+  execFileSync(process.execPath, [join(__dirname, "build-aep-data.mjs")], { stdio: "inherit" });
   execFileSync(process.execPath, [join(__dirname, "build-plan-data.mjs")], { stdio: "inherit" });
 }
 
@@ -164,6 +165,13 @@ function build() {
     figures = JSON.parse(read(join(SRC, "data", "medicare-figures.json")));
   } catch (err) {
     throw new Error(`Could not read src/data/medicare-figures.json — Part B and Part D figures come from it. (${err.message})`);
+  }
+  /* The enrolment season rolls on its own schedule too — see aep.csv. */
+  let aep;
+  try {
+    aep = JSON.parse(read(join(SRC, "data", "aep.json")));
+  } catch (err) {
+    throw new Error(`Could not read src/data/aep.json — the Annual Enrollment Period dates come from it. (${err.message})`);
   }
   /* The plan tool compares its own pair of years, which roll on the CMS
      schedule — not with the COLA or the Part B figures. Borrowing any of those
@@ -223,6 +231,20 @@ function build() {
     // Plan-comparison years, straight from the plan data the tool actually loads.
     PLAN_YEAR_CURRENT: requireFigure(planManifest.currentYear, "PLAN_YEAR_CURRENT", "src/data/manifest.json has no currentYear — check scripts/build-plan-data.mjs."),
     PLAN_YEAR_NEXT: requireFigure(planManifest.nextYear, "PLAN_YEAR_NEXT", "src/data/manifest.json has no nextYear — check scripts/build-plan-data.mjs."),
+
+    /* Enrolment season. The window dates are quoted in body copy and in FAQ
+       structured data, so every phrasing the pages need is derived in
+       build-aep-data.mjs rather than restated by hand on either side. */
+    AEP_SEASON_YEAR: requireFigure(aep.seasonYear, "AEP_SEASON_YEAR", "No row with status=current in src/data/aep.csv."),
+    AEP_COVERAGE_YEAR: requireFigure(aep.coverageYear, "AEP_COVERAGE_YEAR", "No row with status=current in src/data/aep.csv."),
+    AEP_WINDOW_START: requireFigure(aep.windowStartLabel, "AEP_WINDOW_START", "The current row in src/data/aep.csv needs a window_start."),
+    AEP_WINDOW_END: requireFigure(aep.windowEndLabel, "AEP_WINDOW_END", "The current row in src/data/aep.csv needs a window_end."),
+    AEP_WINDOW_END_LONG: requireFigure(aep.windowEndLong, "AEP_WINDOW_END_LONG", "The current row in src/data/aep.csv needs a window_end."),
+    AEP_WINDOW_RANGE: requireFigure(aep.windowRange, "AEP_WINDOW_RANGE", "The current row in src/data/aep.csv needs window_start and window_end."),
+    AEP_WINDOW_RANGE_LONG: requireFigure(aep.windowRangeLong, "AEP_WINDOW_RANGE_LONG", "The current row in src/data/aep.csv needs window_start and window_end."),
+    AEP_COVERAGE_START: requireFigure(aep.coverageStartLabel, "AEP_COVERAGE_START", "The current row in src/data/aep.csv needs an ma_oep_start."),
+    AEP_COVERAGE_START_LONG: requireFigure(aep.coverageStartLong, "AEP_COVERAGE_START_LONG", "The current row in src/data/aep.csv needs an ma_oep_start."),
+    AEP_MA_OEP_RANGE_LONG: requireFigure(aep.maOepRangeLong, "AEP_MA_OEP_RANGE_LONG", "The current row in src/data/aep.csv needs ma_oep_start and ma_oep_end."),
   };
 
   // Site-level tokens that front matter may also reference (titles, descriptions).

@@ -67,7 +67,8 @@ the build refuses to substitute a plausible-looking literal when the data stops
 carrying one. `npm run build` exits non-zero — it does not warn — when:
 
 - **a required figure is missing**: the confirmed or projected COLA, the COLA
-  announcement date, the Part B premium/deductible, or the Part D cap. The
+  announcement date, the Part B premium/deductible, the Part D cap, or the
+  current enrolment season. The
   historical failure this prevents: promoting the projection to `official` in
   `cola-history.csv` without adding the *next* year's projection row used to
   leave the site quoting the previous estimate (`3.6%`) in 41 places, including
@@ -91,10 +92,11 @@ carrying one. `npm run build` exits non-zero — it does not warn — when:
 | SSA **COLA** announcement | Confirmed COLA figure | Announced Oct 14, 2026 |
 | CMS **Parts A & B premiums and deductibles** fact sheet | Part B standard premium + annual deductible | Published Nov, effective Jan 1 |
 | CMS **Part D redesign / annual parameters** | Part D out-of-pocket cap (IRA; indexed annually) | Annual |
+| CMS **Medicare & You** / 42 CFR 422.62 | Annual Enrollment Period window dates | Annual |
 
 ### Updating the data each fall
 
-Three data sets make up the whole annual update. Every CSV below is committed;
+Four data sets make up the whole annual update. Every CSV below is committed;
 the JSON they produce is generated and gitignored.
 
 - **COLA — `src/data/cola-history.csv`.** After the SSA announcement, promote the
@@ -119,6 +121,16 @@ the JSON they produce is generated and gitignored.
   > relying on them in production, check the CMS "Medicare Parts A & B Premiums
   > and Deductibles" fact sheet and the CMS Part D annual parameters directly, and
   > correct the row if they differ.
+- **Enrolment season — `src/data/aep.csv`.** One row per Annual Enrollment Period,
+  carrying the window dates, the coverage year they take effect in, and the
+  following MA Open Enrollment window. Add next season's row and move
+  `status=current` onto it. Exactly one row may be `current`: the build fails on
+  zero (the site would keep advertising a window that has closed) and on more than
+  one (it would have to guess). The season rolls on its own schedule, so pages use
+  `{{AEP_SEASON_YEAR}}`, `{{AEP_COVERAGE_YEAR}}`, `{{AEP_WINDOW_RANGE_LONG}}` and
+  friends rather than borrowing the COLA or Medicare-figures year — those roll at
+  different moments, and borrowing one used to roll a page title while its body
+  stayed pinned to the old season.
 - **Medicare plans:** drop the real CMS CSVs into `src/data/` as
   `landscape-current.csv`, `landscape-next.csv`, and `crosswalk.csv`, then rebuild.
   `scripts/build-plan-data.mjs` ingests them automatically. **Until those files are
