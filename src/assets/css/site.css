@@ -1015,6 +1015,17 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
   .textsize__btn { color: #cfeaea; }
   .textsize__btn[aria-pressed="true"] { background: var(--bc-teal-600); border-color: var(--bc-teal-600); }
   .callout--info a, .card--link .badge { color: var(--bc-accent); }
+
+  /* The chevron is drawn inside a data: URI, so its stroke is a hex literal
+     that no token remap can reach: it stayed --bc-teal-700 (#146066) on the
+     dark surface at 2.31:1, under the 3:1 WCAG 1.4.11 needs. With
+     `appearance: none` it is the only thing distinguishing a dropdown from a
+     text input. Re-declared here with the dark accent (#7fd3d6, measured
+     9.71:1 on #14201e) — same shape, same geometry, only the stroke moves.
+     The durable fix is to stop drawing it in a URI at all; see the audit. */
+  select.input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%237fd3d6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  }
 }
 
 /* ----- Print ------------------------------------------------------------
