@@ -4,7 +4,7 @@ import {
   quarterAverage, roundColaFraction, colaFromQuarterAverages,
   ssaRoundBenefit, projectBenefit, usd, usdCents, signedUsd,
   parseAmount, roundColaPercent, LIMITS,
-  validateBenefit, validatePartB, validateColaPercent,
+  validateBenefit, validatePartB, validateColaPercent, reconcileCola,
 } from "../src/assets/js/lib/cola-core.js";
 
 test("quarterAverage averages three months", () => {
@@ -187,4 +187,36 @@ test("validateColaPercent rounds to a tenth, so the echo matches the math", () =
   const r = projectBenefit({ priorGross: 2000, colaPercent: shown });
   assert.equal(shown.toFixed(1), "2.9");
   assert.equal(r.newGross, 2058);
+});
+
+/* The build computed this reconciliation, printed "worked check X% (official
+   Y%)" and shipped Y regardless. Measured before the guard: setting the 2026
+   row to 9.9% put a false confirmed COLA on 5 pages (23 occurrences, including
+   the calculator's own dropdown) with 66/66 tests and every CI check green. */
+test("reconcileCola agrees when the published figure matches the CPI-W averages", () => {
+  // The two real cycles in src/data/cola-history.csv.
+  const r2026 = reconcileCola(308.729, 317.373, 2.8);
+  assert.equal(r2026.computedColaPercent, 2.8);
+  assert.equal(r2026.agrees, true);
+  const r2025 = reconcileCola(301.236, 308.729, 2.5);
+  assert.equal(r2025.computedColaPercent, 2.5);
+  assert.equal(r2025.agrees, true);
+});
+
+test("reconcileCola refuses a published figure the averages do not support", () => {
+  const r = reconcileCola(308.729, 317.373, 9.9);
+  assert.equal(r.computedColaPercent, 2.8);
+  assert.equal(r.publishedColaPercent, 9.9);
+  assert.equal(r.agrees, false);
+});
+
+test("reconcileCola catches a one-tenth slip, the realistic typo", () => {
+  assert.equal(reconcileCola(308.729, 317.373, 2.9).agrees, false);
+  assert.equal(reconcileCola(308.729, 317.373, 2.7).agrees, false);
+});
+
+test("reconcileCola treats a missing or unparseable published figure as disagreement", () => {
+  assert.equal(reconcileCola(308.729, 317.373, NaN).agrees, false);
+  assert.equal(reconcileCola(308.729, 317.373, undefined).agrees, false);
+  assert.equal(reconcileCola(308.729, 317.373, "").agrees, false);
 });

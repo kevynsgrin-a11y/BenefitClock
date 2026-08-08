@@ -11,7 +11,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { colaFromQuarterAverages } from "../src/assets/js/lib/cola-core.js";
+import { colaFromQuarterAverages, reconcileCola } from "../src/assets/js/lib/cola-core.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA = join(__dirname, "..", "src", "data");
@@ -49,6 +49,22 @@ if (official.length >= 2) {
   const prev = official[official.length - 2];
   if (cur.q3CpiwAvg && prev.q3CpiwAvg) {
     const c = colaFromQuarterAverages(prev.q3CpiwAvg, cur.q3CpiwAvg);
+    /* The build already knew. It computed this reconciliation, printed
+       "worked check X% (official Y%)" to the log, and shipped Y regardless —
+       so a mistyped cola_pct reached the calculator's own dropdown, the
+       homepage and four guides with 66 tests and every CI check green.
+       Refusing to build is the point: this figure is a benefit increase
+       people plan around, and it is quoted on five pages. */
+    const check = reconcileCola(prev.q3CpiwAvg, cur.q3CpiwAvg, cur.colaPct);
+    if (!check.agrees) {
+      throw new Error(
+        `cola-history.csv: the published ${cur.year} COLA (${check.publishedColaPercent}%) does not ` +
+        `match the ${check.computedColaPercent}% the statutory formula gives for the Q3 CPI-W ` +
+        `averages on the same rows (${prev.year - 1}: ${prev.q3CpiwAvg} → ${cur.year - 1}: ${cur.q3CpiwAvg}). ` +
+        `One of the three is wrong. Refusing to build: this figure is quoted as a confirmed ` +
+        `benefit increase on five pages and is the calculator's default.`
+      );
+    }
     worked = {
       priorDeterminationYear: prev.year - 1,
       priorQ3Avg: prev.q3CpiwAvg,
