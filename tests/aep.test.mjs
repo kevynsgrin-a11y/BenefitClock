@@ -129,11 +129,34 @@ test("the last real day of a month is still accepted", () => {
    number people actually read, frozen at whatever year it was typed in. */
 const pageFiles = readdirSync(PAGES).filter((f) => f.endsWith(".html"));
 
+/* A sweep over a directory is only a guard while the directory has files in
+   it. If PAGES ever moves, every filter below returns [] and all three tests
+   pass while checking nothing. */
+test("the page sweep these guards depend on is not empty", () => {
+  assert.ok(pageFiles.length >= 13, `expected the 13+ source pages, found ${pageFiles.length}`);
+});
+
+/* Anchor on the ELEMENT, not on the attribute being written last. The previous
+   pattern was /data-year-[a-z]+>\s*\d{4}/, which required `>` to follow the
+   attribute name immediately — so `<span data-year-next class="yr">2027</span>`
+   sailed past it. One added attribute, a routine styling edit, switched the
+   guard off. */
+const HARDCODED_YEAR_SPAN = /<[a-z]+\b[^>]*\bdata-year-[a-z]+\b[^>]*>\s*\d{4}/i;
+
 test("no page hardcodes a year inside a data-year span", () => {
   const offenders = pageFiles.filter((f) =>
-    /data-year-[a-z]+>\s*\d{4}/.test(readFileSync(join(PAGES, f), "utf8"))
+    HARDCODED_YEAR_SPAN.test(readFileSync(join(PAGES, f), "utf8"))
   );
   assert.deepEqual(offenders, [], `hardcoded year in a data-year span: ${offenders.join(", ")}`);
+});
+
+test("the hardcoded-year guard still fires when other attributes follow data-year-*", () => {
+  // The exact shape that defeated the old pattern.
+  assert.ok(HARDCODED_YEAR_SPAN.test('<span data-year-next class="yr">2027</span>'));
+  assert.ok(HARDCODED_YEAR_SPAN.test('<span class="yr" data-year-current id="x">2026</span>'));
+  assert.ok(HARDCODED_YEAR_SPAN.test("<span data-year-next>2027</span>"));
+  // and does not fire on the bound form the pages actually use
+  assert.ok(!HARDCODED_YEAR_SPAN.test('<span data-year-next class="yr">{{PLAN_YEAR_NEXT}}</span>'));
 });
 
 test("data-year spans only appear on pages that actually load plan-diff.js", () => {
@@ -144,8 +167,26 @@ test("data-year spans only appear on pages that actually load plan-diff.js", () 
   assert.deepEqual(offenders, [], `data-year span with no script to fill it: ${offenders.join(", ")}`);
 });
 
+/* Resolve the AEP guide by what it IS — the page carrying the AEP tokens —
+   rather than by its filename. Pinning the filename meant renaming the source
+   file failed the deploy with a bare ENOENT from readFileSync, which names no
+   cause a redesigner could act on. */
+function findAepGuide() {
+  const hits = pageFiles.filter((f) => /\{\{AEP_[A-Z_]+\}\}/.test(readFileSync(join(PAGES, f), "utf8")));
+  assert.equal(
+    hits.length, 1,
+    `expected exactly one page built from the AEP data layer, found ${hits.length}` +
+    `${hits.length ? ` (${hits.join(", ")})` : " — no page uses the {{AEP_*}} tokens"}`
+  );
+  return hits[0];
+}
+
+test("the AEP guide is found by its data bindings, not by its filename", () => {
+  assert.ok(findAepGuide().endsWith(".html"));
+});
+
 test("the AEP guide states no enrolment date except through the data layer", () => {
-  const src = readFileSync(join(PAGES, "guide-aep.html"), "utf8");
+  const src = readFileSync(join(PAGES, findAepGuide()), "utf8");
   const body = src.split("\n").filter((l) => !l.includes("/guides/medicare-aep-2026")).join("\n");
   const literals = body.match(/October \d+|December \d+|March 31|January 1(?!\d)/g) || [];
   assert.deepEqual(literals, [], `enrolment date written into markup: ${literals.join(", ")}`);
