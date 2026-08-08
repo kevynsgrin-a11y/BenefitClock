@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "build:data": "node scripts/build-cola-data.mjs && node scripts/build-plan-data.mjs",
+    "build:data": "node scripts/build-cola-data.mjs && node scripts/build-medicare-figures.mjs && node scripts/build-aep-data.mjs && node scripts/build-plan-data.mjs",
     "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\"",
     "dev": "npm run build && node scripts/serve.mjs",
     "serve": "node scripts/serve.mjs",
