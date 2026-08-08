@@ -268,7 +268,19 @@ ready(() => {
 
   if (els.print) els.print.addEventListener("click", () => window.print());
 
-  // First paint: fill the panel, but say nothing — nobody asked a question yet.
-  syncCustomVisibility(false);
-  render({ immediate: true, silent: true });
+  /* First paint: fill the panel, but say nothing — nobody asked a question yet.
+
+     On `pageshow`, not DOMContentLoaded. Browsers restore form-control values
+     from session history AFTER the document's scripts have run, so a
+     first-paint-only render left the panel showing the answer to whatever the
+     controls said a moment earlier: come back to this page and the dropdown
+     read one COLA percentage while the dollars beside it had been computed
+     from another. pageshow fires on the initial load and on every history
+     restore (bfcache included), so one handler covers both. */
+  function paint() {
+    syncCustomVisibility(false);
+    render({ immediate: true, silent: true });
+  }
+  window.addEventListener("pageshow", paint);
+  paint();
 });
