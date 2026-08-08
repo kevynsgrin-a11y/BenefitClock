@@ -376,7 +376,25 @@ ready(async () => {
       `${diff.prior.planName}: ${diff.headline}` +
         (meta.sample ? " These are sample numbers, not real plan data." : "")
     );
-    if (els.results) els.results.scrollIntoView({ behavior: scrollBehavior(), block: "nearest" });
+    /* Only a pointer commit scrolls. This form has no submit button, so
+       `change` on the plan <select> is the only path to a comparison — and on
+       a keyboard that fires on every ArrowDown. Scrolling then carried the
+       select the person is still operating right off the top of the screen.
+       cola.js draws the same distinction for the same reason (presetIntent).
+       The result is announced either way, so a screen-reader user loses
+       nothing by the page staying put. */
+    if (els.results && planIntent === "pointer") {
+      els.results.scrollIntoView({ behavior: scrollBehavior(), block: "nearest" });
+    }
+  }
+
+  /* How the plan choice arrived: a click commits, an arrow key is still
+     browsing. See the scroll guard in renderDiff. Submitting the form counts
+     as a commit however it was triggered. */
+  let planIntent = "keyboard";
+  if (els.plan) {
+    els.plan.addEventListener("pointerdown", () => { planIntent = "pointer"; });
+    els.plan.addEventListener("keydown", () => { planIntent = "keyboard"; });
   }
 
   els.state && els.state.addEventListener("change", onState);
@@ -386,6 +404,7 @@ ready(async () => {
   els.planId && els.planId.addEventListener("blur", onPlanIdEntry);
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    planIntent = "pointer"; // an explicit submit is a commit, however it arrived
     const typed = els.planId && String(els.planId.value || "").trim();
     if (typed) onPlanIdEntry();
     else onPlan();
