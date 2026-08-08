@@ -102,6 +102,27 @@ test("a malformed date is rejected rather than rendered as-is", () => {
   assert.throws(() => derive(row({ window_start: "2026-13-01" })), /not a real date/);
 });
 
+/* A day-of-month bound of 1-31 accepts dates that do not exist. These are
+   enrolment deadlines: an accepted "2026-11-31" renders as "November 31" in
+   body copy, meta description and FAQPage structured data, build green. */
+test("a day past the end of its month is rejected, not rendered", () => {
+  assert.throws(() => derive(row({ window_end: "2026-11-31" })), /not a real date/);
+  assert.throws(() => derive(row({ window_start: "2026-09-31" })), /not a real date/);
+  assert.throws(() => derive(row({ ma_oep_end: "2027-02-30" })), /not a real date/);
+});
+
+test("the last real day of a month is still accepted", () => {
+  // Guards the fix from over-correcting: a 31-day month, a 30-day month and a
+  // leap-year February must all still parse.
+  assert.equal(derive(row({ window_end: "2026-12-31" })).windowEndLong, "December 31, 2026");
+  assert.equal(derive(row({ window_start: "2026-09-30" })).windowStartLabel, "September 30");
+  const leap = row({ season_year: 2027, coverage_year: 2028,
+    window_start: "2027-10-15", window_end: "2027-12-07",
+    ma_oep_start: "2028-01-01", ma_oep_end: "2028-02-29", source_updated: "2027-10-15" });
+  assert.equal(derive(leap).maOepEnd, "2028-02-29");
+  assert.match(derive(leap).maOepRangeLong, /February 29, 2028$/);
+});
+
 /* The defect these guard against: markup that looks data-bound but is not.
    `data-year-*` spans are only rewritten by plan-diff.js, which loads on the
    plan tool page alone — so on every other page the fallback text was the
