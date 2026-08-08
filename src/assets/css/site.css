@@ -594,9 +594,13 @@ select.input {
    the previous answer stayed fully painted and looked current. */
 [data-state="empty"] .figure__value,
 .is-stale .figure__value { color: var(--bc-ink-faint); }
-[data-state="empty"] .figure-row,
-[data-state="empty"] .bc-chart,
-.is-stale .figure-row { opacity: 0.45; }
+/* Opacity must not land on live text. `.figure-row` holds .figure__label and
+   .figure__sub, which stay readable in the empty state — dimming the whole row
+   to 0.45 took them to 1.88:1 in light and 2.29:1 in dark (WCAG 1.4.3 needs
+   4.5:1). The value dimming immediately above already carries the staleness
+   signal, and it keeps the labels at their ready-state 5.19:1 / 5.91:1.
+   The chart keeps the fade: it is aria-hidden decoration with no text to read. */
+[data-state="empty"] .bc-chart { opacity: 0.45; }
 
 /* ----- Result panels ---------------------------------------------------- */
 .result {
