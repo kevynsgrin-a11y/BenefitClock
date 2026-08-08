@@ -102,14 +102,28 @@
         el.classList.toggle('is-scrollable', over);
         el.classList.toggle('at-start', el.scrollLeft <= 1);
         el.classList.toggle('at-end', el.scrollLeft >= slack - 1);
-        if (over && el.getAttribute('tabindex') === null) {
-          el.setAttribute('tabindex', '0');
-          if (!el.getAttribute('role')) el.setAttribute('role', 'region');
-          if (!el.getAttribute('aria-label') && !el.getAttribute('aria-labelledby')) {
-            var cap = el.querySelector('caption, figcaption');
-            var name = cap ? cap.textContent.trim() : 'Table';
-            el.setAttribute('aria-label', name + ' — scrollable sideways');
+        /* Applied AND withdrawn. These three attributes are a promise that the
+           region scrolls; when the viewport widens or rows are removed and it
+           no longer does, leaving them behind puts a tab stop in the order
+           whose accessible name says "scrollable sideways" and which cannot
+           scroll. Only ever remove what this function added — a `tabindex` or
+           `role` authored in the markup is not ours to strip. */
+        if (over) {
+          if (el.getAttribute('tabindex') === null) {
+            el.setAttribute('tabindex', '0');
+            el.setAttribute('data-scroll-affordance', '');
+            if (!el.getAttribute('role')) el.setAttribute('role', 'region');
+            if (!el.getAttribute('aria-label') && !el.getAttribute('aria-labelledby')) {
+              var cap = el.querySelector('caption, figcaption');
+              var name = cap ? cap.textContent.trim() : 'Table';
+              el.setAttribute('aria-label', name + ' — scrollable sideways');
+            }
           }
+        } else if (el.hasAttribute('data-scroll-affordance')) {
+          el.removeAttribute('tabindex');
+          el.removeAttribute('role');
+          el.removeAttribute('aria-label');
+          el.removeAttribute('data-scroll-affordance');
         }
       }
       sync();
