@@ -280,9 +280,16 @@ ready(async () => {
       }
     }
 
+    /* Echo what the person typed, not what we padded it to. Reporting
+       "H1234-001 not found" to someone who typed H1234-1 sends them to check
+       their card against a number that was never on it — and hides that the
+       padding is where the lookup may have gone wrong. */
+    const typed = els.planId.value.trim();
+    const normalised = `${m[1].toUpperCase()}-${m[2].padStart(3, "0")}`;
+    const asRead = typed.toUpperCase() === normalised ? "" : ` (we read that as ${normalised})`;
     const county = els.county && els.county.value ? `${els.county.value} County` : "this county";
     showError(
-      `We could not find plan ${m[1].toUpperCase()}-${m[2].padStart(3, "0")} in ${county}. Check the ID on your member card or Annual Notice of Change, or pick your plan by name in the list above.`
+      `We could not find plan ${typed}${asRead} in ${county}. Check the ID on your member card or Annual Notice of Change, or pick your plan by name in the list above.`
     );
     setStatus("");
   }
