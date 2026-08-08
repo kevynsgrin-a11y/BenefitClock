@@ -38,16 +38,50 @@ test("each chart declares its own width for CSS to cap scaling at 1:1", () => {
   }
 });
 
+/* These guards locate bars by regex, so the regex IS the contract. Two rules
+   keep a presentational edit from being misreported as a geometry failure:
+
+   1. Match the attributes independently of the order they are written in.
+      The old pattern required class, then x, then width, in exactly that
+      sequence.
+   2. Assert the match COUNT before using the matches. A pattern that matches
+      nothing made the loop body never run and the test pass green — so
+      renaming a CSS class silently switched the guard off rather than
+      failing. Its sibling, which used .exec(...)[1], threw
+      "Cannot read properties of null" instead, blaming bar density for what
+      was actually a rename. */
+const BAR_RE = /<rect\b(?=[^>]*\bclass="bc-bar)(?=[^>]*\bx="([\d.]+)")(?=[^>]*\bwidth="([\d.]+)")[^>]*>/g;
+
+function barsIn(html, n) {
+  const bars = [...html.matchAll(BAR_RE)].map((m) => ({ x: Number(m[1]), w: Number(m[2]) }));
+  assert.equal(
+    bars.length, n,
+    `expected ${n} bar rects, matched ${bars.length} — the chart markup contract moved ` +
+    `(class="bc-bar", x and width on a <rect>); fix the selector here rather than reading ` +
+    `this as a geometry failure`
+  );
+  return bars;
+}
+
 test("bars stay inside the plot area at every count", () => {
   for (const n of [1, 2, 3, 5, 8, 12]) {
     const html = chart(n);
     const W = viewBoxW(html);
-    for (const m of html.matchAll(/<rect class="bc-bar[^"]*" x="([\d.]+)"[^>]*width="([\d.]+)"/g)) {
-      const x = Number(m[1]), w = Number(m[2]);
+    for (const { x, w } of barsIn(html, n)) {
       assert.ok(x >= 0, `bar starts left of the box at n=${n}: x=${x}`);
       assert.ok(x + w <= W, `bar overflows the box at n=${n}: ${x}+${w} > ${W}`);
     }
   }
+});
+
+test("the bar selector survives attribute reordering, so styling edits do not silence it", () => {
+  // The contract is "a <rect> in the bc-bar class carrying x and width",
+  // not the order an author happened to write those attributes in.
+  const reordered = '<rect width="10.0" class="bc-bar" y="1.0" x="2.0" height="3.0"></rect>';
+  const hit = [...reordered.matchAll(BAR_RE)];
+  assert.equal(hit.length, 1, "reordered attributes must still match");
+  assert.equal(Number(hit[0][1]), 2);
+  assert.equal(Number(hit[0][2]), 10);
 });
 
 test("bar density is the same whatever the bar count", () => {
@@ -55,11 +89,11 @@ test("bar density is the same whatever the bar count", () => {
   // rather than two bars stretched across a box built for five.
   // Within rounding: the viewBox is rounded to whole units, which nudges the
   // slot by a hundredth of a unit.
-  const widthOf = (html) => Number(/<rect class="bc-bar[^"]*"[^>]*width="([\d.]+)"/.exec(html)[1]);
+  const widthOf = (n) => barsIn(chart(n), n)[0].w;
   for (const n of [3, 5, 8]) {
     assert.ok(
-      Math.abs(widthOf(chart(2)) - widthOf(chart(n))) < 0.5,
-      `bar width should not depend on bar count: ${widthOf(chart(2))} vs ${widthOf(chart(n))} at n=${n}`
+      Math.abs(widthOf(2) - widthOf(n)) < 0.5,
+      `bar width should not depend on bar count: ${widthOf(2)} vs ${widthOf(n)} at n=${n}`
     );
   }
 });
