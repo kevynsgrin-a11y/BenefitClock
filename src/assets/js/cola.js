@@ -15,6 +15,16 @@ function ready(fn) {
   else document.addEventListener("DOMContentLoaded", fn);
 }
 
+/* The stylesheet correctly sets scroll-behavior:auto under
+   prefers-reduced-motion, but an explicit behavior:"smooth" passed to
+   scrollIntoView overrides the CSS — so the one place the site animates a
+   long scroll ignored the setting entirely. Ask the media query directly. */
+function scrollBehavior() {
+  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "auto"
+    : "smooth";
+}
+
 // "Where your raise goes" — two horizontal bars (now vs after the raise), each
 // split into what you keep (green) and what Part B withholds (amber). Decorative
 // reinforcement of the stat tiles, so the container is aria-hidden.
@@ -263,7 +273,7 @@ ready(() => {
       if (f.firstInvalid) f.firstInvalid.focus();
       return;
     }
-    if (els.results) els.results.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (els.results) els.results.scrollIntoView({ behavior: scrollBehavior(), block: "nearest" });
   });
 
   if (els.print) els.print.addEventListener("click", () => window.print());

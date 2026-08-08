@@ -41,6 +41,16 @@ function ready(fn) {
   else document.addEventListener("DOMContentLoaded", fn);
 }
 
+/* The stylesheet correctly sets scroll-behavior:auto under
+   prefers-reduced-motion, but an explicit behavior:"smooth" passed to
+   scrollIntoView overrides the CSS — so the one place the site animates a
+   long scroll ignored the setting entirely. Ask the media query directly. */
+function scrollBehavior() {
+  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "auto"
+    : "smooth";
+}
+
 async function loadJSON(path, signal) {
   const res = await fetch(path, { cache: "no-store", signal });
   if (!res.ok) throw new Error(`Failed to load ${path} (${res.status})`);
@@ -366,7 +376,7 @@ ready(async () => {
       `${diff.prior.planName}: ${diff.headline}` +
         (meta.sample ? " These are sample numbers, not real plan data." : "")
     );
-    if (els.results) els.results.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (els.results) els.results.scrollIntoView({ behavior: scrollBehavior(), block: "nearest" });
   }
 
   els.state && els.state.addEventListener("change", onState);
