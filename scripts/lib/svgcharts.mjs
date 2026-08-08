@@ -84,7 +84,7 @@ export function verticalBars(o) {
     gridlines + baseline + bars +
     `</svg>` +
     table +
-    `<figcaption>${o.caption}</figcaption>` +
+    `<figcaption>${esc(o.caption)}</figcaption>` +
     `</figure>`
   );
 }

@@ -83,3 +83,24 @@ test("the accessible data table survives — it is the primary path on small scr
   assert.equal((html.match(/<tr><th scope="row">/g) || []).length, 3);
   assert.match(html, /role="img"/);
 });
+
+/* Every other interpolation in svgcharts.mjs runs through esc(); the visible
+   <figcaption> did not, while the very same `caption` string was escaped for
+   the screen-reader table's <caption> two lines above. Captions are authored
+   in build.mjs and page front-matter today, but an ampersand or an angle
+   bracket in one of them silently emitted raw markup into the document — and
+   nothing exercised the escape helper at all. */
+test("the visible figcaption is escaped, like every other interpolation", () => {
+  const html = chart(2, { caption: 'Plans & "extras" <b>2027</b>' });
+  assert.match(html, /<figcaption>Plans &amp; &quot;extras&quot; &lt;b&gt;2027&lt;\/b&gt;<\/figcaption>/);
+  assert.doesNotMatch(html, /<figcaption>[^<]*<b>/);
+});
+
+test("the screen-reader caption and the visible caption escape identically", () => {
+  const raw = "Cost & coverage <2027>";
+  const html = chart(2, { caption: raw });
+  const table = /<caption>([\s\S]*?)<\/caption>/.exec(html);
+  const fig = /<figcaption>([\s\S]*?)<\/figcaption>/.exec(html);
+  assert.ok(table && fig, "both captions must be present");
+  assert.equal(fig[1], table[1]);
+});
