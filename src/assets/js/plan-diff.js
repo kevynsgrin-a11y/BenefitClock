@@ -41,6 +41,16 @@ function ready(fn) {
   else document.addEventListener("DOMContentLoaded", fn);
 }
 
+/* The stylesheet correctly sets scroll-behavior:auto under
+   prefers-reduced-motion, but an explicit behavior:"smooth" passed to
+   scrollIntoView overrides the CSS — so the one place the site animates a
+   long scroll ignored the setting entirely. Ask the media query directly. */
+function scrollBehavior() {
+  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "auto"
+    : "smooth";
+}
+
 async function loadJSON(path, signal) {
   const res = await fetch(path, { cache: "no-store", signal });
   if (!res.ok) throw new Error(`Failed to load ${path} (${res.status})`);
@@ -270,9 +280,16 @@ ready(async () => {
       }
     }
 
+    /* Echo what the person typed, not what we padded it to. Reporting
+       "H1234-001 not found" to someone who typed H1234-1 sends them to check
+       their card against a number that was never on it — and hides that the
+       padding is where the lookup may have gone wrong. */
+    const typed = els.planId.value.trim();
+    const normalised = `${m[1].toUpperCase()}-${m[2].padStart(3, "0")}`;
+    const asRead = typed.toUpperCase() === normalised ? "" : ` (we read that as ${normalised})`;
     const county = els.county && els.county.value ? `${els.county.value} County` : "this county";
     showError(
-      `We could not find plan ${m[1].toUpperCase()}-${m[2].padStart(3, "0")} in ${county}. Check the ID on your member card or Annual Notice of Change, or pick your plan by name in the list above.`
+      `We could not find plan ${typed}${asRead} in ${county}. Check the ID on your member card or Annual Notice of Change, or pick your plan by name in the list above.`
     );
     setStatus("");
   }
@@ -366,7 +383,25 @@ ready(async () => {
       `${diff.prior.planName}: ${diff.headline}` +
         (meta.sample ? " These are sample numbers, not real plan data." : "")
     );
-    if (els.results) els.results.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    /* Only a pointer commit scrolls. This form has no submit button, so
+       `change` on the plan <select> is the only path to a comparison — and on
+       a keyboard that fires on every ArrowDown. Scrolling then carried the
+       select the person is still operating right off the top of the screen.
+       cola.js draws the same distinction for the same reason (presetIntent).
+       The result is announced either way, so a screen-reader user loses
+       nothing by the page staying put. */
+    if (els.results && planIntent === "pointer") {
+      els.results.scrollIntoView({ behavior: scrollBehavior(), block: "nearest" });
+    }
+  }
+
+  /* How the plan choice arrived: a click commits, an arrow key is still
+     browsing. See the scroll guard in renderDiff. Submitting the form counts
+     as a commit however it was triggered. */
+  let planIntent = "keyboard";
+  if (els.plan) {
+    els.plan.addEventListener("pointerdown", () => { planIntent = "pointer"; });
+    els.plan.addEventListener("keydown", () => { planIntent = "keyboard"; });
   }
 
   els.state && els.state.addEventListener("change", onState);
@@ -376,6 +411,7 @@ ready(async () => {
   els.planId && els.planId.addEventListener("blur", onPlanIdEntry);
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    planIntent = "pointer"; // an explicit submit is a commit, however it arrived
     const typed = els.planId && String(els.planId.value || "").trim();
     if (typed) onPlanIdEntry();
     else onPlan();

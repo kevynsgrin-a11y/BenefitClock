@@ -594,9 +594,13 @@ select.input {
    the previous answer stayed fully painted and looked current. */
 [data-state="empty"] .figure__value,
 .is-stale .figure__value { color: var(--bc-ink-faint); }
-[data-state="empty"] .figure-row,
-[data-state="empty"] .bc-chart,
-.is-stale .figure-row { opacity: 0.45; }
+/* Opacity must not land on live text. `.figure-row` holds .figure__label and
+   .figure__sub, which stay readable in the empty state — dimming the whole row
+   to 0.45 took them to 1.88:1 in light and 2.29:1 in dark (WCAG 1.4.3 needs
+   4.5:1). The value dimming immediately above already carries the staleness
+   signal, and it keeps the labels at their ready-state 5.19:1 / 5.91:1.
+   The chart keeps the fade: it is aria-hidden decoration with no text to read. */
+[data-state="empty"] .bc-chart { opacity: 0.45; }
 
 /* ----- Result panels ---------------------------------------------------- */
 .result {
@@ -1011,6 +1015,24 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
   .textsize__btn { color: #cfeaea; }
   .textsize__btn[aria-pressed="true"] { background: var(--bc-teal-600); border-color: var(--bc-teal-600); }
   .callout--info a, .card--link .badge { color: var(--bc-accent); }
+
+  /* The chevron is drawn inside a data: URI, so its stroke is a hex literal
+     that no token remap can reach: it stayed --bc-teal-700 (#146066) on the
+     dark surface at 2.31:1, under the 3:1 WCAG 1.4.11 needs. With
+     `appearance: none` it is the only thing distinguishing a dropdown from a
+     text input. Re-declared here with the dark accent (#7fd3d6, measured
+     9.71:1 on #14201e) — same shape, same geometry, only the stroke moves.
+     The durable fix is to stop drawing it in a URI at all; see the audit. */
+  select.input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%237fd3d6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  }
+
+  /* --bc-teal-050 flips dark (#e9f5f5 -> #10302f) but --bc-teal-900 does not,
+     so this pairing — light-ramp background under dark-ramp text — collapsed
+     to 1.15:1 on hover. It is the homepage's primary call to action. Hold the
+     light tint here so the relationship the ramp was built for survives:
+     #0b3b3f on #e9f5f5 measures 11.01:1. */
+  .btn--onteal:hover { background: #e9f5f5; color: var(--bc-teal-900); }
 }
 
 /* ----- Print ------------------------------------------------------------

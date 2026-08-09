@@ -47,6 +47,37 @@ export function colaFromQuarterAverages(priorQ3Avg, currentQ3Avg) {
 }
 
 /**
+ * Reconcile a PUBLISHED COLA against the one the statutory formula produces
+ * from the same two third-quarter CPI-W averages.
+ *
+ * The build already computes both numbers for the "worked example" shown on
+ * /how-it-works, and used to print them side by side and ship regardless — so
+ * a mistyped cola_pct in the CSV reached the calculator's own dropdown with
+ * every test and every CI check green. This turns that arithmetic into an
+ * assertion the build can act on.
+ *
+ * Equality is exact at one decimal place, deliberately: 42 U.S.C. 415(i)
+ * defines the COLA as the Q3-over-Q3 increase rounded to the nearest tenth of
+ * a percent, and roundColaFraction already applies exactly that rounding. A
+ * disagreement therefore means the CSV's CPI-W averages and its published
+ * percentage describe different years — not a rounding difference.
+ *
+ * @param {number} priorQ3Avg
+ * @param {number} currentQ3Avg
+ * @param {number} publishedColaPercent
+ * @returns {{computedColaPercent:number, publishedColaPercent:number, agrees:boolean}}
+ */
+export function reconcileCola(priorQ3Avg, currentQ3Avg, publishedColaPercent) {
+  const computed = Number(colaFromQuarterAverages(priorQ3Avg, currentQ3Avg).colaPercent.toFixed(1));
+  const published = Number(publishedColaPercent);
+  return {
+    computedColaPercent: computed,
+    publishedColaPercent: published,
+    agrees: Number.isFinite(published) && computed === published,
+  };
+}
+
+/**
  * SSA rounds an individual monthly benefit DOWN to the next lower whole dollar
  * after applying the COLA.
  * @param {number} amount

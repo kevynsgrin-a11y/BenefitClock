@@ -15,6 +15,16 @@ function ready(fn) {
   else document.addEventListener("DOMContentLoaded", fn);
 }
 
+/* The stylesheet correctly sets scroll-behavior:auto under
+   prefers-reduced-motion, but an explicit behavior:"smooth" passed to
+   scrollIntoView overrides the CSS — so the one place the site animates a
+   long scroll ignored the setting entirely. Ask the media query directly. */
+function scrollBehavior() {
+  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "auto"
+    : "smooth";
+}
+
 // "Where your raise goes" — two horizontal bars (now vs after the raise), each
 // split into what you keep (green) and what Part B withholds (amber). Decorative
 // reinforcement of the stat tiles, so the container is aria-hidden.
@@ -263,12 +273,24 @@ ready(() => {
       if (f.firstInvalid) f.firstInvalid.focus();
       return;
     }
-    if (els.results) els.results.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (els.results) els.results.scrollIntoView({ behavior: scrollBehavior(), block: "nearest" });
   });
 
   if (els.print) els.print.addEventListener("click", () => window.print());
 
-  // First paint: fill the panel, but say nothing — nobody asked a question yet.
-  syncCustomVisibility(false);
-  render({ immediate: true, silent: true });
+  /* First paint: fill the panel, but say nothing — nobody asked a question yet.
+
+     On `pageshow`, not DOMContentLoaded. Browsers restore form-control values
+     from session history AFTER the document's scripts have run, so a
+     first-paint-only render left the panel showing the answer to whatever the
+     controls said a moment earlier: come back to this page and the dropdown
+     read one COLA percentage while the dollars beside it had been computed
+     from another. pageshow fires on the initial load and on every history
+     restore (bfcache included), so one handler covers both. */
+  function paint() {
+    syncCustomVisibility(false);
+    render({ immediate: true, silent: true });
+  }
+  window.addEventListener("pageshow", paint);
+  paint();
 });

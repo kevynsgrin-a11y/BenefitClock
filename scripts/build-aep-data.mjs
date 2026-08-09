@@ -48,7 +48,14 @@ function parseIso(iso, field) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || "").trim());
   if (!m) throw new Error(`aep.csv: ${field} must be an ISO date (YYYY-MM-DD), got "${iso}"`);
   const [, y, mo, d] = m.map(Number);
-  if (mo < 1 || mo > 12 || d < 1 || d > 31) throw new Error(`aep.csv: ${field} is not a real date: "${iso}"`);
+  /* Check the day against the length of THAT month, not a flat 1-31. A blanket
+     upper bound accepts November 31 and February 30, and every one of these
+     dates is read aloud as an enrolment deadline — "November 31" would render
+     into body copy, metadata and structured data with the build green. */
+  const monthLength = mo >= 1 && mo <= 12 ? new Date(Date.UTC(y, mo, 0)).getUTCDate() : 0;
+  if (mo < 1 || mo > 12 || d < 1 || d > monthLength) {
+    throw new Error(`aep.csv: ${field} is not a real date: "${iso}"`);
+  }
   return { year: y, month: mo, day: d, iso: String(iso).trim() };
 }
 
