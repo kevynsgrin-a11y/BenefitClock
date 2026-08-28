@@ -10,7 +10,8 @@
     "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\"",
     "dev": "npm run build && node scripts/serve.mjs",
     "serve": "node scripts/serve.mjs",
-    "test": "node --test"
+    "test": "node --test",
+    "verify:production": "node scripts/verify-production.mjs"
   },
   "engines": {
     "node": ">=18"

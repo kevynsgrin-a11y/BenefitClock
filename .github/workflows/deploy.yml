@@ -27,6 +27,17 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Time-based copy goes stale without anyone touching the repo. The site tells
+  # readers the COLA announcement is "expected on" a date, and the enrolment
+  # window is open or closed depending on today — none of which a push-triggered
+  # build ever re-evaluates. build-cola-data.mjs now FAILS once that date is
+  # behind us while the row is still projected, so this daily run is what turns
+  # that guard into an actual alarm: without it the check could sit unevaluated
+  # for weeks while production served copy that had quietly become false.
+  # A red run here means the data needs its annual update; production keeps
+  # serving the last good deploy until it gets one.
+  schedule:
+    - cron: "0 13 * * *"   # 13:00 UTC — after the 8:30 a.m. ET BLS/SSA release window
 
 permissions:
   contents: read

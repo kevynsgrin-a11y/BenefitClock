@@ -35,6 +35,12 @@ const rows = parseCsv(readFileSync(join(DATA, "cola-history.csv"), "utf8")).map(
   q3CpiwAvg: r.q3_cpiw_avg ? Number(r.q3_cpiw_avg) : null,
   status: r.status || "official",
   source: r.source || "",
+  /* Deliberately NOT the `announced` column. `announced` is a provenance date —
+     build.mjs derives "Data last refreshed" from the newest one — so putting a
+     FUTURE expected date there would date-stamp the whole site into the future.
+     This is the date the site says the next COLA is *expected*, which is a
+     forward-looking claim about a cycle that has not happened yet. */
+  announceExpected: r.announce_expected || null,
 }));
 
 const official = rows.filter((r) => r.status === "official").sort((a, b) => a.year - b.year);
@@ -77,6 +83,39 @@ if (official.length >= 2) {
   }
 }
 
+/* The announcement date is quoted as a FUTURE event ("expected on …") in 18
+   places across 8 pages, including four FAQPage blocks. Nothing about a static
+   build notices the day that stops being true: the date used to be a literal in
+   this file, so every rebuild re-shipped it unchanged and the site would have
+   spent the whole of AEP telling readers to wait for an announcement that had
+   already happened. It now comes from the data, and the build refuses to
+   produce that copy once the date is behind us. */
+if (projectedRow) {
+  if (!projectedRow.announceExpected) {
+    throw new Error(
+      `cola-history.csv: the projected ${projectedRow.year} row has no announce_expected date. ` +
+        `Eight pages say the official COLA is "expected on" that date, so the build will not ` +
+        `guess it. Add the expected BLS/SSA announcement date to the row.`
+    );
+  }
+  // "Today" in US Eastern: the announcement is a US event, and a UTC clock rolls
+  // over while it is still the previous afternoon in Washington.
+  const todayET = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+  if (todayET > projectedRow.announceExpected) {
+    throw new Error(
+      `cola-history.csv: the ${projectedRow.year} COLA announcement was expected on ` +
+        `${projectedRow.announceExpected}, which is now in the past (today is ${todayET}), but the row ` +
+        `is still status=projected. Eight pages currently say that date is still ahead of the reader.\n` +
+        `Do one of these:\n` +
+        `  • The SSA has announced — promote the ${projectedRow.year} row to status=official with the ` +
+        `real cola_pct, q3_cpiw_avg and announced date, and add the next year's projected row.\n` +
+        `  • The SSA has not announced yet (the date does slip — 2026 ran to October 24) — move ` +
+        `announce_expected forward to the new expected date.\n` +
+        `Refusing to build: this copy tells people when to expect a change to their benefit.`
+    );
+  }
+}
+
 const out = {
   generatedFrom: "src/data/cola-history.csv",
   confirmedYear: latestOfficial.year,
@@ -85,8 +124,9 @@ const out = {
   projectedYear: projectedRow ? projectedRow.year : null,
   projectedCola: projectedRow ? projectedRow.colaPct : null,
   projectedSource: projectedRow ? projectedRow.source : null,
-  // The official CPI-W release + SSA COLA announcement for the projected cycle.
-  nextAnnouncementDate: "2026-10-14",
+  // The official CPI-W release + SSA COLA announcement for the projected cycle,
+  // from the data rather than a literal — see the guard above.
+  nextAnnouncementDate: projectedRow ? projectedRow.announceExpected : null,
   nextAnnouncementNote: "BLS releases September CPI-W at 8:30 a.m. ET; SSA typically announces the official COLA the same day.",
   history: rows,
   worked,

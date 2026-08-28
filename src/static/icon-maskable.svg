@@ -1,0 +1,15 @@
+<!--
+  Maskable icon source. Two rules make this different from favicon.svg, and both
+  matter: the background is FULL-BLEED (no rounded corners), because the platform
+  applies its own mask shape and any transparent corner here shows through as a
+  notch; and the glyph is scaled to sit inside the "safe zone" — the centred
+  circle of 80% diameter that is all a maskable icon is guaranteed to keep.
+  The clock spans 50% of the canvas, so it survives a circular, squircle or
+  square mask identically. Do not add corner radius to the rect.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="BenefitDial">
+  <rect width="64" height="64" fill="#0f4b50"/>
+  <circle cx="32" cy="32" r="16" fill="none" stroke="#ffffff" stroke-width="4"/>
+  <path d="M32 22 V32 L39.6 36.6" fill="none" stroke="#f5c451" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="32" cy="32" r="2.2" fill="#ffffff"/>
+</svg>
