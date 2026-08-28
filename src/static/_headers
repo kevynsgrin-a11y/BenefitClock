@@ -19,6 +19,10 @@
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), interest-cohort=(), browsing-topics=(), join-ad-interest-group=(), run-ad-auction=(), attribution-reporting=(), shared-storage=(), private-aggregation=()
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Cross-Origin-Opener-Policy: same-origin
+  # Nothing here is meant to be embedded by another origin — there is no widget,
+  # no oEmbed, no cross-site API. CORP makes that explicit for subresources,
+  # where frame-ancestors/X-Frame-Options only cover documents.
+  Cross-Origin-Resource-Policy: same-origin
 
 # Assets are NOT content-hashed: /assets/css/site.css keeps the same URL across
 # every deploy. That makes a cache grace period a correctness bug rather than a

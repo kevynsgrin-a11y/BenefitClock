@@ -11,6 +11,7 @@
     "dev": "npm run build && node scripts/serve.mjs",
     "serve": "node scripts/serve.mjs",
     "test": "node --test",
+    "verify:build": "node scripts/verify-build-output.mjs",
     "verify:production": "node scripts/verify-production.mjs"
   },
   "engines": {

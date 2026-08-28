@@ -77,6 +77,13 @@ jobs:
 
           echo "Build output looks good."
 
+      # Covers what the link checker structurally cannot: JSON fetched at
+      # runtime by plan-diff.js (never an href/src), the _redirects targets,
+      # whether the built copy still agrees with the data layer, and whether the
+      # sample-data banner still ships visible rather than JS-dependent.
+      - name: Verify the built output against the data layer
+        run: node scripts/verify-build-output.mjs
+
       - name: Check every internal link and asset resolves
         run: |
           set -euo pipefail

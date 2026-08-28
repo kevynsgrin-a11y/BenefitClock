@@ -25,7 +25,7 @@ changefreq: monthly
         <p class="eyebrow">The season at a glance</p>
         <h2>Two announcements, one busy autumn.</h2>
         <p>The dates below run from midsummer, when the first {{COLA_PROJECTED_YEAR}} COLA estimates appear, through the following spring, when the last enrollment window closes. The two you can act on are the Annual Enrollment Period and the Medicare Advantage Open Enrollment Period — everything else is a heads-up so you're ready.</p>
-        <p>Want the short version? The official COLA is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, and Medicare Open Enrollment runs <strong>October 15 – December 7, 2026</strong>.</p>
+        <p>Want the short version? The official COLA is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, and Medicare Open Enrollment runs <strong>{{AEP_WINDOW_RANGE_LONG}}</strong>.</p>
       </div>
       <ul class="timeline">
         <li>
@@ -41,23 +41,23 @@ changefreq: monthly
           The Bureau of Labor Statistics releases September CPI-W inflation data, normally at 8:30&nbsp;a.m. ET, and the Social Security Administration usually announces the <strong>official {{COLA_PROJECTED_YEAR}} COLA</strong> the same morning. This is the day the estimate becomes real — though the date can slip: the {{COLA_CONFIRMED_YEAR}} COLA was not announced until {{COLA_CONFIRMED_ANNOUNCED_LONG}}.
         </li>
         <li>
-          <span class="date">October 15 – December 7, 2026</span>
+          <span class="date">{{AEP_WINDOW_RANGE_LONG}}</span>
           <strong>Medicare Annual Enrollment Period (AEP).</strong> This is the main window to compare, switch, or change your Medicare Advantage and Part D coverage for {{COLA_PROJECTED_YEAR}}. Open to everyone with Medicare.
         </li>
         <li>
-          <span class="date">Late November 2026</span>
+          <span class="date">Late November {{AEP_SEASON_YEAR}}</span>
           Your personalized COLA notice starts appearing in the message center of your <strong>my Social Security</strong> account online — usually before the paper version reaches your mailbox.
         </li>
         <li>
-          <span class="date">December 2026</span>
+          <span class="date">December {{AEP_SEASON_YEAR}}</span>
           Mailed COLA notices go out, confirming your new monthly benefit amount and any change to your Part B deduction.
         </li>
         <li>
-          <span class="date">January 1, 2027</span>
+          <span class="date">{{AEP_COVERAGE_START_LONG}}</span>
           The <strong>new plan year and new benefit amounts begin.</strong> Your COLA raise shows up in your payment, and any Medicare plan change you made during AEP takes effect.
         </li>
         <li>
-          <span class="date">January 1 – March 31, 2027</span>
+          <span class="date">{{AEP_MA_OEP_RANGE_LONG}}</span>
           <strong>Medicare Advantage Open Enrollment Period (OEP).</strong> A second, narrower window — for people already in a Medicare Advantage plan — to make one change if the new year isn't working out.
         </li>
       </ul>
@@ -68,17 +68,17 @@ changefreq: monthly
 <section class="section section--wash">
   <div class="wrap prose">
     <h2>What you can change during AEP</h2>
-    <p>The Annual Enrollment Period (October 15 – December 7) is the one time every year when almost any Medicare change is on the table. Here's what you're allowed to do:</p>
+    <p>The Annual Enrollment Period ({{AEP_WINDOW_RANGE}}) is the one time every year when almost any Medicare change is on the table. Here's what you're allowed to do:</p>
     <ul>
       <li><strong>Switch between Original Medicare and Medicare Advantage.</strong> Move from Original Medicare (Parts A and B) into a Medicare Advantage plan, or leave Medicare Advantage and go back to Original Medicare.</li>
       <li><strong>Change from one Medicare Advantage plan to another.</strong> If a different plan in your area fits your doctors, drugs, or budget better next year, you can move to it.</li>
       <li><strong>Add, drop, or switch your Part D drug coverage.</strong> Join a stand-alone Part D plan, drop the one you have, or switch to a different one. Comparing drug plans each year matters — nationwide, stand-alone Part D plan choices fell from 474 in 2025 to 367 in 2026.</li>
     </ul>
-    <p>Any change you make during AEP takes effect <strong>January 1, 2027</strong>. Your current plan keeps running until then.</p>
+    <p>Any change you make during AEP takes effect <strong>{{AEP_COVERAGE_START_LONG}}</strong>. Your current plan keeps running until then.</p>
 
     <div class="callout callout--info">
       <p class="callout__title">AEP and the MA OEP are not the same window</p>
-      <p style="margin:0;"><strong>AEP (October 15 – December 7)</strong> is open to everyone with Medicare, and you can make as many changes as you like — only your last choice counts. The <strong>Medicare Advantage Open Enrollment Period (January 1 – March 31, 2027)</strong> is different: it's only for people already enrolled in a Medicare Advantage plan, and it allows just <strong>one</strong> change — switch to another MA plan, or drop back to Original Medicare (and add a Part D plan). If you're on Original Medicare on January 1, the MA OEP is not for you.</p>
+      <p style="margin:0;"><strong>AEP ({{AEP_WINDOW_RANGE}})</strong> is open to everyone with Medicare, and you can make as many changes as you like — only your last choice counts. The <strong>Medicare Advantage Open Enrollment Period ({{AEP_MA_OEP_RANGE_LONG}})</strong> is different: it's only for people already enrolled in a Medicare Advantage plan, and it allows just <strong>one</strong> change — switch to another MA plan, or drop back to Original Medicare (and add a Part D plan). If you're on Original Medicare on {{AEP_COVERAGE_START}}, the MA OEP is not for you.</p>
     </div>
 
     {{> ad-inline }}
@@ -114,7 +114,7 @@ changefreq: monthly
     <details class="faq">
       <summary>What if I miss the Annual Enrollment Period?</summary>
       <div class="faq__body">
-        <p>If you miss AEP (October 15 – December 7), your current coverage simply carries into {{COLA_PROJECTED_YEAR}} with whatever changes your plan made — so it's worth reading your ANOC even if you plan to stay put. If you're already in a Medicare Advantage plan, you get one more chance during the <strong>MA Open Enrollment Period, January 1 – March 31, 2027</strong>, to switch plans or return to Original Medicare. Outside those windows, you generally need a Special Enrollment Period, which is triggered by specific life events like moving. Check your options on the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or by calling 1-800-MEDICARE.</p>
+        <p>If you miss AEP ({{AEP_WINDOW_RANGE}}), your current coverage simply carries into {{COLA_PROJECTED_YEAR}} with whatever changes your plan made — so it's worth reading your ANOC even if you plan to stay put. If you're already in a Medicare Advantage plan, you get one more chance during the <strong>MA Open Enrollment Period, {{AEP_MA_OEP_RANGE_LONG}}</strong>, to switch plans or return to Original Medicare. Outside those windows, you generally need a Special Enrollment Period, which is triggered by specific life events like moving. Check your options on the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or by calling 1-800-MEDICARE.</p>
       </div>
     </details>
 
@@ -182,7 +182,7 @@ changefreq: monthly
   "@type": "FAQPage",
   "mainEntity": [
     { "@type": "Question", "name": "When will I actually see the bigger check?", "acceptedAnswer": { "@type": "Answer", "text": "The {{COLA_PROJECTED_YEAR}} COLA is expected on {{COLA_ANNOUNCE_DATE_LONG}}, but the higher amount doesn't arrive right away. The new benefit takes effect for January 2027, which most people receive in their payment in January 2027. You'll get a notice in your my Social Security message center in late November, and a mailed notice in December, confirming your new amount before it starts." } },
-    { "@type": "Question", "name": "What if I miss the Annual Enrollment Period?", "acceptedAnswer": { "@type": "Answer", "text": "If you miss AEP (October 15 – December 7), your current coverage simply carries into {{COLA_PROJECTED_YEAR}} with whatever changes your plan made — so it's worth reading your ANOC even if you plan to stay put. If you're already in a Medicare Advantage plan, you get one more chance during the MA Open Enrollment Period, January 1 – March 31, 2027, to switch plans or return to Original Medicare. Outside those windows, you generally need a Special Enrollment Period, which is triggered by specific life events like moving. Check your options on the official Medicare Plan Finder or by calling 1-800-MEDICARE." } },
+    { "@type": "Question", "name": "What if I miss the Annual Enrollment Period?", "acceptedAnswer": { "@type": "Answer", "text": "If you miss AEP ({{AEP_WINDOW_RANGE}}), your current coverage simply carries into {{COLA_PROJECTED_YEAR}} with whatever changes your plan made — so it's worth reading your ANOC even if you plan to stay put. If you're already in a Medicare Advantage plan, you get one more chance during the MA Open Enrollment Period, {{AEP_MA_OEP_RANGE_LONG}}, to switch plans or return to Original Medicare. Outside those windows, you generally need a Special Enrollment Period, which is triggered by specific life events like moving. Check your options on the official Medicare Plan Finder or by calling 1-800-MEDICARE." } },
     { "@type": "Question", "name": "Is the {{COLA_PROJECTED}}% COLA for {{COLA_PROJECTED_YEAR}} final?", "acceptedAnswer": { "@type": "Answer", "text": "No. The {{COLA_PROJECTED}}% figure is an early estimate from groups like The Senior Citizens League and AARP, based on inflation data so far. By law, the official COLA is the percentage increase in the average CPI-W for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration is expected to announce the official number on {{COLA_ANNOUNCE_DATE_LONG}}, though the date can move. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was {{COLA_CONFIRMED}}%." } },
     { "@type": "Question", "name": "Where do these dates come from?", "acceptedAnswer": { "@type": "Answer", "text": "All of them come from public government sources: the Social Security Administration and Bureau of Labor Statistics for the COLA, and CMS for the Medicare enrollment periods and plan files. BenefitDial is independent — we're not a broker or agent, we take no commissions, and we never ask for your name, phone number, or email. We just line the dates up for you." } }
   ]

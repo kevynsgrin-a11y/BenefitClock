@@ -167,27 +167,41 @@ test("data-year spans only appear on pages that actually load plan-diff.js", () 
   assert.deepEqual(offenders, [], `data-year span with no script to fill it: ${offenders.join(", ")}`);
 });
 
-/* Resolve the AEP guide by what it IS — the page carrying the AEP tokens —
-   rather than by its filename. Pinning the filename meant renaming the source
-   file failed the deploy with a bare ENOENT from readFileSync, which names no
-   cause a redesigner could act on. */
-function findAepGuide() {
+/* Pages are resolved by what they BIND, never by filename. Pinning the filename
+   meant renaming the source file failed the deploy with a bare ENOENT from
+   readFileSync, which names no cause a redesigner could act on.
+
+   This used to resolve "the AEP guide" as the single page carrying {{AEP_*}}
+   tokens, and assert that exactly one existed. That premise expired: the
+   enrolment dates were being written as literals on five other pages, all
+   rendering the identical string, so the roll would have moved the guide while
+   the rest of the site stayed pinned to a closed window. Those pages now bind
+   the tokens too, so the rule is enforced across every page instead of one —
+   which is what "no enrolment date except through the data layer" always meant. */
+function aepBoundPages() {
   const hits = pageFiles.filter((f) => /\{\{AEP_[A-Z_]+\}\}/.test(readFileSync(join(PAGES, f), "utf8")));
-  assert.equal(
-    hits.length, 1,
-    `expected exactly one page built from the AEP data layer, found ${hits.length}` +
-    `${hits.length ? ` (${hits.join(", ")})` : " — no page uses the {{AEP_*}} tokens"}`
+  assert.ok(
+    hits.length >= 1,
+    "no page uses the {{AEP_*}} tokens — the AEP data layer is unreachable from the markup"
   );
-  return hits[0];
+  return hits;
 }
 
-test("the AEP guide is found by its data bindings, not by its filename", () => {
-  assert.ok(findAepGuide().endsWith(".html"));
+test("the AEP data layer is reached through tokens, not filenames", () => {
+  for (const f of aepBoundPages()) assert.ok(f.endsWith(".html"));
 });
 
-test("the AEP guide states no enrolment date except through the data layer", () => {
-  const src = readFileSync(join(PAGES, findAepGuide()), "utf8");
-  const body = src.split("\n").filter((l) => !l.includes("/guides/medicare-aep-2026")).join("\n");
-  const literals = body.match(/October \d+|December \d+|March 31|January 1(?!\d)/g) || [];
-  assert.deepEqual(literals, [], `enrolment date written into markup: ${literals.join(", ")}`);
+test("no page states an enrolment date except through the data layer", () => {
+  const offenders = [];
+  for (const f of pageFiles) {
+    const src = readFileSync(join(PAGES, f), "utf8");
+    // The AEP guide's own slug carries a year — that is a URL, not a date.
+    const body = src.split("\n").filter((l) => !l.includes("/guides/medicare-aep-2026")).join("\n");
+    const literals = body.match(/October \d+|December \d+|November \d{4}|March 31|January 1(?!\d)/g) || [];
+    if (literals.length) offenders.push(`${f}: ${literals.join(", ")}`);
+  }
+  assert.deepEqual(
+    offenders, [],
+    `enrolment date written into markup — bind the {{AEP_*}} token instead: ${offenders.join(" | ")}`
+  );
 });

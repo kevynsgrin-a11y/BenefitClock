@@ -276,9 +276,36 @@ function build() {
   const pagesDir = join(SRC, "pages");
   const pageFiles = readdirSync(pagesDir).filter((f) => f.endsWith(".html"));
 
+  /* Enrolment dates typed into markup instead of drawn from aep.csv. The season
+     rolls every autumn, so a literal is a date that silently goes on being
+     displayed a year after it stopped being true — and because the tokens below
+     render the identical string today, nothing about the built page looks wrong
+     until the roll. Fourteen of these were found across five pages, all
+     rendering byte-identically to the token that should have produced them.
+     The needles come from the data, so this can never check for a phrasing the
+     data layer no longer emits. */
+  const AEP_LITERALS = [
+    [aep.windowRangeLong, "AEP_WINDOW_RANGE_LONG"],
+    [aep.maOepRangeLong, "AEP_MA_OEP_RANGE_LONG"],
+    [aep.coverageStartLong, "AEP_COVERAGE_START_LONG"],
+    [aep.windowRange, "AEP_WINDOW_RANGE"],
+  ].filter(([needle]) => needle);
+
   const built = [];
   for (const file of pageFiles) {
     const raw = read(join(pagesDir, file));
+
+    for (const [needle, token] of AEP_LITERALS) {
+      if (raw.includes(needle)) {
+        throw new Error(
+          `${file}: the enrolment date "${needle}" is written into the markup. ` +
+            `Use {{${token}}} instead — it renders the same string today and moves with ` +
+            `src/data/aep.csv when the season rolls.\n` +
+            `Refusing to build: a literal here keeps advertising a window that has closed.`
+        );
+      }
+    }
+
     const { meta, body } = parseFrontMatter(raw);
     const slug = meta.slug !== undefined ? meta.slug : basename(file, ".html");
     const url = cleanUrl(slug);
