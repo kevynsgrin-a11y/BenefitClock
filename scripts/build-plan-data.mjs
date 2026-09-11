@@ -283,14 +283,18 @@ function parseCsv(text) {
 function main() {
   let data;
   let sample = true;
-  const haveReal =
-    existsSync(join(DATA, "landscape-current.csv")) &&
-    existsSync(join(DATA, "landscape-next.csv")) &&
-    existsSync(join(DATA, "crosswalk.csv"));
+  // Each part engages its real CMS file independently: the CY2026 landscape is
+  // published now, the CY2027 landscape + crosswalk land in early October. A real
+  // current year with a sample next year is more honest than an all-sample build,
+  // and the manifest says exactly which parts are which.
+  const haveCurrent = existsSync(join(DATA, "landscape-current.csv"));
+  const haveNext = existsSync(join(DATA, "landscape-next.csv"));
+  const haveCross = existsSync(join(DATA, "crosswalk.csv"));
+  const haveReal = haveCurrent && haveNext && haveCross;
 
-  if (haveReal) {
-    sample = false;
-    const mapPlan = (r, year) => ({
+  if (haveCurrent || haveNext || haveCross) {
+    sample = !haveReal;
+    const mapPlan = (r, year, isSample) => ({
       contractId: r.contract_id || r.contractId,
       planId: String(r.plan_id || r.planId).padStart(3, "0"),
       segmentId: r.segment_id || "0",
@@ -307,18 +311,25 @@ function main() {
       hasVision: /^(1|true|y|yes)$/i.test(r.has_vision || ""),
       hasHearing: /^(1|true|y|yes)$/i.test(r.has_hearing || ""),
       state: r.state, county: r.county, fips: r.fips || "",
-      year, sample: false,
+      year, sample: isSample,
     });
-    const current = parseCsv(readFileSync(join(DATA, "landscape-current.csv"), "utf8")).map((r) => mapPlan(r, CURRENT_YEAR));
-    const next = parseCsv(readFileSync(join(DATA, "landscape-next.csv"), "utf8")).map((r) => mapPlan(r, NEXT_YEAR));
-    const crosswalk = parseCsv(readFileSync(join(DATA, "crosswalk.csv"), "utf8")).map((r) => ({
-      fromContractId: r.previous_contract_id || r.fromContractId || null,
-      fromPlanId: r.previous_plan_id ? String(r.previous_plan_id).padStart(3, "0") : null,
-      toContractId: r.contract_id || r.toContractId || null,
-      toPlanId: r.plan_id ? String(r.plan_id).padStart(3, "0") : null,
-      status: (r.status || r.crosswalk_type || "renewal").toLowerCase(),
-    }));
-    data = { current, next, crosswalk, sample: false };
+    const fallback = generate();
+    const current = haveCurrent
+      ? parseCsv(readFileSync(join(DATA, "landscape-current.csv"), "utf8")).map((r) => mapPlan(r, CURRENT_YEAR, false))
+      : fallback.current;
+    const next = haveNext
+      ? parseCsv(readFileSync(join(DATA, "landscape-next.csv"), "utf8")).map((r) => mapPlan(r, NEXT_YEAR, false))
+      : fallback.next;
+    const crosswalk = haveCross
+      ? parseCsv(readFileSync(join(DATA, "crosswalk.csv"), "utf8")).map((r) => ({
+          fromContractId: r.previous_contract_id || r.fromContractId || null,
+          fromPlanId: r.previous_plan_id ? String(r.previous_plan_id).padStart(3, "0") : null,
+          toContractId: r.contract_id || r.toContractId || null,
+          toPlanId: r.plan_id ? String(r.plan_id).padStart(3, "0") : null,
+          status: (r.status || r.crosswalk_type || "renewal").toLowerCase(),
+        }))
+      : fallback.crosswalk;
+    data = { current, next, crosswalk, sample };
   } else {
     data = generate();
   }
@@ -336,9 +347,17 @@ function main() {
         source: "CMS Landscape + Crosswalk files (public domain).",
         counts: { current: data.current.length, next: data.next.length, crosswalk: data.crosswalk.length },
         states: GEO.map((g) => g.state),
-        note: sample
-          ? "SAMPLE DATA — structurally faithful placeholder used until the official 2027 CMS files are published. Replace src/data/landscape-*.csv + crosswalk.csv with the real files and rebuild."
-          : "Built from real CMS CSV files present in src/data/.",
+        provenance: {
+          current: haveCurrent ? "CMS CY2026 Landscape Source File (real)" : "generated sample",
+          next: haveNext ? "CMS CY2027 Landscape Source File (real)" : "generated sample (CY2027 publishes early October)",
+          crosswalk: haveCross ? "CMS crosswalk (real)" : "generated sample (crosswalk publishes with CY2027)",
+          benefits: "dental/vision/hearing flags are not published in the CY2026 combined landscape file; shown as unverified",
+        },
+        note: haveReal
+          ? "Built from real CMS CSV files present in src/data/."
+          : haveCurrent
+            ? "Real CMS CY2026 landscape data; the next plan year and crosswalk are generated samples until CMS publishes them (early October). Each plan row carries its own sample flag."
+            : "SAMPLE DATA - structurally faithful placeholder used until the official CMS files are published. Replace src/data/landscape-*.csv + crosswalk.csv with the real files and rebuild.",
       },
       null,
       2
