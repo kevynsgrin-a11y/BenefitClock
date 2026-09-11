@@ -23,3 +23,4 @@ Thumbs.db
 # Large raw CMS source drops (ingest into src/data/*.csv, then discard the raw zips)
 raw-cms/
 *.zip
+scripts/CY2026_Landscape_202609.csv
