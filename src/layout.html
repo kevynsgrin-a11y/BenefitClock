@@ -25,23 +25,10 @@
   <meta name="twitter:description" content="{{DESCRIPTION}}">
   <meta name="twitter:image" content="{{OG_IMAGE}}">
 
-  <!-- GA4 aggregate analytics (GSC Ops BATCH-1 native tag; disclosed at /privacy) -->
+  <!-- GA4 aggregate analytics (native tag; disclosed at /privacy). The bootstrap
+       is the same-origin /assets/js/ga4.js because the CSP forbids inline script. -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FQNWJB3T8W"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FQNWJB3T8W');
-  </script>
-
-  <!-- GA4 aggregate analytics (GSC Ops BATCH-1 native tag; disclosed at /privacy) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FQNWJB3T8W"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FQNWJB3T8W');
-  </script>
+  <script src="/assets/js/ga4.js"></script>
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
