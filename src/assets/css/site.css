@@ -348,6 +348,31 @@ table.visually-hidden { white-space: normal; }
   box-shadow: inset 0 0 0 1px var(--bc-teal-050);
 }
 
+/* Photographic card variant (guides hub): the image runs to the card's inner
+   top edge, so the card keeps its padding for text but not for the photo.
+   aspect-ratio + explicit width/height attributes hold the box before load. */
+.card--media { padding-top: 0; }
+.card__media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: calc(var(--bc-radius-lg) - 1px) calc(var(--bc-radius-lg) - 1px) 0 0;
+  margin-bottom: var(--bc-space-l);
+}
+
+/* Photographic lead figure on guide and key-dates pages — sits under the
+   intro paragraph, capped narrower than the full wrap so long text columns
+   don't meet a full-bleed edge. */
+.lead-fig { margin: var(--bc-space-2xl) 0 0; max-width: 56rem; }
+.lead-fig img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--bc-radius-lg);
+}
+
 /* ----- Badges / pills --------------------------------------------------- */
 .badge {
   display: inline-flex;

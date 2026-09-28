@@ -318,6 +318,25 @@ function build() {
       .map((s) => `<script type="module" src="/assets/js/${s}"></script>`)
       .join("\n    ");
 
+    /* Per-page social card, via front-matter `ogimage:` (a filename inside
+       /assets/img/). Missing file = failed build, not a silently broken
+       og:image URL — crawlers fetch these long after the build log is gone. */
+    let ogImage = `${SITE.url}/assets/img/og-default.png`;
+    let ogImageType = "image/png";
+    if (meta.ogimage) {
+      const file = join(SRC, "assets", "img", meta.ogimage);
+      if (!existsSync(file)) {
+        throw new Error(
+          `${file}: ogimage references a file that does not exist. ` +
+            `Refusing to build: og:image would 404 in every social preview of ${url}.`
+        );
+      }
+      ogImage = `${SITE.url}/assets/img/${meta.ogimage}`;
+      ogImageType = meta.ogimage.endsWith(".png") ? "image/png" : "image/jpeg";
+    }
+    const DEFAULT_OG_ALT =
+      "BenefitDial social card: &quot;Your raise. Your plan. Side by side.&quot; — Social Security COLA plus Medicare plan changes, with no phone calls.";
+
     /* Front-matter values are substituted INTO the token map, so they are never
        themselves scanned by applyTokens. Resolve them first, otherwise a title
        or description can only ever hardcode a year that the body tokenises. */
@@ -337,7 +356,10 @@ function build() {
       SITE_URL: SITE.url,
       SITE_NAME: SITE.name,
       OG_TYPE: meta.ogtype || "website",
-      OG_IMAGE: `${SITE.url}/assets/img/og-default.png`,
+      OG_IMAGE: ogImage,
+      OG_IMAGE_TYPE: ogImageType,
+      // Describes the actual card (shared brand card or per-page photograph).
+      OG_IMAGE_ALT: fm(meta.ogalt, DEFAULT_OG_ALT).replace(/"/g, "&quot;"),
       BUILD_DATE: SITE.buildDate,
       BUILD_YEAR: String(SITE.buildYear),
       PAGE_SCRIPTS: scripts,
