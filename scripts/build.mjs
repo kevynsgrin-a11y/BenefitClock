@@ -191,6 +191,27 @@ function build() {
   const money = (n) => Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const whole = (n) => Number(n).toLocaleString("en-US");
 
+  /* Hub date-band + checklist helpers. Everything is derived from aep.json /
+     cola.json so the hub never carries a typed season date. */
+  const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const parseIso = (iso) => { const [y, m, d] = String(iso).split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
+  const shortParts = (iso) => { const dt = parseIso(iso); return { monthShort: MONTHS_SHORT[dt.getUTCMonth()], day: String(dt.getUTCDate()) }; };
+  const shortLabel = (iso) => { const p = shortParts(iso); return `${p.monthShort} ${p.day}`; };
+  const plusDays = (iso, n) => { const dt = parseIso(iso); dt.setUTCDate(dt.getUTCDate() + n); return dt.toISOString().slice(0, 10); };
+  const aepStart = shortParts(requireFigure(aep.windowStart, "AEP window start", "The current row in src/data/aep.csv needs a window_start."));
+  const aepEnd = shortParts(requireFigure(aep.windowEnd, "AEP window end", "The current row in src/data/aep.csv needs a window_end."));
+  const colaAnnounce = shortParts(requireFigure(cola.nextAnnouncementDate, "COLA_ANNOUNCE_MONTH/DAY", "Set nextAnnouncementDate in scripts/build-cola-data.mjs for the current cycle."));
+  /* Weeks 1-3 roll forward from the window start; week 4 runs from day 22 to
+     thirteen days before the deadline, and week 5 is the final twelve-day
+     stretch, so the last heading always names the deadline itself. */
+  const weekRange = (offset) => {
+    let from, to;
+    if (offset <= 14) { from = plusDays(aep.windowStart, offset); to = plusDays(aep.windowStart, offset + 6); }
+    else if (offset === 21) { from = plusDays(aep.windowStart, 21); to = plusDays(aep.windowEnd, -13); }
+    else { from = plusDays(aep.windowEnd, -12); to = aep.windowEnd; }
+    return `${shortLabel(from)} – ${shortLabel(to)}`;
+  };
+
   const announce = requireFigure(
     cola.nextAnnouncementDate,
     "COLA_ANNOUNCE_DATE",
@@ -245,6 +266,18 @@ function build() {
     AEP_COVERAGE_START: requireFigure(aep.coverageStartLabel, "AEP_COVERAGE_START", "The current row in src/data/aep.csv needs an ma_oep_start."),
     AEP_COVERAGE_START_LONG: requireFigure(aep.coverageStartLong, "AEP_COVERAGE_START_LONG", "The current row in src/data/aep.csv needs an ma_oep_start."),
     AEP_MA_OEP_RANGE_LONG: requireFigure(aep.maOepRangeLong, "AEP_MA_OEP_RANGE_LONG", "The current row in src/data/aep.csv needs ma_oep_start and ma_oep_end."),
+
+    /* Open-enrollment hub (src/pages/open-enrollment.html). The hub's date-band
+       cards split month from day, and its week-by-week checklist headers quote
+       five rolling sub-windows — all derived here from the same window dates so
+       the hub re-labels itself every season instead of carrying typed dates
+       that silently go stale (the exact failure AEP_LITERALS guards against). */
+    AEP_START_MONTH: aepStart.monthShort, AEP_START_DAY: aepStart.day,
+    AEP_END_MONTH: aepEnd.monthShort, AEP_END_DAY: aepEnd.day,
+    COLA_ANNOUNCE_MONTH: colaAnnounce.monthShort, COLA_ANNOUNCE_DAY: colaAnnounce.day,
+    AEP_WEEK1_RANGE: weekRange(0), AEP_WEEK2_RANGE: weekRange(7),
+    AEP_WEEK3_RANGE: weekRange(14), AEP_WEEK4_RANGE: weekRange(21),
+    AEP_WEEK5_RANGE: weekRange(28),
   };
 
   // Site-level tokens that front matter may also reference (titles, descriptions).

@@ -1,0 +1,273 @@
+<!--
+title: Medicare Open Enrollment {{AEP_SEASON_YEAR}} — Dates, Checklist and What You Can Change | BenefitDial
+description: Medicare Open Enrollment runs {{AEP_WINDOW_RANGE_LONG}}. Key dates, what you can and can't change, a week-by-week checklist, and verified {{MEDICARE_FIGURES_YEAR}} costs — in plain language.
+slug: open-enrollment
+nav: guides
+ogtype: article
+ogimage: og-open-enrollment.jpg
+ogalt: Still-life photograph of a small brass alarm clock beside a blank cream envelope and blank notecard on a walnut table — the Medicare Open Enrollment hub.
+head: <meta property="article:published_time" content="{{PAGE_PUBLISHED}}"><meta property="article:modified_time" content="{{PAGE_MODIFIED}}"><meta property="article:section" content="Annual Enrollment Period"><meta property="article:tag" content="Medicare Open Enrollment">
+priority: 0.9
+changefreq: weekly
+scripts: open-enrollment.js
+-->
+
+<!-- Ported from the Bolt comp "Medicare Open Enrollment Hub" (FaceLift-Visuals
+     comps/benefitdial.com/bolt-export-2026-09-29). Every date and figure below
+     is a build token derived from src/data/*.json — the comp's typed dates and
+     prices are gone, so this page re-labels itself every season. -->
+
+<section class="section" style="padding-bottom:1.5rem;">
+  <div class="wrap">
+    <p class="eyebrow">Medicare Annual Enrollment Period</p>
+    <h1>Medicare Open Enrollment: {{AEP_WINDOW_RANGE_LONG}}</h1>
+    <p class="lead">The once-a-year window to change your Medicare Advantage or Part&nbsp;D drug plan. Here is what you can do, what you can&rsquo;t, and a week-by-week checklist that walks you through it &mdash; in plain language, with no pressure and nothing to sell you.</p>
+    <p class="oeh-cta">
+      <a class="btn btn--primary btn--lg" href="#checklist">See the week-by-week checklist</a>
+      <a class="btn btn--ghost" href="/medicare-plan-changes/">Open the plan-comparison tool</a>
+    </p>
+    <img src="/assets/img/open-enrollment.jpg" width="1600" height="900" loading="eager" decoding="async" alt="A small brass alarm clock beside a blank cream envelope and blank notecard on a warm walnut side table, with a dried maple leaf.">
+    <p class="oeh-note"><strong>A note on names:</strong> this is Medicare&rsquo;s enrollment window — different from the HealthCare.gov Marketplace open enrollment (Nov&nbsp;1&ndash;Jan&nbsp;15). If you buy your own insurance and are <em>not</em> on Medicare, those dates are not yours. The full walkthrough lives in <a href="/guides/medicare-aep-{{AEP_SEASON_YEAR}}/">the AEP guide</a>.</p>
+  </div>
+</section>
+
+<!-- ======== Key dates band ======== -->
+<section class="section oeh-dates" aria-labelledby="oeh-dates-title">
+  <div class="wrap">
+    <h2 id="oeh-dates-title">Key dates at a glance</h2>
+    <p class="lead">Three dates to circle. Each one carries its source so you can verify it yourself.</p>
+    <ol class="oeh-dates__list" role="list">
+      <li class="oeh-date oeh-date--related">
+        <p class="oeh-date__cal"><span class="oeh-date__month">{{COLA_ANNOUNCE_MONTH}}</span><span class="oeh-date__day">{{COLA_ANNOUNCE_DAY}}</span></p>
+        <div class="oeh-date__body">
+          <p class="oeh-date__label">Related date</p>
+          <h3>Social Security announces the {{COLA_PROJECTED_YEAR}} COLA</h3>
+          <p>The cost-of-living adjustment is announced in mid-October. It matters here because your Part&nbsp;B premium is often deducted from your Social Security check.</p>
+          <p class="oeh-status oeh-status--awaiting"><span class="oeh-dot" aria-hidden="true"></span>Awaiting announcement &mdash; SSA, <a href="https://www.ssa.gov/cola/" target="_blank" rel="noopener">ssa.gov/cola</a></p>
+        </div>
+      </li>
+      <li class="oeh-date oeh-date--primary">
+        <p class="oeh-date__cal"><span class="oeh-date__month">{{AEP_START_MONTH}}</span><span class="oeh-date__day">{{AEP_START_DAY}}</span></p>
+        <div class="oeh-date__body">
+          <p class="oeh-date__label">Enrollment opens</p>
+          <h3>Annual Enrollment begins</h3>
+          <p>You can start comparing and switching Medicare Advantage and Part&nbsp;D plans.</p>
+          <p class="oeh-status oeh-status--confirmed"><span class="oeh-dot" aria-hidden="true"></span>Confirmed &mdash; CMS, <a href="https://www.cms.gov/" target="_blank" rel="noopener">cms.gov</a></p>
+        </div>
+      </li>
+      <li class="oeh-date oeh-date--deadline">
+        <p class="oeh-date__cal"><span class="oeh-date__month">{{AEP_END_MONTH}}</span><span class="oeh-date__day">{{AEP_END_DAY}}</span></p>
+        <div class="oeh-date__body">
+          <p class="oeh-date__label">Last day to enroll</p>
+          <h3>Annual Enrollment ends</h3>
+          <p>Changes made by {{AEP_WINDOW_END}} take effect {{AEP_COVERAGE_START_LONG}}.</p>
+          <p class="oeh-status oeh-status--confirmed"><span class="oeh-dot" aria-hidden="true"></span>Confirmed &mdash; CMS, <a href="https://www.cms.gov/" target="_blank" rel="noopener">cms.gov</a></p>
+        </div>
+      </li>
+    </ol>
+    <p class="oeh-dates__note">Any plan change you make between {{AEP_WINDOW_START}} and {{AEP_WINDOW_END}} takes effect on <strong>{{AEP_COVERAGE_START_LONG}}</strong>. The full fall calendar &mdash; including the Medicare Advantage Open Enrollment that follows in the new year &mdash; is on <a href="/key-dates/">the key-dates page</a>.</p>
+  </div>
+</section>
+
+<!-- ======== What you can / can't change ======== -->
+<section class="section oeh-canchange" aria-labelledby="oeh-canchange-title">
+  <div class="wrap">
+    <h2 id="oeh-canchange-title">What you can &mdash; and can&rsquo;t &mdash; change</h2>
+    <p class="lead">Annual Enrollment is Medicare&rsquo;s main change window. Here is what is on the table, and what is not.</p>
+    <div class="oeh-canchange__grid">
+      <div class="oeh-canchange__col oeh-canchange__col--can">
+        <h3><span aria-hidden="true">&#10003;</span> What you can do</h3>
+        <ul>
+          <li><strong>Switch Medicare Advantage plans</strong> &mdash; one MA plan to another, or from Original Medicare to an MA plan.</li>
+          <li><strong>Switch Part&nbsp;D prescription drug plans</strong> &mdash; drop your current drug plan and join a different one.</li>
+          <li><strong>Return to Original Medicare</strong> &mdash; drop an MA plan and go back to Parts&nbsp;A and&nbsp;B.</li>
+          <li><strong>Enroll in Medicare Advantage for the first time</strong>, if you already have both Part&nbsp;A and Part&nbsp;B.</li>
+          <li><strong>Add or drop Part&nbsp;D coverage</strong> &mdash; though dropping it can mean a late-enrollment penalty if you rejoin later.</li>
+        </ul>
+      </div>
+      <div class="oeh-canchange__col oeh-canchange__col--cannot">
+        <h3><span aria-hidden="true">&#10007;</span> What you generally can&rsquo;t do</h3>
+        <ul>
+          <li class="oeh-caution"><strong>No guaranteed-issue Medigap outside your initial enrollment period.</strong> Medigap (Medicare Supplement) insurers can require medical underwriting outside your 6-month Medigap Open Enrollment (the month you turn 65 and are enrolled in Part&nbsp;B) or certain protected situations &mdash; meaning they can decline you or charge more based on your health. A Medicare Advantage switch during AEP is not a Medigap right.</li>
+          <li><strong>You can&rsquo;t use AEP to change Medigap plans freely.</strong> If Medigap is your question, check the rules before you drop anything &mdash; the decision that protects your MA switch can strand your supplement options.</li>
+        </ul>
+        <p class="oeh-canchange__more">The long version, with the edge cases, is in <a href="/guides/medicare-aep-{{AEP_SEASON_YEAR}}/">the AEP guide</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== Week-by-week checklist ======== -->
+<section class="section oeh-checklist" aria-labelledby="oeh-checklist-title" id="checklist">
+  <div class="wrap">
+    <h2 id="oeh-checklist-title">Your week-by-week checklist</h2>
+    <p class="lead">Five steps from {{AEP_WINDOW_START}} to {{AEP_WINDOW_END}}. Take them in order &mdash; steady progress beats a December scramble. Your checks are saved in this browser only.</p>
+
+    <div class="oeh-week" data-week="1">
+      <div class="oeh-week__header">
+        <span class="oeh-week__num" aria-hidden="true">1</span>
+        <div class="oeh-week__heading">
+          <h3>{{AEP_WEEK1_RANGE}} &middot; Review your notices</h3>
+          <p>Read the &ldquo;Annual Notice of Change&rdquo; (ANOC) letter from your current plan &mdash; it lists next year&rsquo;s premiums, copays and drug-formulary changes.</p>
+        </div>
+        <button class="oeh-week__toggle" type="button" aria-expanded="false" aria-controls="oeh-week-1-items">Toggle week 1 details<span aria-hidden="true"></span></button>
+      </div>
+      <div class="oeh-week__items" id="oeh-week-1-items" hidden>
+        <label class="oeh-check"><input type="checkbox" data-item="w1a"><span class="oeh-check__box" aria-hidden="true"></span><span>Find your ANOC letter &mdash; it arrives by late September.</span></label>
+        <label class="oeh-check"><input type="checkbox" data-item="w1b"><span class="oeh-check__box" aria-hidden="true"></span><span>Note any premium, copay or drug-coverage changes for {{AEP_COVERAGE_YEAR}}.</span></label>
+        <label class="oeh-check"><input type="checkbox" data-item="w1c"><span class="oeh-check__box" aria-hidden="true"></span><span>Check whether your doctors and pharmacies are still in-network.</span></label>
+        <a class="oeh-week__link" href="/guides/what-changed-medicare-{{AEP_COVERAGE_YEAR}}/">Read the guide: what changed in your plan &rarr;</a>
+      </div>
+    </div>
+
+    <div class="oeh-week" data-week="2">
+      <div class="oeh-week__header">
+        <span class="oeh-week__num" aria-hidden="true">2</span>
+        <div class="oeh-week__heading">
+          <h3>{{AEP_WEEK2_RANGE}} &middot; Compare plans in the tool</h3>
+          <p>See how your current plan stacks up against the alternatives for {{AEP_COVERAGE_YEAR}}.</p>
+        </div>
+        <button class="oeh-week__toggle" type="button" aria-expanded="false" aria-controls="oeh-week-2-items">Toggle week 2 details<span aria-hidden="true"></span></button>
+      </div>
+      <div class="oeh-week__items" id="oeh-week-2-items" hidden>
+        <label class="oeh-check"><input type="checkbox" data-item="w2a"><span class="oeh-check__box" aria-hidden="true"></span><span>Enter your medications and pharmacies into the <a href="/medicare-plan-changes/">plan-comparison tool</a>.</span></label>
+        <label class="oeh-check"><input type="checkbox" data-item="w2b"><span class="oeh-check__box" aria-hidden="true"></span><span>Compare total estimated yearly cost &mdash; premium + drugs + copays &mdash; not just the monthly premium.</span></label>
+        <label class="oeh-check"><input type="checkbox" data-item="w2c"><span class="oeh-check__box" aria-hidden="true"></span><span>Check that your preferred doctors are in each plan&rsquo;s network.</span></label>
+        <a class="oeh-week__link" href="/medicare-plan-changes/">Open the plan-comparison tool &rarr;</a>
+      </div>
+    </div>
+
+    <div class="oeh-week" data-week="3">
+      <div class="oeh-week__header">
+        <span class="oeh-week__num" aria-hidden="true">3</span>
+        <div class="oeh-week__heading">
+          <h3>{{AEP_WEEK3_RANGE}} &middot; Check the COLA announcement</h3>
+          <p>Social Security announces the {{COLA_PROJECTED_YEAR}} cost-of-living adjustment on {{COLA_ANNOUNCE_DATE_LONG}}. If your Part&nbsp;B premium is deducted from your benefit check, the two move together.</p>
+        </div>
+        <button class="oeh-week__toggle" type="button" aria-expanded="false" aria-controls="oeh-week-3-items">Toggle week 3 details<span aria-hidden="true"></span></button>
+      </div>
+      <div class="oeh-week__items" id="oeh-week-3-items" hidden>
+        <label class="oeh-check"><input type="checkbox" data-item="w3a"><span class="oeh-check__box" aria-hidden="true"></span><span>Review the announced COLA &mdash; see it applied to your own benefit in the <a href="/cola-calculator/">COLA calculator</a>.</span></label>
+        <label class="oeh-check"><input type="checkbox" data-item="w3b"><span class="oeh-check__box" aria-hidden="true"></span><span>Ask how the new Part&nbsp;B premium (announced in the fall) nets against the raise.</span></label>
+        <a class="oeh-week__link" href="/guides/2027-social-security-cola/">Read the {{COLA_PROJECTED_YEAR}} COLA guide &rarr;</a>
+      </div>
+    </div>
+
+    <div class="oeh-week" data-week="4">
+      <div class="oeh-week__header">
+        <span class="oeh-week__num" aria-hidden="true">4</span>
+        <div class="oeh-week__heading">
+          <h3>{{AEP_WEEK4_RANGE}} &middot; Decide and enroll</h3>
+          <p>Pick the plan that fits and enroll. Don&rsquo;t wait until the last minute.</p>
+        </div>
+        <button class="oeh-week__toggle" type="button" aria-expanded="false" aria-controls="oeh-week-4-items">Toggle week 4 details<span aria-hidden="true"></span></button>
+      </div>
+      <div class="oeh-week__items" id="oeh-week-4-items" hidden>
+        <label class="oeh-check"><input type="checkbox" data-item="w4a"><span class="oeh-check__box" aria-hidden="true"></span><span>Choose your plan for {{AEP_COVERAGE_YEAR}} &mdash; or deliberately decide to keep your current one.</span></label>
+        <label class="oeh-check"><input type="checkbox" data-item="w4b"><span class="oeh-check__box" aria-hidden="true"></span><span>Enroll through Medicare.gov, your plan&rsquo;s website, or 1-800-MEDICARE.</span></label>
+        <a class="oeh-week__link" href="/guides/medicare-aep-{{AEP_SEASON_YEAR}}/">Read the full AEP walkthrough &rarr;</a>
+      </div>
+    </div>
+
+    <div class="oeh-week" data-week="5">
+      <div class="oeh-week__header">
+        <span class="oeh-week__num" aria-hidden="true">5</span>
+        <div class="oeh-week__heading">
+          <h3>{{AEP_WEEK5_RANGE}} &middot; Confirm</h3>
+          <p>Verify the enrollment went through. {{AEP_WINDOW_END}} is the hard deadline.</p>
+        </div>
+        <button class="oeh-week__toggle" type="button" aria-expanded="false" aria-controls="oeh-week-5-items">Toggle week 5 details<span aria-hidden="true"></span></button>
+      </div>
+      <div class="oeh-week__items" id="oeh-week-5-items" hidden>
+        <label class="oeh-check"><input type="checkbox" data-item="w5a"><span class="oeh-check__box" aria-hidden="true"></span><span>Log in to Medicare.gov or check your mail for a confirmation letter.</span></label>
+        <label class="oeh-check"><input type="checkbox" data-item="w5b"><span class="oeh-check__box" aria-hidden="true"></span><span>If anything looks wrong, call 1-800-MEDICARE before {{AEP_WINDOW_END}}.</span></label>
+        <a class="oeh-week__link" href="/key-dates/">See all key dates &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== Cost reference ======== -->
+<section class="section oeh-costs" aria-labelledby="oeh-costs-title">
+  <div class="wrap">
+    <h2 id="oeh-costs-title">{{MEDICARE_FIGURES_YEAR}} Medicare costs &mdash; verified</h2>
+    <p class="lead">Current-year figures from official federal sources, confirmed first-hand. {{AEP_COVERAGE_YEAR}} amounts appear here as soon as they are announced.</p>
+    <div class="oeh-costs__grid">
+      <div class="oeh-cost">
+        <p class="oeh-cost__year">{{MEDICARE_FIGURES_YEAR}}</p>
+        <h3>Part B monthly premium</h3>
+        <p class="oeh-cost__value">${{PART_B_PREMIUM}}</p>
+        <p class="oeh-cost__source">Federal Register via GPO govinfo, confirmed {{DATA_UPDATED}}</p>
+      </div>
+      <div class="oeh-cost">
+        <p class="oeh-cost__year">{{MEDICARE_FIGURES_YEAR}}</p>
+        <h3>Part B annual deductible</h3>
+        <p class="oeh-cost__value">${{PART_B_DEDUCTIBLE}}</p>
+        <p class="oeh-cost__source">Federal Register via GPO govinfo, confirmed {{DATA_UPDATED}}</p>
+      </div>
+      <div class="oeh-cost">
+        <p class="oeh-cost__year">{{MEDICARE_FIGURES_YEAR}}</p>
+        <h3>Part D out-of-pocket cap</h3>
+        <p class="oeh-cost__value">${{PART_D_OOP_CAP}}</p>
+        <p class="oeh-cost__source">CMS CY{{MEDICARE_FIGURES_YEAR}} Part D Redesign Program Instructions</p>
+      </div>
+      <div class="oeh-cost oeh-cost--awaiting" data-slot="PART_B_PREMIUM_{{AEP_COVERAGE_YEAR}}">
+        <p class="oeh-cost__year">{{AEP_COVERAGE_YEAR}}</p>
+        <h3>Part B monthly premium</h3>
+        <p class="oeh-cost__value oeh-cost__value--tbd">Not yet announced</p>
+        <p class="oeh-status oeh-status--awaiting"><span class="oeh-dot" aria-hidden="true"></span>Awaiting the fall announcement</p>
+      </div>
+      <div class="oeh-cost oeh-cost--awaiting" data-slot="PART_B_DEDUCTIBLE_{{AEP_COVERAGE_YEAR}}">
+        <p class="oeh-cost__year">{{AEP_COVERAGE_YEAR}}</p>
+        <h3>Part B annual deductible</h3>
+        <p class="oeh-cost__value oeh-cost__value--tbd">Not yet announced</p>
+        <p class="oeh-status oeh-status--awaiting"><span class="oeh-dot" aria-hidden="true"></span>Awaiting the fall announcement</p>
+      </div>
+    </div>
+    <p class="oeh-costs__note">How these figures are sourced and re-verified: <a href="/guides/part-b-premium-and-your-cola/">Part B premium and your COLA</a>.</p>
+  </div>
+</section>
+
+<!-- ======== COLA ======== -->
+<section class="section oeh-cola" aria-labelledby="oeh-cola-title">
+  <div class="wrap oeh-cola__grid">
+    <div>
+      <h2 id="oeh-cola-title">The {{COLA_PROJECTED_YEAR}} Social Security COLA</h2>
+      <p class="lead">Announced each October. It moves your net benefit &mdash; and, if your Part&nbsp;B premium is deducted from your check, how that deduction changes.</p>
+      <div class="oeh-cola__card" data-slot="COLA_PCT_{{COLA_PROJECTED_YEAR}}">
+        <p class="oeh-cola__cardhead"><span class="oeh-dot oeh-dot--lg" aria-hidden="true"></span>Awaiting official announcement</p>
+        <p class="oeh-cola__when">The SSA announces the {{COLA_PROJECTED_YEAR}} COLA on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>.</p>
+        <p class="oeh-cola__proj"><span>TSCL projection:</span> approximately <strong>{{COLA_PROJECTED}}%</strong> &mdash; an <em>estimate</em> by The Senior Citizens League based on inflation trends, not an official figure.</p>
+        <p class="oeh-cost__source">SSA, <a href="https://www.ssa.gov/cola/" target="_blank" rel="noopener">ssa.gov/cola</a> &middot; projection: <a href="https://www.tscl.org/" target="_blank" rel="noopener">tscl.org</a></p>
+      </div>
+      <p class="oeh-cta"><a class="btn btn--ghost" href="/cola-calculator/">Try the COLA calculator</a><a class="btn btn--ghost" href="/guides/2027-social-security-cola/">Read the COLA guide</a></p>
+    </div>
+    <img src="/assets/img/plan-comparison.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="Two plain blank white cards, one overlapping the other, with a brass magnifying glass resting across them on a wooden desk.">
+  </div>
+</section>
+
+<!-- ======== Plan tool CTA ======== -->
+<section class="section oeh-plan" aria-labelledby="oeh-plan-title">
+  <div class="wrap">
+    <h2 id="oeh-plan-title">Ready to compare plans?</h2>
+    <p class="lead">Use the plan-comparison tool to see how your current plan stacks up against alternatives for {{PLAN_YEAR_NEXT}}.</p>
+    <p class="oeh-sample" role="status"><strong>Sample data.</strong> The tool runs on clearly-labeled sample plans until CMS publishes the {{PLAN_YEAR_NEXT}} plan landscape files (expected October&nbsp;{{AEP_SEASON_YEAR}}). The comparison process is real &mdash; the specific plan details are examples.</p>
+    <p class="oeh-cta"><a class="btn btn--primary btn--lg" href="/medicare-plan-changes/">Open the plan-comparison tool</a></p>
+    <p class="oeh-note">You can also call 1-800-MEDICARE (1-800-633-4227) for free, one-on-one help. TTY users call 1-877-486-2048.</p>
+  </div>
+</section>
+
+<!-- ======== Trust ======== -->
+<section class="section oeh-trust" aria-labelledby="oeh-trust-title">
+  <div class="wrap">
+    <h2 id="oeh-trust-title">Our sources &mdash; so you can verify everything</h2>
+    <p class="lead">Every number on this page is cited. If a figure is not yet official, the page says so instead of guessing.</p>
+    <ul class="oeh-trust__list">
+      <li><span>Enrollment window</span><a href="https://www.cms.gov/" target="_blank" rel="noopener">CMS Medicare &amp; You &middot; 42 CFR 422.62</a></li>
+      <li><span>Part B &amp; Part D figures</span><a href="https://www.govinfo.gov/" target="_blank" rel="noopener">Federal Register via GPO govinfo &middot; CMS Part D Redesign Instructions</a></li>
+      <li><span>COLA</span><a href="https://www.ssa.gov/cola/" target="_blank" rel="noopener">Social Security Administration</a></li>
+      <li><span>COLA projection</span><a href="https://www.tscl.org/" target="_blank" rel="noopener">The Senior Citizens League</a></li>
+    </ul>
+    <p class="oeh-trust__links">Think something here is wrong? <a href="/about/">How BenefitDial works</a> &middot; <a href="/how-it-works/">methodology</a> &middot; <a href="/guides/">all guides</a>. Data basis last verified {{DATA_UPDATED}}.</p>
+  </div>
+</section>
