@@ -1093,3 +1093,94 @@ details.faq .faq__body > :last-child { margin-bottom: 0; }
   .table-scroll { overflow: visible !important; box-shadow: none !important; }
   a[href]::after { content: " (" attr(href) ")"; font-size: 0.85em; color: #444; }
 }
+
+/* ---------- Open-Enrollment hub (ported from the Bolt comp, 2026-09-29) ---- */
+/* Scoped .oeh-* classes on --bc-* tokens; nothing here touches existing rules. */
+.oeh-cta { display: flex; gap: 14px; flex-wrap: wrap; margin: 22px 0 18px; }
+.oeh-note { font-size: var(--bc-fs-sm); color: var(--bc-ink-faint); border-left: 3px solid var(--bc-teal-600); padding: 8px 0 8px 16px; margin-top: 22px; }
+.oeh-note strong { color: var(--bc-ink-soft); }
+
+/* Key-dates band. */
+.oeh-dates__list { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.oeh-date { display: flex; gap: 16px; border: 1px solid var(--bc-line); border-radius: 14px; background: var(--bc-surface); padding: 18px; }
+.oeh-date--primary { border-color: var(--bc-teal-600); box-shadow: 0 2px 14px rgba(15, 75, 80, 0.10); }
+.oeh-date--deadline { border-color: var(--bc-amber-500); }
+.oeh-date__cal { flex: none; display: grid; place-content: center; text-align: center; width: 64px; height: 64px; border-radius: 12px; background: var(--bc-teal-050); color: var(--bc-teal-800); }
+.oeh-date--deadline .oeh-date__cal { background: var(--bc-amber-100); color: var(--bc-amber-600); }
+.oeh-date__month { font-size: var(--bc-fs-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.oeh-date__day { font-size: 1.7rem; font-weight: 800; line-height: 1.1; }
+.oeh-date__label { font-size: var(--bc-fs-xs); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--bc-ink-faint); margin: 0 0 4px; }
+.oeh-date__body h3 { margin: 0 0 6px; font-size: var(--bc-fs-md); }
+.oeh-date__body p { margin: 0 0 8px; font-size: var(--bc-fs-sm); color: var(--bc-ink-soft); }
+.oeh-status { display: flex; align-items: center; gap: 8px; font-size: var(--bc-fs-xs); font-weight: 600; }
+.oeh-status a { color: var(--bc-teal-700); }
+.oeh-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--bc-green-700); }
+.oeh-dot--lg { width: 12px; height: 12px; }
+.oeh-status--awaiting .oeh-dot { background: var(--bc-amber-500); }
+.oeh-status--confirmed .oeh-dot { background: var(--bc-green-700); }
+.oeh-dates__note { margin-top: 22px; font-size: var(--bc-fs-sm); color: var(--bc-ink-soft); border-top: 1px solid var(--bc-line-soft); padding-top: 16px; }
+
+/* Can / can't columns. */
+.oeh-canchange__grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 24px; }
+.oeh-canchange__col { border: 1px solid var(--bc-line); border-radius: 14px; padding: 20px 22px; background: var(--bc-surface); }
+.oeh-canchange__col--can { border-top: 4px solid var(--bc-green-700); }
+.oeh-canchange__col--cannot { border-top: 4px solid var(--bc-amber-500); }
+.oeh-canchange__col h3 { display: flex; align-items: center; gap: 10px; font-size: var(--bc-fs-md); margin: 0 0 12px; }
+.oeh-canchange__col--can h3 span { color: var(--bc-green-700); }
+.oeh-canchange__col--cannot h3 span { color: var(--bc-amber-600); }
+.oeh-canchange__col ul { margin: 0; padding-left: 18px; display: grid; gap: 10px; }
+.oeh-canchange__col li { font-size: var(--bc-fs-sm); color: var(--bc-ink-soft); }
+.oeh-caution { background: var(--bc-amber-100); border-radius: 8px; padding: 10px 12px; margin-left: -12px; list-style: none; }
+.oeh-canchange__more { margin: 12px 0 0; font-size: var(--bc-fs-sm); }
+
+/* Week-by-week checklist. */
+.oeh-week { border: 1px solid var(--bc-line); border-radius: 14px; background: var(--bc-surface); margin-top: 14px; overflow: hidden; }
+.oeh-week--open { border-color: var(--bc-teal-600); }
+.oeh-week__header { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; }
+.oeh-week__num { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--bc-teal-700); color: #fff; font-weight: 800; }
+.oeh-week__heading { flex: 1; min-width: 0; }
+.oeh-week__heading h3 { margin: 0 0 4px; font-size: var(--bc-fs-md); }
+.oeh-week__heading p { margin: 0; font-size: var(--bc-fs-sm); color: var(--bc-ink-soft); }
+.oeh-week__toggle { flex: none; border: 1px solid var(--bc-line); background: var(--bc-surface); border-radius: 8px; padding: 8px 12px; font: inherit; font-size: 0; cursor: pointer; color: var(--bc-teal-800); }
+.oeh-week__toggle span { display: inline-block; width: 10px; height: 10px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); transition: transform 0.15s ease; margin-top: -4px; }
+.oeh-week__toggle[aria-expanded="true"] span { transform: rotate(225deg); margin-top: 2px; }
+.oeh-week__items { display: grid; gap: 10px; padding: 4px 18px 18px 66px; border-top: 1px dashed var(--bc-line-soft); padding-top: 14px; }
+.oeh-check { display: flex; align-items: flex-start; gap: 12px; font-size: var(--bc-fs-sm); color: var(--bc-ink-soft); cursor: pointer; }
+.oeh-check input { position: absolute; opacity: 0; pointer-events: none; }
+.oeh-check__box { flex: none; display: inline-grid; place-items: center; width: 20px; height: 20px; margin-top: 1px; border: 2px solid var(--bc-line); border-radius: 6px; background: var(--bc-surface); }
+.oeh-check__box::after { content: ""; width: 10px; height: 6px; border-left: 2.5px solid #fff; border-bottom: 2.5px solid #fff; transform: rotate(-45deg) scale(0); transition: transform 0.1s ease; margin-top: -2px; }
+.oeh-check input:checked + .oeh-check__box { background: var(--bc-teal-700); border-color: var(--bc-teal-700); }
+.oeh-check input:checked + .oeh-check__box::after { transform: rotate(-45deg) scale(1); }
+.oeh-check--done { color: var(--bc-ink-faint); text-decoration: line-through; text-decoration-color: var(--bc-line); }
+.oeh-check:focus-within .oeh-check__box { outline: 2px solid var(--bc-teal-600); outline-offset: 2px; }
+.oeh-week__link { font-size: var(--bc-fs-sm); font-weight: 600; color: var(--bc-teal-700); }
+
+/* Cost reference. */
+.oeh-costs__grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); margin-top: 24px; }
+.oeh-cost { border: 1px solid var(--bc-line); border-top: 4px solid var(--bc-teal-600); border-radius: 14px; padding: 16px 18px; background: var(--bc-surface); }
+.oeh-cost--awaiting { border-top-color: var(--bc-amber-500); background: linear-gradient(180deg, rgba(217, 119, 6, 0.05), transparent 60%), var(--bc-surface); }
+.oeh-cost__year { font-size: var(--bc-fs-xs); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bc-ink-faint); margin: 0 0 6px; }
+.oeh-cost h3 { font-size: var(--bc-fs-sm); margin: 0 0 8px; color: var(--bc-ink-soft); }
+.oeh-cost__value { font-size: 1.75rem; font-weight: 800; margin: 0 0 8px; }
+.oeh-cost__value--tbd { font-size: var(--bc-fs-md); color: var(--bc-ink-faint); font-weight: 600; }
+.oeh-cost__source { font-size: var(--bc-fs-xs); color: var(--bc-ink-faint); margin: 0; }
+.oeh-cost__source a { color: var(--bc-teal-700); }
+.oeh-costs__note { margin-top: 18px; font-size: var(--bc-fs-sm); color: var(--bc-ink-soft); }
+
+/* COLA + plan CTA. */
+.oeh-cola__grid { display: grid; gap: 28px; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: center; }
+@media (max-width: 860px) { .oeh-cola__grid { grid-template-columns: 1fr; } }
+.oeh-cola__card { border: 1px solid var(--bc-amber-500); border-radius: 14px; background: var(--bc-surface); padding: 18px 20px; margin: 18px 0; }
+.oeh-cola__cardhead { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: var(--bc-fs-sm); margin: 0 0 10px; }
+.oeh-cola__when { font-size: var(--bc-fs-md); margin: 0 0 10px; }
+.oeh-cola__proj { font-size: var(--bc-fs-sm); color: var(--bc-ink-soft); margin: 0 0 10px; }
+.oeh-cola__proj span { font-weight: 700; }
+.oeh-sample { font-size: var(--bc-fs-sm); color: var(--bc-ink-soft); background: var(--bc-amber-100); border-radius: 10px; padding: 12px 16px; margin: 18px 0; max-width: 68ch; }
+
+/* Trust strip. */
+.oeh-trust { background: var(--bc-teal-050); border-radius: 18px; }
+.oeh-trust__list { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 10px; }
+.oeh-trust__list li { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: var(--bc-fs-sm); border-bottom: 1px solid var(--bc-line-soft); padding-bottom: 10px; }
+.oeh-trust__list span { font-weight: 600; color: var(--bc-ink-soft); }
+.oeh-trust__list a { color: var(--bc-teal-700); }
+.oeh-trust__links { margin: 18px 0 0; font-size: var(--bc-fs-sm); color: var(--bc-ink-faint); }
