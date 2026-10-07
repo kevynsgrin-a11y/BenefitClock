@@ -11,15 +11,20 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { colaFromQuarterAverages, reconcileCola } from "../src/assets/js/lib/cola-core.js";
+import { colaFromQuarterAverages, reconcileCola, projectBenefit, determinationCycleYear } from "../src/assets/js/lib/cola-core.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA = join(__dirname, "..", "src", "data");
 
 function parseCsv(text) {
-  const [head, ...lines] = text.trim().split(/\r?\n/);
+  // Comment lines (# …) carry the refresh notes and come BEFORE the header;
+  // the medicare-figures and aep CSVs use the same convention.
+  const [head, ...rows] = text
+    .trim()
+    .split(/\r?\n/)
+    .filter((l) => l.trim() && !l.trim().startsWith("#"));
   const cols = head.split(",");
-  return lines.filter(Boolean).map((line) => {
+  return rows.map((line) => {
     const cells = line.split(",");
     const row = {};
     cols.forEach((c, i) => (row[c.trim()] = (cells[i] ?? "").trim()));
@@ -46,6 +51,54 @@ const rows = parseCsv(readFileSync(join(DATA, "cola-history.csv"), "utf8")).map(
 const official = rows.filter((r) => r.status === "official").sort((a, b) => a.year - b.year);
 const projectedRow = rows.find((r) => r.status === "projected");
 const latestOfficial = official[official.length - 1];
+
+/* "Today" in US Eastern: the announcement is a US event, and a UTC clock rolls
+   over while it is still the previous afternoon in Washington. Hoisted here so
+   both the projected-row guard and the determination-cycle row can use it. */
+const todayET = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+
+/* The dollar-impact worked examples: 2026 benefit-year base amounts (SSA's
+   fact sheet figures) that the current cycle's COLA is applied to. */
+const exampleRows = parseCsv(readFileSync(join(DATA, "benefit-examples.csv"), "utf8")).map((r) => ({
+  key: r.key,
+  label: r.label,
+  monthlyBase: Number(r.monthly_base),
+  partbBase: Number(r.partb_base || 0),
+  source: r.source || "",
+}));
+for (const e of exampleRows) {
+  if (!e.key || !e.label || !Number.isFinite(e.monthlyBase) || e.monthlyBase <= 0) {
+    throw new Error(
+      `benefit-examples.csv: the row ${JSON.stringify(e.key)} is missing a key, a label, or a usable monthly_base. ` +
+        `These amounts are quoted as dollar figures on the COLA guide — the build will not guess them.`
+    );
+  }
+}
+
+/* The cycle the site tells the story of — see determinationCycleYear. During
+   the Sept–Dec determination window that is the raise about to be announced
+   (the projected row, or the official row once the announcement lands); the
+   rest of the year it is the raise now being paid. Keying the worked examples
+   to this row is what makes announcement day a one-row data edit: the same
+   table that reads "projected 3.5%" reads "confirmed by SSA" the moment the
+   cycle row is promoted, before any next-year projection row is added. */
+const cycleYear = determinationCycleYear(todayET);
+const cycleRow = rows.find((r) => r.year === cycleYear) || latestOfficial;
+
+const examples = exampleRows.map((e) => {
+  const p = projectBenefit({ priorGross: e.monthlyBase, colaPercent: cycleRow.colaPct, priorPartB: e.partbBase });
+  return {
+    key: e.key,
+    label: e.label,
+    source: e.source,
+    monthlyBefore: p.priorGross,
+    monthlyAfter: p.newGross,
+    increase: p.grossIncrease,
+    increaseYear: p.grossIncrease * 12,
+    partB: p.priorPartB,
+    netIncrease: p.netIncrease,
+  };
+});
 
 // Worked example: recompute the most recent official COLA from CPI-W to prove
 // the formula (prior year's Q3 average vs the year before that).
@@ -98,9 +151,9 @@ if (projectedRow) {
         `guess it. Add the expected BLS/SSA announcement date to the row.`
     );
   }
-  // "Today" in US Eastern: the announcement is a US event, and a UTC clock rolls
-  // over while it is still the previous afternoon in Washington.
-  const todayET = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+  // "Today" in US Eastern, computed above — the announcement is a US event,
+  // and a UTC clock rolls over while it is still the previous afternoon in
+  // Washington.
   if (todayET > projectedRow.announceExpected) {
     throw new Error(
       `cola-history.csv: the ${projectedRow.year} COLA announcement was expected on ` +
@@ -128,6 +181,25 @@ const out = {
   // from the data rather than a literal — see the guard above.
   nextAnnouncementDate: projectedRow ? projectedRow.announceExpected : null,
   nextAnnouncementNote: "BLS releases September CPI-W at 8:30 a.m. ET; SSA typically announces the official COLA the same day.",
+  // The benefit-year whose raise the site is currently telling the story of —
+  // see determinationCycleYear — with its status, so the guide's dollar-impact
+  // content can label itself "projected" today and "confirmed by SSA" on
+  // announcement day without a markup edit.
+  cycle: {
+    year: cycleRow.year,
+    cola: cycleRow.colaPct,
+    status: cycleRow.status,
+    announced: cycleRow.announced,
+    effective: cycleRow.effective,
+    source: cycleRow.source,
+  },
+  // The current cycle's COLA applied to SSA's published base amounts
+  // (src/data/benefit-examples.csv). Recomputed on every build, so the
+  // announcement-day CSV edit re-prices the whole table.
+  examples: {
+    generatedFrom: "src/data/benefit-examples.csv",
+    rows: examples,
+  },
   history: rows,
   worked,
 };
@@ -135,5 +207,10 @@ const out = {
 writeFileSync(join(DATA, "cola.json"), JSON.stringify(out, null, 2) + "\n");
 console.log(
   `  cola.json: confirmed ${out.confirmedYear}=${out.confirmedCola}% · projected ${out.projectedYear}=${out.projectedCola}%` +
+    ` · cycle ${out.cycle.year} ${out.cycle.status} ${out.cycle.cola}% (avg check ${usdExample(examples.find((e) => e.key === "average"))})` +
     (worked ? ` · worked check ${worked.computedColaPercent}% (official ${worked.officialColaPercent}%)` : "")
 );
+
+function usdExample(e) {
+  return e ? `$${e.monthlyBefore.toLocaleString("en-US")}→$${e.monthlyAfter.toLocaleString("en-US")} (+$${e.increase}/mo)` : "n/a";
+}

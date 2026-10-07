@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {
   quarterAverage, roundColaFraction, colaFromQuarterAverages,
   ssaRoundBenefit, projectBenefit, usd, usdCents, signedUsd,
-  parseAmount, roundColaPercent, LIMITS,
+  parseAmount, roundColaPercent, LIMITS, determinationCycleYear,
   validateBenefit, validatePartB, validateColaPercent, reconcileCola,
 } from "../src/assets/js/lib/cola-core.js";
 
@@ -219,4 +219,56 @@ test("reconcileCola treats a missing or unparseable published figure as disagree
   assert.equal(reconcileCola(308.729, 317.373, NaN).agrees, false);
   assert.equal(reconcileCola(308.729, 317.373, undefined).agrees, false);
   assert.equal(reconcileCola(308.729, 317.373, "").agrees, false);
+});
+
+/* ---- The determination cycle (announcement-day keying) ------------------- */
+
+test("determinationCycleYear: Sept-Dec aims at next January's raise, Jan-Aug at the raise now paid", () => {
+  // Determination window: the raise about to be announced.
+  assert.equal(determinationCycleYear("2026-09-01"), 2027);
+  assert.equal(determinationCycleYear("2026-10-07"), 2027);
+  assert.equal(determinationCycleYear("2026-10-14"), 2027);
+  assert.equal(determinationCycleYear("2026-12-31"), 2027);
+  // The rest of the year: the most recently announced figure is the story.
+  assert.equal(determinationCycleYear("2027-01-01"), 2027);
+  assert.equal(determinationCycleYear("2027-08-31"), 2027);
+  assert.equal(determinationCycleYear("2027-09-01"), 2028);
+});
+
+test("determinationCycleYear refuses an unreadable date", () => {
+  assert.throws(() => determinationCycleYear(""));
+  assert.throws(() => determinationCycleYear("not-a-date"));
+  assert.throws(() => determinationCycleYear("2026-13-01"));
+});
+
+/* The dollar-impact worked examples the COLA guide ships (from the 2026 SSA
+   fact sheet base amounts). Pure math on cola-core, so it stays green when the
+   cycle figure changes on announcement day — the data layer re-prices the
+   table, and this pins the arithmetic. */
+test("worked examples: 3.5% on the 2026 base amounts", () => {
+  const avg = projectBenefit({ priorGross: 2071, colaPercent: 3.5, priorPartB: 202.9 });
+  assert.equal(avg.newGross, 2143);
+  assert.equal(avg.grossIncrease, 72);
+  const max = projectBenefit({ priorGross: 4152, colaPercent: 3.5, priorPartB: 202.9 });
+  assert.equal(max.newGross, 4297);
+  assert.equal(max.grossIncrease, 145);
+  const ssiInd = projectBenefit({ priorGross: 994, colaPercent: 3.5 });
+  assert.equal(ssiInd.newGross, 1028);
+  assert.equal(ssiInd.grossIncrease, 34);
+  const ssiCouple = projectBenefit({ priorGross: 1491, colaPercent: 3.5 });
+  assert.equal(ssiCouple.newGross, 1543);
+  assert.equal(ssiCouple.grossIncrease, 52);
+  const couple = projectBenefit({ priorGross: 4142, colaPercent: 3.5, priorPartB: 405.8 });
+  assert.equal(couple.newGross, 4286);
+  assert.equal(couple.grossIncrease, 144);
+});
+
+test("worked examples re-price by formula for whatever the confirmed figure turns out to be", () => {
+  // Announcement day changes the percentage, never the arithmetic: COLA
+  // applied, monthly benefit truncated down to the whole dollar.
+  for (const cola of [2.1, 2.9, 3.5, 4.2]) {
+    const r = projectBenefit({ priorGross: 2071, colaPercent: cola });
+    assert.equal(r.newGross, Math.floor(2071 * (1 + cola / 100)));
+    assert.equal(r.grossIncrease, r.newGross - 2071);
+  }
 });

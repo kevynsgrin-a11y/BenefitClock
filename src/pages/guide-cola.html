@@ -1,6 +1,6 @@
 <!--
 title: {{COLA_PROJECTED_YEAR}} Social Security COLA: Expected Increase, Date & Your Raise | BenefitDial
-description: What the {{COLA_PROJECTED_YEAR}} Social Security COLA is, how it's calculated from CPI-W, a worked example, recent history, and why your raise feels smaller after Medicare Part B.
+description: What the {{COLA_PROJECTED_YEAR}} Social Security COLA is, how it's calculated from CPI-W, what the raise means in dollars for average, maximum and SSI checks, recent history, and why it can feel smaller after Medicare Part B.
 slug: guides/2027-social-security-cola
 nav: guides
 ogtype: article
@@ -131,6 +131,13 @@ changefreq: monthly
 
     {{> ad-inline }}
 
+    <h2>What the {{CYCLE_COLA}}% raise means in dollars</h2>
+    <p>{{COLA_CYCLE_BADGE}} A COLA is a percentage of your own benefit, so the same raise lands as a different dollar amount on every check. The table below applies the {{CYCLE_STATUS_LC}} {{CYCLE_YEAR}} COLA of {{CYCLE_COLA}}% to the benefit levels Social Security publishes, so you can find the one closest to yours.</p>
+
+    {{TABLE_COLA_RAISE_EXAMPLES}}
+
+    <p class="muted" style="font-size:0.95rem;">Monthly amounts are the current benefit-year figures from the Social Security Administration's annual COLA fact sheet — the average retirement benefit, the maximum for a worker retiring at full retirement age, and the SSI federal payment standards — with the {{CYCLE_STATUS_LC}} {{CYCLE_YEAR}} adjustment of {{CYCLE_COLA}}% applied and rounded down to the whole dollar the way SSA rounds benefits. "Retired couple" means two people each receiving the average benefit. {{CYCLE_STATUS_CLAUSE}}</p>
+
     <h2>Why your raise feels smaller than the headline</h2>
     <p>Here's the part that surprises many people. A COLA is a percentage of your own benefit, so the dollar amount depends on the size of your check. Take a round example: on a benefit of $2,000, a 3% raise works out to $60 a month before anything is taken out. But that's not usually the amount your deposit grows by.</p>
     <p>For most retirees, the <strong>Medicare Part B premium</strong> is deducted straight from the Social Security payment. When Part B goes up — and it often does — the increase eats into your COLA. Your gross benefit rises by the full percentage, but the number that actually lands in your bank account grows by less. In some years, a higher Part B premium has swallowed a large share of the raise.</p>
@@ -192,6 +199,41 @@ changefreq: monthly
     </details>
 
     <details class="faq">
+      <summary>How much more will the average Social Security check pay in {{CYCLE_YEAR}}?</summary>
+      <div class="faq__body">
+        <p>With the {{CYCLE_STATUS_LC}} {{CYCLE_YEAR}} COLA of {{CYCLE_COLA}}%, the average retirement benefit of {{COLA_EX_AVG_BEFORE}} a month becomes {{COLA_EX_AVG_AFTER}} — an increase of {{COLA_EX_AVG_MONTH}} a month, or {{COLA_EX_AVG_YEAR}} a year. {{CYCLE_STATUS_CLAUSE}}</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>How much will SSI payments go up in {{CYCLE_YEAR}}?</summary>
+      <div class="faq__body">
+        <p>Applying the {{CYCLE_STATUS_LC}} {{CYCLE_COLA}}% adjustment, the {{CYCLE_BASE_YEAR}} federal payment standard of {{COLA_EX_SSI_IND_BEFORE}} a month for an eligible individual becomes {{COLA_EX_SSI_IND_AFTER}} ({{COLA_EX_SSI_IND_MONTH}} a month), and the standard for an eligible couple goes from {{COLA_EX_SSI_COUPLE_BEFORE}} to {{COLA_EX_SSI_COUPLE_AFTER}} ({{COLA_EX_SSI_COUPLE_MONTH}} a month). SSA publishes the official {{CYCLE_YEAR}} SSI amounts with its October announcement.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>What is the biggest {{CYCLE_YEAR}} increase anyone can get?</summary>
+      <div class="faq__body">
+        <p>The largest check the COLA percentage applies to is the maximum benefit for a worker retiring at full retirement age: {{COLA_EX_MAX_BEFORE}} a month in {{CYCLE_BASE_YEAR}}. A {{CYCLE_COLA}}% raise makes it {{COLA_EX_MAX_AFTER}} — {{COLA_EX_MAX_MONTH}} more each month, or {{COLA_EX_MAX_YEAR}} a year. Workers who delay claiming past full retirement age receive a larger benefit, and their dollar increase is larger too.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>When will the {{CYCLE_YEAR}} raise show up in my payment?</summary>
+      <div class="faq__body">
+        <p>The increase takes effect with your January {{CYCLE_YEAR}} payment. SSA mails the COLA notice — the letter stating your exact new amount — in December, and the same notice usually appears in your my Social Security message center before the paper letter arrives.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>How do I calculate my own {{CYCLE_YEAR}} increase?</summary>
+      <div class="faq__body">
+        <p>Multiply your current gross monthly benefit by {{CYCLE_COLA}}% and round down to the whole dollar — that is your new gross benefit. What actually lands in your bank account also depends on your Medicare Part B premium, which is why our <a href="/cola-calculator">COLA calculator</a> shows both the gross raise and the raise you keep.</p>
+      </div>
+    </details>
+
+    <details class="faq">
       <summary>Where do these numbers come from?</summary>
       <div class="faq__body">
         <p>Everything here comes from public government sources: the <a href="https://www.bls.gov/cpi/" rel="nofollow noopener" target="_blank">Bureau of Labor Statistics</a> for CPI-W and the <a href="https://www.ssa.gov/cola/" rel="nofollow noopener" target="_blank">Social Security Administration</a> for the COLA. BenefitDial is independent — we take no commissions, sell no data, and never ask for your phone number. Read <a href="/how-it-works">how it works</a>.</p>
@@ -240,7 +282,12 @@ changefreq: monthly
     { "@type": "Question", "name": "Which inflation index does the COLA use?", "acceptedAnswer": { "@type": "Answer", "text": "It uses CPI-W — the Consumer Price Index for Urban Wage Earners and Clerical Workers — not the more commonly quoted CPI-U. Specifically, it compares the average CPI-W for July, August, and September against the same quarter of the last year a COLA took effect, rounded to the nearest tenth of a percent. You can review the raw index on the BLS Consumer Price Index page." } },
     { "@type": "Question", "name": "When does the raise actually start?", "acceptedAnswer": { "@type": "Answer", "text": "The COLA takes effect with your January payment and is permanent. Each year's adjustment is added on top of the benefit you already receive, so increases build on one another over time." } },
     { "@type": "Question", "name": "Why did my deposit go up by less than the COLA percentage?", "acceptedAnswer": { "@type": "Answer", "text": "Because Medicare Part B is usually withheld from your Social Security check. Your gross benefit rises by the full COLA, but if the Part B premium also increases, the change to your actual deposit is smaller. Our COLA calculator shows both figures side by side." } },
-    { "@type": "Question", "name": "Where do these numbers come from?", "acceptedAnswer": { "@type": "Answer", "text": "Everything here comes from public government sources: the Bureau of Labor Statistics for CPI-W and the Social Security Administration for the COLA. BenefitDial is independent — we take no commissions, sell no data, and never ask for your phone number. Read how it works." } }
+    { "@type": "Question", "name": "Where do these numbers come from?", "acceptedAnswer": { "@type": "Answer", "text": "Everything here comes from public government sources: the Bureau of Labor Statistics for CPI-W and the Social Security Administration for the COLA. BenefitDial is independent — we take no commissions, sell no data, and never ask for your phone number. Read how it works." } },
+    { "@type": "Question", "name": "How much more will the average Social Security check pay in {{CYCLE_YEAR}}?", "acceptedAnswer": { "@type": "Answer", "text": "With the {{CYCLE_STATUS_LC}} {{CYCLE_YEAR}} COLA of {{CYCLE_COLA}}%, the average retirement benefit of {{COLA_EX_AVG_BEFORE}} a month becomes {{COLA_EX_AVG_AFTER}} — an increase of {{COLA_EX_AVG_MONTH}} a month, or {{COLA_EX_AVG_YEAR}} a year. {{CYCLE_STATUS_CLAUSE}}" } },
+    { "@type": "Question", "name": "How much will SSI payments go up in {{CYCLE_YEAR}}?", "acceptedAnswer": { "@type": "Answer", "text": "Applying the {{CYCLE_STATUS_LC}} {{CYCLE_COLA}}% adjustment, the {{CYCLE_BASE_YEAR}} federal payment standard of {{COLA_EX_SSI_IND_BEFORE}} a month for an eligible individual becomes {{COLA_EX_SSI_IND_AFTER}} ({{COLA_EX_SSI_IND_MONTH}} a month), and the standard for an eligible couple goes from {{COLA_EX_SSI_COUPLE_BEFORE}} to {{COLA_EX_SSI_COUPLE_AFTER}} ({{COLA_EX_SSI_COUPLE_MONTH}} a month). SSA publishes the official {{CYCLE_YEAR}} SSI amounts with its October announcement." } },
+    { "@type": "Question", "name": "What is the biggest {{CYCLE_YEAR}} increase anyone can get?", "acceptedAnswer": { "@type": "Answer", "text": "The largest check the COLA percentage applies to is the maximum benefit for a worker retiring at full retirement age: {{COLA_EX_MAX_BEFORE}} a month in {{CYCLE_BASE_YEAR}}. A {{CYCLE_COLA}}% raise makes it {{COLA_EX_MAX_AFTER}} — {{COLA_EX_MAX_MONTH}} more each month, or {{COLA_EX_MAX_YEAR}} a year. Workers who delay claiming past full retirement age receive a larger benefit, and their dollar increase is larger too." } },
+    { "@type": "Question", "name": "When will the {{CYCLE_YEAR}} raise show up in my payment?", "acceptedAnswer": { "@type": "Answer", "text": "The increase takes effect with your January {{CYCLE_YEAR}} payment. SSA mails the COLA notice — the letter stating your exact new amount — in December, and the same notice usually appears in your my Social Security message center before the paper letter arrives." } },
+    { "@type": "Question", "name": "How do I calculate my own {{CYCLE_YEAR}} increase?", "acceptedAnswer": { "@type": "Answer", "text": "Multiply your current gross monthly benefit by {{CYCLE_COLA}}% and round down to the whole dollar — that is your new gross benefit. What actually lands in your bank account also depends on your Medicare Part B premium, which is why our COLA calculator shows both the gross raise and the raise you keep." } }
   ]
 }
 </script>

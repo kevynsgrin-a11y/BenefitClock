@@ -245,6 +245,33 @@ export function roundColaPercent(percent) {
   return Number(Number(percent).toFixed(1));
 }
 
+/**
+ * Which benefit-year's COLA the site is currently telling the story of.
+ *
+ * Between September and December, the COLA that takes effect the following
+ * January is in its determination window — BLS measures the third quarter,
+ * SSA announces in October — so the upcoming raise is what readers are asking
+ * about. From January through August that raise is already being paid, and the
+ * most recently announced figure is still the current story.
+ *
+ * Keying announcement-cycle content to this year (rather than to the projected
+ * row) is what makes announcement day a one-row data edit: the same dollar
+ * table that says "projected 3.5%" says "confirmed by SSA" the moment the row
+ * is promoted, before any next-year projection row exists.
+ *
+ * @param {string} today "YYYY-MM-DD" (the build passes the US Eastern date)
+ * @returns {number} the benefit year — the January the raise takes effect
+ */
+export function determinationCycleYear(today) {
+  const parts = String(today).split("-").map(Number);
+  const y = parts[0];
+  const m = parts[1];
+  if (!y || !m || m < 1 || m > 12 || parts.length !== 3) {
+    throw new Error(`determinationCycleYear: unreadable date ${JSON.stringify(today)}`);
+  }
+  return m >= 9 ? y + 1 : y;
+}
+
 const ok = (value) => ({ ok: true, value, error: null });
 const bad = (error) => ({ ok: false, value: null, error });
 

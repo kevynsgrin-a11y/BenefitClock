@@ -102,6 +102,36 @@ console.log("\nBuilt pages agree with the data layer");
   calc.includes(premium)
     ? ok(`Part B premium $${premium} from the data appears on the calculator`)
     : bad(`medicare-figures.json says partBPremium=${premium}, absent from cola-calculator.html`);
+
+  /* The dollar-impact examples are keyed to the determination cycle, so the
+     guide's money table must carry the cycle figure, the cycle badge, and the
+     recomputed average-check math — whichever state the CSV is in. If the
+     cycle row says projected but the page ships a "Confirmed by SSA" badge
+     (or vice versa), the flip half-happened and the page contradicts itself. */
+  const guide = read(join(DIST, "guides", "2027-social-security-cola.html"));
+  const cycle = cola.cycle || {};
+  const cycleCola = String(cycle.cola);
+  guide.includes(`${cycleCola}%`)
+    ? ok(`cycle COLA ${cycleCola}% from cola.json appears on the COLA guide`)
+    : bad(`cola.json says cycle.cola=${cycleCola} but "${cycleCola}%" does not appear in the COLA guide`);
+
+  const avg = (cola.examples && cola.examples.rows || []).find((r) => r.key === "average");
+  if (!avg) bad("cola.json examples has no 'average' row — the guide's dollar table cannot be verified");
+  else {
+    const after = "$" + Number(avg.monthlyAfter).toLocaleString("en-US");
+    const increase = "+$" + Number(avg.increase).toLocaleString("en-US");
+    (guide.includes(after) && guide.includes(increase))
+      ? ok(`average-check example ${after} (${increase}) from cola.json appears on the COLA guide`)
+      : bad(`cola.json examples say the average check becomes ${after} (${increase}), absent from the COLA guide`);
+  }
+
+  const expectedBadge = cycle.status === "projected" ? ">Projected<" : ">Confirmed by SSA<";
+  guide.includes(expectedBadge)
+    ? ok(`cycle badge on the COLA guide matches the cycle status (${cycle.status})`)
+    : bad(`cycle status is ${cycle.status} but the COLA guide does not carry the matching "${expectedBadge.replace(/[<>]/g, "")}" badge`);
+
+  const wrongBadge = cycle.status === "projected" ? ">Confirmed by SSA<" : ">Projected<";
+  guide.includes(wrongBadge) && bad(`the COLA guide carries a "${wrongBadge.replace(/[<>]/g, "")}" badge while the cycle row says ${cycle.status}`);
 }
 
 /* ---- 4. Sample data is disclosed, visibly ----------------------------- */

@@ -280,6 +280,89 @@ function build() {
     AEP_WEEK5_RANGE: weekRange(28),
   };
 
+  /* ---- Dollar-impact worked examples (COLA guide) ------------------------
+     cola.json's cycle/examples are keyed to the determination cycle, so the
+     guide's money table labels itself "projected" today and "confirmed by SSA"
+     on announcement day from the same one-row CSV edit. The table is generated
+     HTML rather than markup tokens: String.replace does not re-scan inserted
+     text, so a token inside a token's replacement would ship unresolved. */
+  const cycle = cola.cycle || {};
+  const exampleRows = (cola.examples && cola.examples.rows) || [];
+  const usd0 = (n) => Number(n).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+  const signedUsd0 = (n) => (n > 0 ? "+" : n < 0 ? "−" : "") + usd0(Math.abs(n));
+  const exRow = (key, token) => {
+    // Not requireFigure: it returns String(value), and a row is an object.
+    // The examples carry real dollar figures, so a missing row is a failed
+    // build, not a silently NaN table.
+    const row = exampleRows.find((r) => r.key === key);
+    if (!row) {
+      throw new Error(
+        `Missing data for {{${token}}}. Add a "${key}" row to src/data/benefit-examples.csv.\n` +
+          `Refusing to build: pages quote this figure in copy about people's benefits.`
+      );
+    }
+    return row;
+  };
+  const exampleTokens = Object.fromEntries(
+    [
+      ["average", "AVG"],
+      ["max_fra", "MAX"],
+      ["ssi_individual", "SSI_IND"],
+      ["ssi_couple", "SSI_COUPLE"],
+      ["couple", "COUPLE"],
+    ].flatMap(([key, prefix]) => {
+      const row = exRow(key, `COLA_EX_${prefix}`);
+      return [
+        [`COLA_EX_${prefix}_BEFORE`, usd0(row.monthlyBefore)],
+        [`COLA_EX_${prefix}_AFTER`, usd0(row.monthlyAfter)],
+        [`COLA_EX_${prefix}_MONTH`, signedUsd0(row.increase)],
+        [`COLA_EX_${prefix}_YEAR`, signedUsd0(row.increaseYear)],
+      ];
+    })
+  );
+  const cycleIsProjected = (cycle.status || "") === "projected";
+  const cycleAnnouncedLong = cycleIsProjected
+    ? ""
+    : longDate(requireFigure(cycle.announced, "CYCLE_ANNOUNCED", "The current cycle row in src/data/cola-history.csv needs an `announced` date once status=official."));
+  const cycleTokens = {
+    CYCLE_YEAR: requireFigure(cycle.year, "CYCLE_YEAR", "cola.json has no cycle object — run scripts/build-cola-data.mjs."),
+    CYCLE_COLA: requireFigure(cycle.cola, "CYCLE_COLA", "cola.json has no cycle.cola — run scripts/build-cola-data.mjs."),
+    CYCLE_STATUS_LC: cycleIsProjected ? "projected" : "confirmed",
+    // The benefit-year the base amounts come from: the raise taking effect in
+    // January of cycle year Y is applied to the figures SSA published for Y-1.
+    CYCLE_BASE_YEAR: String(Number(cycle.year) - 1),
+    CYCLE_STATUS_CLAUSE: cycleIsProjected
+      ? `The ${cycle.cola}% figure is still a projection; the official ${cycle.year} figure is expected on ${longDate(announce)}.`
+      : `The ${cycle.cola}% figure is official — the Social Security Administration announced it on ${cycleAnnouncedLong}.`,
+    COLA_CYCLE_BADGE: cycleIsProjected
+      ? `<span class="badge badge--warn">Projected</span> <span class="muted">Official figure expected ${longDate(announce)}.</span>`
+      : `<span class="badge badge--good">Confirmed by SSA</span> <span class="muted">Announced ${cycleAnnouncedLong}.</span>`,
+    ...exampleTokens,
+  };
+  const TABLE_COLA_RAISE_EXAMPLES = `<div class="table-scroll">
+      <table class="data">
+        <caption>What the ${cycle.cola}% ${cycleIsProjected ? "projected" : "confirmed"} ${cycle.year} COLA means by benefit level</caption>
+        <thead>
+          <tr>
+            <th scope="col">Benefit level</th>
+            <th scope="col" class="num">Monthly ${Number(cycle.year) - 1}</th>
+            <th scope="col" class="num">Monthly ${cycle.year}</th>
+            <th scope="col" class="num">Change</th>
+            <th scope="col" class="num">Per year</th>
+          </tr>
+        </thead>
+        <tbody>
+${exampleRows.map((r) => `          <tr>
+            <td>${r.label}</td>
+            <td class="num">${usd0(r.monthlyBefore)}</td>
+            <td class="num">${usd0(r.monthlyAfter)}</td>
+            <td class="num"><strong>${signedUsd0(r.increase)}</strong></td>
+            <td class="num">${signedUsd0(r.increaseYear)}</td>
+          </tr>`).join("\n")}
+        </tbody>
+      </table>
+    </div>`;
+
   // Site-level tokens that front matter may also reference (titles, descriptions).
   const SITE_TOKENS = {
     SITE_URL: SITE.url,
@@ -378,7 +461,7 @@ function build() {
       PAGE_MODIFIED: lastCommitDate(join(pagesDir, file)) || SITE.buildDate,
     };
     const fm = (value, fallback) =>
-      applyTokens(String(value ?? fallback), { ...colaTokens, ...SITE_TOKENS, ...pageDates, CANONICAL: canonical });
+      applyTokens(String(value ?? fallback), { ...colaTokens, ...cycleTokens, ...SITE_TOKENS, ...pageDates, CANONICAL: canonical });
 
     const tokens = {
       // TITLE lands in <title> and in several quoted attributes (og:title,
@@ -403,7 +486,9 @@ function build() {
       ROBOTS: meta.robots || "index, follow, max-image-preview:large",
       CONTENT: body.trim(),
       ...colaTokens,
+      ...cycleTokens,
       ...chartTokens,
+      TABLE_COLA_RAISE_EXAMPLES,
     };
 
     let html = layout.replace("{{CONTENT}}", () => tokens.CONTENT);
