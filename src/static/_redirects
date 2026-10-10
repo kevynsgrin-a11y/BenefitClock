@@ -7,3 +7,6 @@
 /diff            /medicare-plan-changes     301
 /dates           /key-dates                301
 /methodology     /how-it-works             301
+
+# Pulled Oct 10 2026: the FSA guide made a Medicare claim with no primary source.
+/guides/fsa-limits-2026   /guides                  301
