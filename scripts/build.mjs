@@ -24,6 +24,7 @@ import { join, dirname, basename, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { colaHistoryChart, planCountChart } from "./lib/svgcharts.mjs";
+import { applyStatusBlocks } from "./lib/status-blocks.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -86,8 +87,8 @@ function resolveIncludes(html, seen = new Set()) {
   });
 }
 
-function applyTokens(html, tokens) {
-  return html.replace(/\{\{\s*([A-Z0-9_]+)\s*\}\}/g, (m, key) =>
+function applyTokens(html, tokens, cycleStatus) {
+  return applyStatusBlocks(html, cycleStatus).replace(/\{\{\s*([A-Z0-9_]+)\s*\}\}/g, (m, key) =>
     Object.prototype.hasOwnProperty.call(tokens, key) ? tokens[key] : m
   );
 }
@@ -200,7 +201,22 @@ function build() {
   const plusDays = (iso, n) => { const dt = parseIso(iso); dt.setUTCDate(dt.getUTCDate() + n); return dt.toISOString().slice(0, 10); };
   const aepStart = shortParts(requireFigure(aep.windowStart, "AEP window start", "The current row in src/data/aep.csv needs a window_start."));
   const aepEnd = shortParts(requireFigure(aep.windowEnd, "AEP window end", "The current row in src/data/aep.csv needs a window_end."));
-  const colaAnnounce = shortParts(requireFigure(cola.nextAnnouncementDate, "COLA_ANNOUNCE_MONTH/DAY", "Set nextAnnouncementDate in scripts/build-cola-data.mjs for the current cycle."));
+  /* The cycle the site is telling the story of, and whether its COLA is still
+     a projection. Declared here (not with the other cycle tokens below)
+     because the announcement date and the projected-row tokens depend on it. */
+  const cycle = cola.cycle || {};
+  const cycleIsProjected = (cycle.status || "") === "projected";
+  /* The cycle's announcement date: the EXPECTED date while the cycle row is a
+     projection, the ACTUAL date once it is official. Everything that shows "the
+     date" for this cycle reads this, so the flip moves it with the row. */
+  const cycleAnnounceIso = requireFigure(
+    cycleIsProjected ? cola.nextAnnouncementDate : cycle.announced,
+    "CYCLE_ANNOUNCE_DATE",
+    cycleIsProjected
+      ? "The projected row in src/data/cola-history.csv needs an announce_expected date."
+      : "The current cycle row in src/data/cola-history.csv needs an `announced` date once status=official."
+  );
+  const colaAnnounce = shortParts(cycleAnnounceIso);
   /* Weeks 1-3 roll forward from the window start; week 4 runs from day 22 to
      thirteen days before the deadline, and week 5 is the final twelve-day
      stretch, so the last heading always names the deadline itself. */
@@ -212,11 +228,9 @@ function build() {
     return `${shortLabel(from)} – ${shortLabel(to)}`;
   };
 
-  const announce = requireFigure(
-    cola.nextAnnouncementDate,
-    "COLA_ANNOUNCE_DATE",
-    "Set nextAnnouncementDate in scripts/build-cola-data.mjs for the current cycle."
-  );
+  /* The NEXT projection's expected date (the projected row's announce_expected).
+     Only meaningful while a projected row exists; see projectedTokens. */
+  const announce = cola.nextAnnouncementDate || null;
 
   /* "Data last refreshed" describes the DATA, so it is derived from the data's
      own provenance dates. Using the build date meant every unrelated CSS commit
@@ -239,18 +253,31 @@ function build() {
   ].filter(Boolean).sort();
   const colaDataUpdated = colaProvenanceDates[colaProvenanceDates.length - 1] || null;
 
+  /* The projected row's figures. While the cycle is still a projection these
+     are required (pages quote them, inside {{#projected}} blocks). Once the
+     cycle row is official there may be no projected row at all — a next-year
+     projection should only appear when someone has a real source for one — so
+     the tokens are then simply not defined. A page that uses one outside a
+     {{#projected}} block fails the build with the token's name, which is what
+     keeps a stale estimate from being quoted after the flip. */
+  const projectedTokens = cola.projectedYear == null && !cycleIsProjected
+    ? {}
+    : {
+        COLA_PROJECTED: requireFigure(
+          cola.projectedCola,
+          "COLA_PROJECTED",
+          "No row with status=projected in src/data/cola-history.csv, and the current cycle's row is still projected."
+        ),
+        COLA_PROJECTED_YEAR: requireFigure(cola.projectedYear, "COLA_PROJECTED_YEAR", "No row with status=projected in src/data/cola-history.csv."),
+        COLA_PROJECTED_SOURCE: requireFigure(cola.projectedSource, "COLA_PROJECTED_SOURCE", "The projected row in src/data/cola-history.csv needs a source."),
+        COLA_ANNOUNCE_DATE: requireFigure(announce, "COLA_ANNOUNCE_DATE", "The projected row in src/data/cola-history.csv needs an announce_expected date."),
+        COLA_ANNOUNCE_DATE_LONG: longDate(requireFigure(announce, "COLA_ANNOUNCE_DATE_LONG", "The projected row in src/data/cola-history.csv needs an announce_expected date.")),
+      };
+
   const colaTokens = {
     COLA_CONFIRMED: requireFigure(cola.confirmedCola, "COLA_CONFIRMED", "No official COLA in src/data/cola-history.csv."),
     COLA_CONFIRMED_YEAR: requireFigure(cola.confirmedYear, "COLA_CONFIRMED_YEAR", "No official COLA row in src/data/cola-history.csv."),
-    COLA_PROJECTED: requireFigure(
-      cola.projectedCola,
-      "COLA_PROJECTED",
-      "No row with status=projected in src/data/cola-history.csv. After an official COLA is announced, add the next year's projection row — do not leave pages quoting the previous estimate."
-    ),
-    COLA_PROJECTED_YEAR: requireFigure(cola.projectedYear, "COLA_PROJECTED_YEAR", "No row with status=projected in src/data/cola-history.csv."),
-    COLA_PROJECTED_SOURCE: requireFigure(cola.projectedSource, "COLA_PROJECTED_SOURCE", "The projected row in src/data/cola-history.csv needs a source."),
-    COLA_ANNOUNCE_DATE: announce,
-    COLA_ANNOUNCE_DATE_LONG: longDate(announce),
+    ...projectedTokens,
     COLA_CONFIRMED_ANNOUNCED: requireFigure(cola.confirmedAnnounced, "COLA_CONFIRMED_ANNOUNCED", "The latest official row in src/data/cola-history.csv needs an `announced` date."),
     COLA_CONFIRMED_ANNOUNCED_LONG: longDate(requireFigure(cola.confirmedAnnounced, "COLA_CONFIRMED_ANNOUNCED_LONG", "The latest official row in src/data/cola-history.csv needs an `announced` date.")),
     COLA_CONFIRMED_LATE_NOTE: cola.confirmedLateReason ? ` (later than usual because of ${cola.confirmedLateReason})` : "",
@@ -310,7 +337,6 @@ function build() {
      on announcement day from the same one-row CSV edit. The table is generated
      HTML rather than markup tokens: String.replace does not re-scan inserted
      text, so a token inside a token's replacement would ship unresolved. */
-  const cycle = cola.cycle || {};
   const exampleRows = (cola.examples && cola.examples.rows) || [];
   const usd0 = (n) => Number(n).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
   const signedUsd0 = (n) => (n > 0 ? "+" : n < 0 ? "−" : "") + usd0(Math.abs(n));
@@ -344,30 +370,30 @@ function build() {
       ];
     })
   );
-  const cycleIsProjected = (cycle.status || "") === "projected";
-  const cycleAnnouncedLong = cycleIsProjected
-    ? ""
-    : longDate(requireFigure(cycle.announced, "CYCLE_ANNOUNCED", "The current cycle row in src/data/cola-history.csv needs an `announced` date once status=official."));
+  const cycleAnnouncedLong = cycleIsProjected ? "" : longDate(cycleAnnounceIso);
   const cycleTokens = {
     CYCLE_YEAR: requireFigure(cycle.year, "CYCLE_YEAR", "cola.json has no cycle object — run scripts/build-cola-data.mjs."),
     CYCLE_COLA: requireFigure(cycle.cola, "CYCLE_COLA", "cola.json has no cycle.cola — run scripts/build-cola-data.mjs."),
     CYCLE_STATUS_LC: cycleIsProjected ? "projected" : "confirmed",
+    /* The cycle's announcement date, long form: expected while projected,
+       actual once official (see cycleAnnounceIso). */
+    CYCLE_ANNOUNCE_DATE_LONG: longDate(cycleAnnounceIso),
     COLA_PRIOR_YEAR: requireFigure(cycle.priorYear, "COLA_PRIOR_YEAR", "No official COLA row before the cycle year in src/data/cola-history.csv."),
     COLA_PRIOR_COLA: requireFigure(cycle.priorCola, "COLA_PRIOR_COLA", "No official COLA row before the cycle year in src/data/cola-history.csv."),
     /* Calculator hint under the COLA picker. The picker defaults to the cycle's
        COLA (the raise people are about to get), which is the projected figure
        today and the official one from announcement day. */
     CYCLE_CALC_HINT: cycleIsProjected
-      ? `The ${cycle.year} figure is an early estimate. The official COLA is expected on <strong>${longDate(announce)}</strong>.`
+      ? `The ${cycle.year} figure is an early estimate. The official COLA is expected on <strong>${longDate(cycleAnnounceIso)}</strong>.`
       : `The ${cycle.year} COLA is official: the Social Security Administration announced it on ${cycleAnnouncedLong}.`,
     // The benefit-year the base amounts come from: the raise taking effect in
     // January of cycle year Y is applied to the figures SSA published for Y-1.
     CYCLE_BASE_YEAR: String(Number(cycle.year) - 1),
     CYCLE_STATUS_CLAUSE: cycleIsProjected
-      ? `The ${cycle.cola}% figure is still a projection; the official ${cycle.year} figure is expected on ${longDate(announce)}.`
+      ? `The ${cycle.cola}% figure is still a projection; the official ${cycle.year} figure is expected on ${longDate(cycleAnnounceIso)}.`
       : `The ${cycle.cola}% figure is official — the Social Security Administration announced it on ${cycleAnnouncedLong}.`,
     COLA_CYCLE_BADGE: cycleIsProjected
-      ? `<span class="badge badge--warn">Projected</span> <span class="muted">Official figure expected ${longDate(announce)}.</span>`
+      ? `<span class="badge badge--warn">Projected</span> <span class="muted">Official figure expected ${longDate(cycleAnnounceIso)}.</span>`
       : `<span class="badge badge--good">Confirmed by SSA</span> <span class="muted">Announced ${cycleAnnouncedLong}.</span>`,
     ...exampleTokens,
   };
@@ -493,7 +519,7 @@ ${exampleRows.map((r) => `          <tr>
       PAGE_MODIFIED: lastCommitDate(join(pagesDir, file)) || SITE.buildDate,
     };
     const fm = (value, fallback) =>
-      applyTokens(String(value ?? fallback), { ...colaTokens, ...cycleTokens, ...SITE_TOKENS, ...pageDates, CANONICAL: canonical });
+      applyTokens(String(value ?? fallback), { ...colaTokens, ...cycleTokens, ...SITE_TOKENS, ...pageDates, CANONICAL: canonical }, cycle.status);
 
     const tokens = {
       // TITLE lands in <title> and in several quoted attributes (og:title,
@@ -525,7 +551,7 @@ ${exampleRows.map((r) => `          <tr>
 
     let html = layout.replace("{{CONTENT}}", () => tokens.CONTENT);
     html = resolveIncludes(html);
-    html = applyTokens(html, tokens);
+    html = applyTokens(html, tokens, cycle.status);
 
     /* A token that never got substituted ships as literal "{{FOO}}" in front of
        a reader. Treat it as a build failure rather than a proofreading problem. */
