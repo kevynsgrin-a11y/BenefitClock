@@ -142,7 +142,7 @@ scripts: open-enrollment.js
         <span class="oeh-week__num" aria-hidden="true">3</span>
         <div class="oeh-week__heading">
           <h3>{{AEP_WEEK3_RANGE}} &middot; Check the COLA announcement</h3>
-          <p>Social Security announces the {{COLA_PROJECTED_YEAR}} cost-of-living adjustment on {{COLA_ANNOUNCE_DATE_LONG}}. If your Part&nbsp;B premium is deducted from your benefit check, the two move together.</p>
+          <p>Social Security is expected to announce the {{COLA_PROJECTED_YEAR}} cost-of-living adjustment on {{COLA_ANNOUNCE_DATE_LONG}}, though the date can move. If your Part&nbsp;B premium is deducted from your benefit check, the two move together.</p>
         </div>
         <button class="oeh-week__toggle" type="button" aria-expanded="false" aria-controls="oeh-week-3-items">Toggle week 3 details<span aria-hidden="true"></span></button>
       </div>
@@ -236,8 +236,8 @@ scripts: open-enrollment.js
       <p class="lead">Announced each October. It moves your net benefit &mdash; and, if your Part&nbsp;B premium is deducted from your check, how that deduction changes.</p>
       <div class="oeh-cola__card" data-slot="COLA_PCT_{{COLA_PROJECTED_YEAR}}">
         <p class="oeh-cola__cardhead"><span class="oeh-dot oeh-dot--lg" aria-hidden="true"></span>Awaiting official announcement</p>
-        <p class="oeh-cola__when">The SSA announces the {{COLA_PROJECTED_YEAR}} COLA on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>.</p>
-        <p class="oeh-cola__proj"><span>TSCL projection:</span> approximately <strong>{{COLA_PROJECTED}}%</strong> &mdash; an <em>estimate</em> by The Senior Citizens League based on inflation trends, not an official figure.</p>
+        <p class="oeh-cola__when">The SSA is expected to announce the {{COLA_PROJECTED_YEAR}} COLA on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, though the date can move.</p>
+        <p class="oeh-cola__proj"><span>Early projection:</span> approximately <strong>{{COLA_PROJECTED}}%</strong> &mdash; an <em>estimate</em> ({{COLA_PROJECTED_SOURCE}}) based on inflation trends, not an official figure.</p>
         <p class="oeh-cost__source">SSA, <a href="https://www.ssa.gov/cola/" target="_blank" rel="noopener">ssa.gov/cola</a> &middot; projection: <a href="https://www.tscl.org/" target="_blank" rel="noopener">tscl.org</a></p>
       </div>
       <p class="oeh-cta"><a class="btn btn--ghost" href="/cola-calculator">Try the COLA calculator</a><a class="btn btn--ghost" href="/guides/2027-social-security-cola">Read the COLA guide</a></p>

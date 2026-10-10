@@ -46,11 +46,18 @@ const rows = parseCsv(readFileSync(join(DATA, "cola-history.csv"), "utf8")).map(
      This is the date the site says the next COLA is *expected*, which is a
      forward-looking claim about a cycle that has not happened yet. */
   announceExpected: r.announce_expected || null,
+  /* Optional, official rows only: why the announcement came later than usual
+     (no commas — this CSV is split on them). The site's "the date can move"
+     sentences cite the most recent LATE announcement by this column, instead
+     of whichever COLA happens to be newest, so a punctual announcement never
+     gets described as a late one. */
+  lateReason: r.late_reason || null,
 }));
 
 const official = rows.filter((r) => r.status === "official").sort((a, b) => a.year - b.year);
 const projectedRow = rows.find((r) => r.status === "projected");
 const latestOfficial = official[official.length - 1];
+const latestLate = [...official].reverse().find((r) => r.lateReason && r.announced) || null;
 
 /* "Today" in US Eastern: the announcement is a US event, and a UTC clock rolls
    over while it is still the previous afternoon in Washington. Hoisted here so
@@ -174,6 +181,11 @@ const out = {
   confirmedYear: latestOfficial.year,
   confirmedCola: latestOfficial.colaPct,
   confirmedAnnounced: latestOfficial.announced,
+  // Set only when the newest official COLA was announced later than usual.
+  confirmedLateReason: latestOfficial.lateReason,
+  // The most recent official COLA that was announced late — see lateReason.
+  lateYear: latestLate ? latestLate.year : null,
+  lateAnnounced: latestLate ? latestLate.announced : null,
   projectedYear: projectedRow ? projectedRow.year : null,
   projectedCola: projectedRow ? projectedRow.colaPct : null,
   projectedSource: projectedRow ? projectedRow.source : null,

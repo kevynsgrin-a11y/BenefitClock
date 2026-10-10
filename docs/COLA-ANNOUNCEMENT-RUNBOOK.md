@@ -16,29 +16,51 @@ From the SSA news release (ssa.gov/news) or the press telegram:
 - **Q3 2026 CPI-W average** (three decimals, e.g. `318.512`) — the July,
   August, September average, printed in the release's technical note.
 
-## 2. Flip the projected row to official
+## 2. Flip the projected row to official, and add the next projection
 
 `src/data/cola-history.csv`, last line. Today it reads:
 
 ```csv
-2027,3.5,2027-01-01,,,projected,The Senior Citizens League COLA Watch September 2026,2026-10-14
+2027,3.5,2027-01-01,,,projected,The Senior Citizens League COLA Watch September 2026,2026-10-14,
 ```
 
-Change to (values from step 1; `announced` = today's date):
+**Two edits, both required.** The build refuses to run with no projected row
+(`scripts/build.mjs`, "Missing data for {{COLA_ANNOUNCE_MONTH/DAY}}"), so the
+2028 projection row goes in the same commit.
+
+1. Replace the 2027 line with the official row (values from step 1;
+   `announced` = today's date):
 
 ```csv
-2027,<OFFICIAL_PCT>,2027-01-01,<TODAY>,<Q3_CPIW_AVG>,official,Social Security Administration,
+2027,<OFFICIAL_PCT>,2027-01-01,<TODAY>,<Q3_CPIW_AVG>,official,Social Security Administration,,
+```
+
+2. Append the 2028 projection as a new last line. Use the real source and the
+   expected 2027 announcement date (BLS release calendar):
+
+```csv
+2028,<PROJECTED_PCT>,2028-01-01,,,projected,<PROJECTION SOURCE AND MONTH>,<EXPECTED_ANNOUNCE_DATE>,
 ```
 
 Column order: `year, cola_pct, effective, announced, q3_cpiw_avg, status,
-source, announce_expected` — note `announce_expected` is left EMPTY for
-official rows.
+source, announce_expected, late_reason`. `announce_expected` is EMPTY on
+official rows. `late_reason` is empty unless the announcement came later than
+usual; if it did, put the reason there (no commas). It feeds the "later than
+usual" note and the "the date can move" sentences. Do not put an unverified
+reason in it.
+
+**Check the source credit.** Every page credits the projection through the
+`source` column of the projected row, so it follows the 2028 row on its own.
+Two links are still hardcoded to The Senior Citizens League's site
+(`src/pages/open-enrollment.html`, the "projection:" source line and the
+"COLA projection" link in the sources list). If the 2028 projection comes from
+anyone else, change those two links in the same PR.
 
 ## 3. Rebuild and verify
 
 ```
 npm run build:data   # cola.json regenerates; log should print
-                    # "cola.json: confirmed 2027=<PCT>% · projected <next>=null"
+                    # "cola.json: confirmed 2027=<PCT>% · projected 2028=<PCT>%"
 npm run build
 npm test             # incl. the no-date-literals and worked-example gates
 npm run verify:build
@@ -49,8 +71,8 @@ the Q3 averages and logs `worked check X% (official Y%)` — X and Y should
 match (tolerance is a rounding tenth). If they diverge, the CPI-W figure is
 wrong, not the announced one; re-check step 1.
 
-If a new estimate cycle begins (e.g. a 2028 projected row is added later),
-add it as a fresh `projected` row — never edit an `official` row.
+Never edit an `official` row after the fact. A later estimate cycle is always
+a fresh `projected` row.
 
 ## 4. Ship
 

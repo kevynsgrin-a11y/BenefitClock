@@ -35,7 +35,7 @@ changefreq: monthly
       <ul class="timeline">
         <li>
           <span class="date">Mid-July 2026</span>
-          Early {{COLA_PROJECTED_YEAR}} COLA projections begin. Groups like AARP and The Senior Citizens League publish estimates as summer inflation data comes in. The current early estimate is <strong>{{COLA_PROJECTED}}%</strong> — a projection, not the official figure.
+          Early {{COLA_PROJECTED_YEAR}} COLA projections begin. The Senior Citizens League publishes estimates as summer inflation data comes in. The current early estimate is <strong>{{COLA_PROJECTED}}%</strong> — a projection, not the official figure.
         </li>
         <li>
           <span class="date">September 2026</span>
@@ -43,7 +43,7 @@ changefreq: monthly
         </li>
         <li>
           <span class="date">{{COLA_ANNOUNCE_DATE_LONG}} (expected)</span>
-          The Bureau of Labor Statistics releases September CPI-W inflation data, normally at 8:30&nbsp;a.m. ET, and the Social Security Administration usually announces the <strong>official {{COLA_PROJECTED_YEAR}} COLA</strong> the same morning. This is the day the estimate becomes real — though the date can slip: the {{COLA_CONFIRMED_YEAR}} COLA was not announced until {{COLA_CONFIRMED_ANNOUNCED_LONG}}.
+          The Bureau of Labor Statistics releases September CPI-W inflation data, normally at 8:30&nbsp;a.m. ET, and the Social Security Administration usually announces the <strong>official {{COLA_PROJECTED_YEAR}} COLA</strong> the same morning. This is the day the estimate becomes real — though the date can slip: the {{COLA_LATE_YEAR}} COLA was not announced until {{COLA_LATE_ANNOUNCED_LONG}}.
         </li>
         <li>
           <span class="date">{{AEP_WINDOW_RANGE_LONG}}</span>
@@ -126,7 +126,7 @@ changefreq: monthly
     <details class="faq">
       <summary>Is the {{COLA_PROJECTED}}% COLA for {{COLA_PROJECTED_YEAR}} final?</summary>
       <div class="faq__body">
-        <p>No. The <strong>{{COLA_PROJECTED}}%</strong> figure is an early estimate from groups like The Senior Citizens League and AARP, based on inflation data so far. By law, the official COLA is the percentage increase in the average <strong>CPI-W</strong> for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration is expected to announce the official number on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, though the date can move. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was <strong>{{COLA_CONFIRMED}}%</strong>.</p>
+        <p>No. The <strong>{{COLA_PROJECTED}}%</strong> figure is an early estimate from {{COLA_PROJECTED_SOURCE}}, based on inflation data so far. By law, the official COLA is the percentage increase in the average <strong>CPI-W</strong> for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration is expected to announce the official number on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, though the date can move. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was <strong>{{COLA_CONFIRMED}}%</strong>.</p>
       </div>
     </details>
 
@@ -188,7 +188,7 @@ changefreq: monthly
   "mainEntity": [
     { "@type": "Question", "name": "When will I actually see the bigger check?", "acceptedAnswer": { "@type": "Answer", "text": "The {{COLA_PROJECTED_YEAR}} COLA is expected on {{COLA_ANNOUNCE_DATE_LONG}}, but the higher amount doesn't arrive right away. The new benefit takes effect for January 2027, which most people receive in their payment in January 2027. You'll get a notice in your my Social Security message center in late November, and a mailed notice in December, confirming your new amount before it starts." } },
     { "@type": "Question", "name": "What if I miss the Annual Enrollment Period?", "acceptedAnswer": { "@type": "Answer", "text": "If you miss AEP ({{AEP_WINDOW_RANGE}}), your current coverage simply carries into {{COLA_PROJECTED_YEAR}} with whatever changes your plan made — so it's worth reading your ANOC even if you plan to stay put. If you're already in a Medicare Advantage plan, you get one more chance during the MA Open Enrollment Period, {{AEP_MA_OEP_RANGE_LONG}}, to switch plans or return to Original Medicare. Outside those windows, you generally need a Special Enrollment Period, which is triggered by specific life events like moving. Check your options on the official Medicare Plan Finder or by calling 1-800-MEDICARE." } },
-    { "@type": "Question", "name": "Is the {{COLA_PROJECTED}}% COLA for {{COLA_PROJECTED_YEAR}} final?", "acceptedAnswer": { "@type": "Answer", "text": "No. The {{COLA_PROJECTED}}% figure is an early estimate from groups like The Senior Citizens League and AARP, based on inflation data so far. By law, the official COLA is the percentage increase in the average CPI-W for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration is expected to announce the official number on {{COLA_ANNOUNCE_DATE_LONG}}, though the date can move. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was {{COLA_CONFIRMED}}%." } },
+    { "@type": "Question", "name": "Is the {{COLA_PROJECTED}}% COLA for {{COLA_PROJECTED_YEAR}} final?", "acceptedAnswer": { "@type": "Answer", "text": "No. The {{COLA_PROJECTED}}% figure is an early estimate from {{COLA_PROJECTED_SOURCE}}, based on inflation data so far. By law, the official COLA is the percentage increase in the average CPI-W for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration is expected to announce the official number on {{COLA_ANNOUNCE_DATE_LONG}}, though the date can move. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was {{COLA_CONFIRMED}}%." } },
     { "@type": "Question", "name": "Where do these dates come from?", "acceptedAnswer": { "@type": "Answer", "text": "All of them come from public government sources: the Social Security Administration and Bureau of Labor Statistics for the COLA, and CMS for the Medicare enrollment periods and plan files. BenefitDial is independent — we're not a broker or agent, we take no commissions, and we never ask for your name, phone number, or email. We just line the dates up for you." } }
   ]
 }
