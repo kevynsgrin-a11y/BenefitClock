@@ -126,9 +126,10 @@ function stalePatterns({ oldPct, year, withNext }) {
     ["COLA described as expected / to be announced", near("COLA|cost-of-living", "(is|are|was) expected|expected (on|to)|will be announced|to be announced")],
     // "Estimate your raise" is the calculator's call to action, so only the noun
     // forms count ("is an estimate", "the estimate", "estimated COLA").
-    ["COLA described as a projection or estimate", near("COLA|cost-of-living", "projection|projected|(?:an?|the|is|are|still|only|early) estimate\\b|estimated")],
+    ["COLA described as a projection or estimate", near("COLA|cost-of-living", "projection|projected|\\b(?:an?|the|is|are|still|only|early) estimate\\b|estimated")],
     ["'until … announces'", /until (the )?(SSA|Social Security Administration) announces/i],
     ["'becomes / will become official'", /(becomes|will become|will be) official/i],
+    ["'Expected Increase / COLA / raise' label (e.g. a page title)", /\bExpected (Increase|COLA|raise)\b/i],
     ["'date can move' / 'date can slip' for this cycle", /the date can (move|slip)/i],
     ["link to the projection source (tscl.org)", /tscl\.org/i],
     [`the old projected value (${oldPct}%) is still on a page`, new RegExp(`(?<![\\d.])${String(oldPct).replace(".", "\\.")}\\s?(%|percent)`, "i")],
@@ -152,6 +153,9 @@ function readableText(html) {
     // Comments first: the layout's head comment mentions a literal "<script>",
     // which a naive script-stripper would swallow along with the page body.
     .replace(/<!--[\s\S]*?-->/g, " ")
+    // <meta content="…"> is what search results and social cards show (description,
+    // og:title, twitter:*), so it counts as reader-visible text. <title> already does.
+    .replace(/<meta\b[^>]*?\bcontent="([^"]*)"[^>]*>/gi, " $1 ")
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<script(?![^>]*ld\+json)[\s\S]*?<\/script>/gi, " ")
     .replace(/<figure class="bc-chart"[\s\S]*?<\/figure>/gi, " ") // data chart: checked via cola.json, may carry the next year's estimate bar
