@@ -29,7 +29,7 @@ changefreq: monthly
       <li><strong>Official for 2026:</strong> the standard Part B premium is <strong>${{PART_B_PREMIUM}}</strong> per month, with a <strong>${{PART_B_DEDUCTIBLE}}</strong> annual deductible.</li>
       <li><strong>Projection for 2027:</strong> the annual <a href="https://www.cms.gov/research-statistics-data-and-systems/statistics-trends-and-reports/reportstrustfunds" rel="nofollow noopener" target="_blank">Medicare Trustees Report</a> projects roughly <strong>$209.50 per month</strong> — an increase of about $6.60, or 3.3%. A projection, not a promise: the actual number depends on 2026 spending, congressional action on physician payments, and program reserves.</li>
     </ul>
-    <p>CMS typically announces the real 2027 premiums in <strong>mid-to-late fall 2026</strong>, alongside the physician fee schedule rule. When it lands, it applies to January 2027 coverage — the same month your <a href="/guides/2027-social-security-cola">{{COLA_PROJECTED_YEAR}} Social Security COLA</a> takes effect.</p>
+    <p>CMS typically announces the real 2027 premiums in <strong>mid-to-late fall 2026</strong>, alongside the physician fee schedule rule. When it lands, it applies to January 2027 coverage — the same month your <a href="/guides/2027-social-security-cola">{{CYCLE_YEAR}} Social Security COLA</a> takes effect.</p>
 
     <h2>The premium's recent track record</h2>
     <table>
@@ -47,7 +47,7 @@ changefreq: monthly
     <p class="muted">Standard amounts. Higher-income beneficiaries pay more through IRMAA; lower-income beneficiaries in Medicare Savings Programs may pay little or nothing.</p>
 
     <h2>Why this number decides how your raise feels</h2>
-    <p>For most people with both Social Security and Medicare, the Part B premium is withheld straight from the Social Security deposit. So your January 2027 check moves by two forces at once: the COLA pushes it up, the premium change pulls it back. With the projected {{COLA_PROJECTED}}% COLA estimate and the ~$6.60 premium projection, a typical net raise is positive but visibly smaller than the headline percentage — the exact arithmetic our <a href="/cola-calculator">COLA calculator</a> works through for your own benefit amount.</p>
+    <p>For most people with both Social Security and Medicare, the Part B premium is withheld straight from the Social Security deposit. So your January 2027 check moves by two forces at once: the COLA pushes it up, the premium change pulls it back. With {{#projected}}the projected {{COLA_PROJECTED}}% COLA estimate{{/projected}}{{#official}}the official {{CYCLE_COLA}}% COLA{{/official}} and the ~$6.60 premium projection, a typical net raise is positive but visibly smaller than the headline percentage — the exact arithmetic our <a href="/cola-calculator">COLA calculator</a> works through for your own benefit amount.</p>
 
     <h2>Hold-harmless: the rule that caps the damage</h2>
     <p>If you have Part B premiums withheld from Social Security, a federal provision called <strong>hold-harmless</strong> prevents your net benefit from falling when the premium rises faster than your COLA. Your Part B increase is capped so the check itself never drops below the prior year's net. Three groups are <em>not</em> protected:</p>
@@ -61,7 +61,7 @@ changefreq: monthly
     <h2>What to do in the meantime</h2>
     <ol>
       <li><strong>Don't budget the projection.</strong> Treat ~$209.50 as a planning range, not a bill.</li>
-      <li><strong>Watch the fall announcements.</strong> The COLA becomes official {{COLA_ANNOUNCE_DATE_LONG}}; CMS premiums follow within weeks. Our <a href="/key-dates">key dates page</a> tracks both.</li>
+      <li><strong>Watch the fall announcements.</strong> {{#projected}}The COLA becomes official {{COLA_ANNOUNCE_DATE_LONG}};{{/projected}}{{#official}}The COLA became official {{CYCLE_ANNOUNCE_DATE_LONG}};{{/official}} CMS premiums follow within weeks. Our <a href="/key-dates">key dates page</a> tracks both.</li>
       <li><strong>If you're choosing a plan anyway</strong>, the Medicare Open Enrollment window ({{AEP_WINDOW_RANGE}}) is when premium changes and plan changes can be considered together — see the <a href="/guides/medicare-aep-2026">Open Enrollment guide</a> and the <a href="/guides/aep-checklist">AEP checklist</a>.</li>
     </ol>
   </div>
@@ -86,7 +86,7 @@ changefreq: monthly
       <details class="faq">
         <summary>When is the 2027 premium announced?</summary>
         <div class="faq__body">
-          <p>Typically mid-to-late fall 2026, in the CMS premium announcement that accompanies the physician fee schedule final rule. The COLA is expected to become official slightly earlier, {{COLA_ANNOUNCE_DATE_LONG}}.</p>
+          <p>Typically mid-to-late fall 2026, in the CMS premium announcement that accompanies the physician fee schedule final rule. {{#projected}}The COLA is expected to become official slightly earlier, {{COLA_ANNOUNCE_DATE_LONG}}.{{/projected}}{{#official}}The COLA became official on {{CYCLE_ANNOUNCE_DATE_LONG}}.{{/official}}</p>
         </div>
       </details>
       <details class="faq">
@@ -137,7 +137,7 @@ changefreq: monthly
   "mainEntity": [
     { "@type": "Question", "name": "How much will the Medicare Part B premium be in 2027?", "acceptedAnswer": { "@type": "Answer", "text": "Not officially set yet. The 2026 Medicare Trustees Report projects roughly $209.50 per month, up from $202.90 in 2026. CMS announces the official amount in fall 2026, effective January 2027." } },
     { "@type": "Question", "name": "Can my Social Security check go down because Part B went up?", "acceptedAnswer": { "@type": "Answer", "text": "Not if you're protected by hold-harmless — the rule caps the Part B increase so your net check never falls below the prior year's. New Medicare enrollees, people billed directly, and those paying IRMAA surcharges aren't covered." } },
-    { "@type": "Question", "name": "When is the 2027 premium announced?", "acceptedAnswer": { "@type": "Answer", "text": "Typically mid-to-late fall 2026, in the CMS premium announcement accompanying the physician fee schedule final rule. The COLA becomes official slightly earlier." } },
+    { "@type": "Question", "name": "When is the 2027 premium announced?", "acceptedAnswer": { "@type": "Answer", "text": "Typically mid-to-late fall 2026, in the CMS premium announcement accompanying the physician fee schedule final rule. {{#projected}}The COLA becomes official slightly earlier.{{/projected}}{{#official}}The COLA became official on {{CYCLE_ANNOUNCE_DATE_LONG}}.{{/official}}" } },
     { "@type": "Question", "name": "Why does the premium rise almost every year?", "acceptedAnswer": { "@type": "Answer", "text": "Part B premiums are set to fund about 25% of projected Part B spending. As program costs grow, the standard premium follows." } }
   ]
 }

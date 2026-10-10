@@ -43,7 +43,7 @@ scripts: open-enrollment.js
           <p class="oeh-date__label">Related date</p>
           <h3>Social Security announces the {{CYCLE_YEAR}} COLA</h3>
           <p>The cost-of-living adjustment is announced in mid-October. It matters here because your Part&nbsp;B premium is often deducted from your Social Security check.</p>
-          <p class="oeh-status oeh-status--awaiting"><span class="oeh-dot" aria-hidden="true"></span>Awaiting announcement &mdash; SSA, <a href="https://www.ssa.gov/cola/" target="_blank" rel="noopener">ssa.gov/cola</a></p>
+          {{#projected}}<p class="oeh-status oeh-status--awaiting"><span class="oeh-dot" aria-hidden="true"></span>Awaiting announcement &mdash; SSA, <a href="https://www.ssa.gov/cola/" target="_blank" rel="noopener">ssa.gov/cola</a></p>{{/projected}}{{#official}}<p class="oeh-status oeh-status--confirmed"><span class="oeh-dot" aria-hidden="true"></span>Announced &mdash; SSA, <a href="https://www.ssa.gov/cola/" target="_blank" rel="noopener">ssa.gov/cola</a></p>{{/official}}
         </div>
       </li>
       <li class="oeh-date oeh-date--primary">
@@ -142,7 +142,7 @@ scripts: open-enrollment.js
         <span class="oeh-week__num" aria-hidden="true">3</span>
         <div class="oeh-week__heading">
           <h3>{{AEP_WEEK3_RANGE}} &middot; Check the COLA announcement</h3>
-          <p>Social Security is expected to announce the {{COLA_PROJECTED_YEAR}} cost-of-living adjustment on {{COLA_ANNOUNCE_DATE_LONG}}, though the date can move. If your Part&nbsp;B premium is deducted from your benefit check, the two move together.</p>
+          <p>{{#projected}}Social Security is expected to announce the {{COLA_PROJECTED_YEAR}} cost-of-living adjustment on {{COLA_ANNOUNCE_DATE_LONG}}, though the date can move.{{/projected}}{{#official}}Social Security announced the {{CYCLE_YEAR}} cost-of-living adjustment on {{CYCLE_ANNOUNCE_DATE_LONG}}.{{/official}} If your Part&nbsp;B premium is deducted from your benefit check, the two move together.</p>
         </div>
         <button class="oeh-week__toggle" type="button" aria-expanded="false" aria-controls="oeh-week-3-items">Toggle week 3 details<span aria-hidden="true"></span></button>
       </div>
@@ -241,10 +241,10 @@ scripts: open-enrollment.js
       <h2 id="oeh-cola-title">The {{CYCLE_YEAR}} Social Security COLA</h2>
       <p class="lead">Announced each October. It moves your net benefit &mdash; and, if your Part&nbsp;B premium is deducted from your check, how that deduction changes.</p>
       <div class="oeh-cola__card" data-slot="COLA_PCT_{{CYCLE_YEAR}}">
-        <p class="oeh-cola__cardhead"><span class="oeh-dot oeh-dot--lg" aria-hidden="true"></span>Awaiting official announcement</p>
-        <p class="oeh-cola__when">The SSA is expected to announce the {{COLA_PROJECTED_YEAR}} COLA on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, though the date can move.</p>
-        <p class="oeh-cola__proj"><span>Early projection:</span> approximately <strong>{{COLA_PROJECTED}}%</strong> &mdash; an <em>estimate</em> ({{COLA_PROJECTED_SOURCE}}) based on inflation trends, not an official figure.</p>
-        <p class="oeh-cost__source">SSA, <a href="https://www.ssa.gov/cola/" target="_blank" rel="noopener">ssa.gov/cola</a> &middot; projection: <a href="https://www.tscl.org/" target="_blank" rel="noopener">tscl.org</a></p>
+        <p class="oeh-cola__cardhead"><span class="oeh-dot oeh-dot--lg" aria-hidden="true"></span>{{#projected}}Awaiting official announcement</p>{{/projected}}{{#official}}Officially announced</p>{{/official}}
+        <p class="oeh-cola__when">{{#projected}}The SSA is expected to announce the {{COLA_PROJECTED_YEAR}} COLA on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, though the date can move.{{/projected}}{{#official}}The SSA announced the {{CYCLE_YEAR}} COLA on <strong>{{CYCLE_ANNOUNCE_DATE_LONG}}</strong>.{{/official}}</p>
+        <p class="oeh-cola__proj">{{#projected}}<span>Early projection:</span> approximately <strong>{{COLA_PROJECTED}}%</strong> &mdash; an <em>estimate</em> ({{COLA_PROJECTED_SOURCE}}) based on inflation trends, not an official figure.{{/projected}}{{#official}}<span>Official COLA:</span> <strong>{{CYCLE_COLA}}%</strong> for {{CYCLE_YEAR}}.{{/official}}</p>
+        <p class="oeh-cost__source">SSA, <a href="https://www.ssa.gov/cola/" target="_blank" rel="noopener">ssa.gov/cola</a>{{#projected}} &middot; projection: <a href="https://www.tscl.org/" target="_blank" rel="noopener">tscl.org</a>{{/projected}}{{#official}}{{/official}}</p>
       </div>
       <p class="oeh-cta"><a class="btn btn--ghost" href="/cola-calculator">Try the COLA calculator</a><a class="btn btn--ghost" href="/guides/2027-social-security-cola">Read the COLA guide</a></p>
     </div>
@@ -272,7 +272,7 @@ scripts: open-enrollment.js
       <li><span>Enrollment window</span><a href="https://www.cms.gov/" target="_blank" rel="noopener">CMS Medicare &amp; You &middot; 42 CFR 422.62</a></li>
       <li><span>Part B &amp; Part D figures</span><a href="https://www.govinfo.gov/" target="_blank" rel="noopener">Federal Register via GPO govinfo &middot; CMS Part D Redesign Instructions</a></li>
       <li><span>COLA</span><a href="https://www.ssa.gov/cola/" target="_blank" rel="noopener">Social Security Administration</a></li>
-      <li><span>COLA projection</span><a href="https://www.tscl.org/" target="_blank" rel="noopener">The Senior Citizens League</a></li>
+      {{#projected}}<li><span>COLA projection</span><a href="https://www.tscl.org/" target="_blank" rel="noopener">The Senior Citizens League</a></li>{{/projected}}{{#official}}{{/official}}
     </ul>
     <p class="oeh-trust__links">Think something here is wrong? <a href="/about">How BenefitDial works</a> &middot; <a href="/how-it-works">methodology</a> &middot; <a href="/guides">all guides</a>. Data basis last verified {{DATA_UPDATED}}.</p>
   </div>

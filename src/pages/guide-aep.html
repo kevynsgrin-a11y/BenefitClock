@@ -107,7 +107,7 @@ changefreq: monthly
       <a class="card card--link" href="/key-dates">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-calendar-check" xlink:href="#ic-calendar-check"/></svg></div>
         <h3>All the key dates for this fall</h3>
-        <p class="muted">AEP runs {{AEP_WINDOW_RANGE}}. The {{COLA_PROJECTED_YEAR}} COLA is expected {{COLA_ANNOUNCE_DATE_LONG}}. Here's the full calendar in one place.</p>
+        <p class="muted">AEP runs {{AEP_WINDOW_RANGE}}. {{#projected}}The {{COLA_PROJECTED_YEAR}} COLA is expected {{COLA_ANNOUNCE_DATE_LONG}}.{{/projected}}{{#official}}The {{CYCLE_YEAR}} COLA was announced {{CYCLE_ANNOUNCE_DATE_LONG}}.{{/official}} Here's the full calendar in one place.</p>
         <span class="badge badge--info">See the timeline →</span>
       </a>
     </div>
