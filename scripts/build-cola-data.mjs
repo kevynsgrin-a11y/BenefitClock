@@ -173,7 +173,8 @@ if (projectedRow) {
         `is still status=projected. Eight pages currently say that date is still ahead of the reader.\n` +
         `Do one of these:\n` +
         `  • The SSA has announced — promote the ${projectedRow.year} row to status=official with the ` +
-        `real cola_pct, q3_cpiw_avg and announced date, and add the next year's projected row.\n` +
+        `real cola_pct, q3_cpiw_avg and announced date (a next-year projected row is optional — add one only ` +
+        `when you have a source for it).\n` +
         `  • The SSA has not announced yet (the date does slip — 2026 ran to October 24) — move ` +
         `announce_expected forward to the new expected date.\n` +
         `Refusing to build: this copy tells people when to expect a change to their benefit.`

@@ -15,7 +15,7 @@ changefreq: monthly
     <p class="eyebrow">Guide · Social Security &amp; Medicare</p>
     <h1>How Medicare Part B eats into your Social Security COLA</h1>
     <p class="lead prose">Each fall you learn two numbers close together: your Social Security cost-of-living raise, and your new Medicare Part B premium. Because Part B is usually pulled straight out of your Social Security check, those two numbers land in the same place — your monthly deposit. This guide shows, in plain terms, why your raise can feel smaller than the headline, and how to figure out the amount you actually keep.</p>
-    <p class="prose"><span class="badge badge--info">Worked example uses round numbers</span> <span class="muted">The standard Part B premium for {{MEDICARE_FIGURES_YEAR}} is ${{PART_B_PREMIUM}} a month; CMS resets it each fall. The {{COLA_PROJECTED_YEAR}} COLA is expected {{COLA_ANNOUNCE_DATE_LONG}}.</span></p>
+    <p class="prose"><span class="badge badge--info">Worked example uses round numbers</span> <span class="muted">The standard Part B premium for {{MEDICARE_FIGURES_YEAR}} is ${{PART_B_PREMIUM}} a month; CMS resets it each fall. {{#projected}}The {{COLA_PROJECTED_YEAR}} COLA is expected {{COLA_ANNOUNCE_DATE_LONG}}.{{/projected}}{{#official}}The {{CYCLE_YEAR}} COLA was announced {{CYCLE_ANNOUNCE_DATE_LONG}}.{{/official}}</span></p>
     <figure class="lead-fig">
       <img src="/assets/img/guide-partb.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="A stethoscope loosely coiled beside a neat stack of blank white paper on soft linen.">
     </figure>
@@ -37,7 +37,7 @@ changefreq: monthly
       <p class="callout__title">The one formula that matters</p>
       <p style="margin:0;">Net deposit = (your current benefit × (1 + COLA)) − your Medicare Part B premium.</p>
     </div>
-    <p>Let's walk through it with round, made-up numbers, so the arithmetic is easy to follow. Say your monthly benefit is <strong>$2,000</strong> and the raise that year is <strong>3%</strong>. Every figure in the table below is invented for the example — the real {{COLA_PROJECTED_YEAR}} estimate is {{COLA_PROJECTED}}%, and the real standard Part B premium for {{MEDICARE_FIGURES_YEAR}} is ${{PART_B_PREMIUM}} a month. What matters here is the shape of the subtraction, not the amounts.</p>
+    <p>Let's walk through it with round, made-up numbers, so the arithmetic is easy to follow. Say your monthly benefit is <strong>$2,000</strong> and the raise that year is <strong>3%</strong>. Every figure in the table below is invented for the example — {{#projected}}the real {{COLA_PROJECTED_YEAR}} estimate is {{COLA_PROJECTED}}%{{/projected}}{{#official}}the real {{CYCLE_YEAR}} COLA is {{CYCLE_COLA}}%{{/official}}, and the real standard Part B premium for {{MEDICARE_FIGURES_YEAR}} is ${{PART_B_PREMIUM}} a month. What matters here is the shape of the subtraction, not the amounts.</p>
 
     <div class="table-scroll">
       <table class="data">
@@ -84,7 +84,7 @@ changefreq: monthly
         </tbody>
       </table>
     </div>
-    <p class="muted" style="font-size:0.95rem;">Every dollar figure above is round and made up, purely to show how the subtraction works. The 3% raise and the $180 and $195 Part B amounts are <strong>not</strong> official. The real standard Part B premium for {{MEDICARE_FIGURES_YEAR}} is <strong>${{PART_B_PREMIUM}}</strong> a month, CMS resets it each fall, and the {{COLA_PROJECTED}}% {{COLA_PROJECTED_YEAR}} COLA stays an early estimate until the Social Security Administration announces the official number, expected {{COLA_ANNOUNCE_DATE_LONG}}.</p>
+    <p class="muted" style="font-size:0.95rem;">Every dollar figure above is round and made up, purely to show how the subtraction works. The 3% raise and the $180 and $195 Part B amounts are <strong>not</strong> official. The real standard Part B premium for {{MEDICARE_FIGURES_YEAR}} is <strong>${{PART_B_PREMIUM}}</strong> a month, CMS resets it each fall, and {{#projected}}the {{COLA_PROJECTED}}% {{COLA_PROJECTED_YEAR}} COLA stays an early estimate until the Social Security Administration announces the official number, expected {{COLA_ANNOUNCE_DATE_LONG}}.{{/projected}}{{#official}}the {{CYCLE_YEAR}} COLA of {{CYCLE_COLA}}% is official, announced by the Social Security Administration on {{CYCLE_ANNOUNCE_DATE_LONG}}.{{/official}}</p>
     <p>Notice the two figures the example produces. The <strong>gross raise</strong> was $60 a month. But because Part B also went up — from $180 to $195 in this example — the <strong>raise you keep</strong> was only $45. The $15 Part B increase quietly clawed back part of the raise. Your benefit still rose by the full 3%; your <em>deposit</em> rose by less. That gap is the entire point of this page.</p>
 
     {{> ad-inline }}
@@ -116,7 +116,7 @@ changefreq: monthly
       <a class="card card--link" href="/guides/2027-social-security-cola">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-doc-gov" xlink:href="#ic-doc-gov"/></svg></div>
         <h3>How the COLA itself works</h3>
-        <p class="muted">Where the {{CYCLE_YEAR}} estimate comes from, the CPI-W formula, and a worked example — in plain language.</p>
+        <p class="muted">{{#projected}}Where the {{CYCLE_YEAR}} estimate comes from{{/projected}}{{#official}}Where the {{CYCLE_YEAR}} figure comes from{{/official}}, the CPI-W formula, and a worked example — in plain language.</p>
         <span class="badge badge--info">Read the COLA guide →</span>
       </a>
     </div>

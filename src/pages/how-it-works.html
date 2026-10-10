@@ -57,9 +57,9 @@ changefreq: monthly
         </tbody>
       </table>
     </div>
-    <p>And here is how that {{COLA_CONFIRMED}}% fits into recent history (the {{COLA_PROJECTED_YEAR}} figure is an early estimate):</p>
+    <p>And here is how that {{COLA_CONFIRMED}}% fits into recent history{{#projected}} (the {{COLA_PROJECTED_YEAR}} figure is an early estimate){{/projected}}{{#official}}{{/official}}:</p>
 {{CHART_COLA_HISTORY}}
-    <p>That's the whole calculation. No opinion, no adjustment — just two averages and a rounding rule. The <a href="/guides/2027-social-security-cola">{{COLA_PROJECTED_YEAR}} COLA is an early estimate of {{COLA_PROJECTED}}%</a> from {{COLA_PROJECTED_SOURCE}}, and we label it that way everywhere it appears. The official {{COLA_PROJECTED_YEAR}} figure arrives when the BLS releases September CPI-W — normally at 8:30&nbsp;a.m. ET — and the SSA announces the COLA, which it usually does the same morning. That is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, but the date can move: the {{COLA_LATE_YEAR}} announcement slipped to {{COLA_LATE_ANNOUNCED_LONG}}.</p>
+    <p>That's the whole calculation. No opinion, no adjustment — just two averages and a rounding rule. {{#projected}}The <a href="/guides/2027-social-security-cola">{{COLA_PROJECTED_YEAR}} COLA is an early estimate of {{COLA_PROJECTED}}%</a> from {{COLA_PROJECTED_SOURCE}}, and we label it that way everywhere it appears. The official {{COLA_PROJECTED_YEAR}} figure arrives when the BLS releases September CPI-W — normally at 8:30&nbsp;a.m. ET — and the SSA announces the COLA, which it usually does the same morning. That is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, but the date can move: the {{COLA_LATE_YEAR}} announcement slipped to {{COLA_LATE_ANNOUNCED_LONG}}.{{/projected}}{{#official}}The <a href="/guides/2027-social-security-cola">{{CYCLE_YEAR}} COLA is {{CYCLE_COLA}}%</a>, announced by the Social Security Administration on <strong>{{CYCLE_ANNOUNCE_DATE_LONG}}</strong>, right after the BLS released September CPI-W.{{/official}}</p>
 
     <div class="callout callout--info">
       <p class="callout__title">From the raise to what lands in your account</p>
@@ -158,8 +158,9 @@ changefreq: monthly
         CMS releases the {{PLAN_YEAR_NEXT}} Landscape, Crosswalk, PUF, and PBP files. We load them, replacing the sample dataset, so the "What Changed" tool shows real plan changes.
       </li>
       <li>
-        <span class="date">{{COLA_ANNOUNCE_DATE_LONG}} (expected)</span>
-        The BLS releases September CPI-W and the SSA is expected to announce the official {{COLA_PROJECTED_YEAR}} COLA. We update the confirmed figure across the site.
+        {{#projected}}<span class="date">{{COLA_ANNOUNCE_DATE_LONG}} (expected)</span>
+        The BLS releases September CPI-W and the SSA is expected to announce the official {{COLA_PROJECTED_YEAR}} COLA. We update the confirmed figure across the site.{{/projected}}{{#official}}<span class="date">{{CYCLE_ANNOUNCE_DATE_LONG}}</span>
+        The BLS released September CPI-W and the SSA announced the official {{CYCLE_YEAR}} COLA of {{CYCLE_COLA}}%.{{/official}}
       </li>
       <li>
         <span class="date">Each following October</span>

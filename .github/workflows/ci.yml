@@ -45,6 +45,13 @@ jobs:
       - name: Unit tests (COLA + plan-diff logic)
         run: node --test
 
+      # Announcement-day rehearsal: promotes the projected COLA row in a temp
+      # copy, builds it, and fails on any wording that is only true before the
+      # announcement. Skips itself outside Sept 1 -> the flip (and when no
+      # projected row exists), so it is safe to run on every commit.
+      - name: Rehearse the COLA announcement flip
+        run: node scripts/dry-run-flip.mjs
+
       - name: Build the static site
         env:
           # Optional repository variable. Empty falls back to the build's own

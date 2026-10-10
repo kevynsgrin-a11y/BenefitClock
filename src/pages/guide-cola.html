@@ -1,5 +1,5 @@
 <!--
-title: {{CYCLE_YEAR}} Social Security COLA: Expected Increase, Date & Your Raise | BenefitDial
+title: {{CYCLE_YEAR}} Social Security COLA: {{#projected}}Expected Increase{{/projected}}{{#official}}Official Increase{{/official}}, Date & Your Raise | BenefitDial
 description: What the {{CYCLE_YEAR}} Social Security COLA is, how it's calculated from CPI-W, what the raise means in dollars for average, maximum and SSI checks, recent history, and why it can feel smaller after Medicare Part B.
 slug: guides/2027-social-security-cola
 nav: guides
@@ -15,7 +15,7 @@ changefreq: monthly
     <p class="eyebrow">Guide · Social Security</p>
     <h1>The {{CYCLE_YEAR}} Social Security COLA, explained</h1>
     <p class="lead prose">Every autumn, Social Security raises benefits to keep up with the cost of living. This guide walks you through what that cost-of-living adjustment (COLA) really is, how it's worked out, what recent years looked like, and why the raise that lands in your bank account can feel smaller than the headline number. Plain language, no jargon.</p>
-    <p class="prose"><span class="badge badge--info">Early estimate: {{COLA_PROJECTED_YEAR}} COLA ≈ {{COLA_PROJECTED}}%</span> <span class="muted">Official figure expected {{COLA_ANNOUNCE_DATE_LONG}}.</span></p>
+    <p class="prose">{{#projected}}<span class="badge badge--info">Early estimate: {{COLA_PROJECTED_YEAR}} COLA ≈ {{COLA_PROJECTED}}%</span> <span class="muted">Official figure expected {{COLA_ANNOUNCE_DATE_LONG}}.</span>{{/projected}}{{#official}}<span class="badge badge--good">Confirmed by SSA: {{CYCLE_YEAR}} COLA {{CYCLE_COLA}}%</span> <span class="muted">Announced {{CYCLE_ANNOUNCE_DATE_LONG}}.</span>{{/official}}</p>
     <figure class="lead-fig">
       <img src="/assets/img/guide-cola.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="A small stack of coins beside a plain blank envelope and a pair of reading glasses on a warm wooden table in soft morning light.">
     </figure>
@@ -111,23 +111,23 @@ changefreq: monthly
             <td><span class="badge badge--neutral">Confirmed</span></td>
           </tr>
           <tr>
-            <td>{{COLA_CONFIRMED_YEAR}}</td>
-            <td class="num">{{COLA_CONFIRMED}}%</td>
+            <td>{{COLA_PRIOR_YEAR}}</td>
+            <td class="num">{{COLA_PRIOR_COLA}}%</td>
             <td><span class="badge badge--good">Confirmed</span></td>
           </tr>
           <tr>
-            <td>{{COLA_PROJECTED_YEAR}}</td>
-            <td class="num">{{COLA_PROJECTED}}%</td>
-            <td><span class="badge badge--warn">Estimate only</span></td>
+            <td>{{CYCLE_YEAR}}</td>
+            <td class="num">{{CYCLE_COLA}}%</td>
+            <td>{{#projected}}<span class="badge badge--warn">Estimate only</span>{{/projected}}{{#official}}<span class="badge badge--good">Confirmed</span>{{/official}}</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p>Here is how recent COLAs compare at a glance, with the {{COLA_PROJECTED_YEAR}} bar shown as an estimate:</p>
+    <p>Here is how recent COLAs compare at a glance{{#projected}}, with the {{COLA_PROJECTED_YEAR}} bar shown as an estimate{{/projected}}{{#official}}{{/official}}:</p>
 
     {{CHART_COLA_HISTORY}}
 
-    <p>The {{COLA_PROJECTED_YEAR}} figure of <strong>{{COLA_PROJECTED}}%</strong> is an <strong>early estimate</strong> from {{COLA_PROJECTED_SOURCE}} — not the official number. It's based on inflation data collected before the third-quarter measuring window is even complete, so treat it as a well-informed forecast that can still move. The official {{COLA_PROJECTED_YEAR}} COLA is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, right after the BLS releases September CPI-W — normally at 8:30&nbsp;a.m. ET. The SSA usually announces the same morning, but the date can move: the {{COLA_LATE_YEAR}} figure did not arrive until {{COLA_LATE_ANNOUNCED_LONG}}.</p>
+    <p>{{#projected}}The {{COLA_PROJECTED_YEAR}} figure of <strong>{{COLA_PROJECTED}}%</strong> is an <strong>early estimate</strong> from {{COLA_PROJECTED_SOURCE}} — not the official number. It's based on inflation data collected before the third-quarter measuring window is even complete, so treat it as a well-informed forecast that can still move. The official {{COLA_PROJECTED_YEAR}} COLA is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, right after the BLS releases September CPI-W — normally at 8:30&nbsp;a.m. ET. The SSA usually announces the same morning, but the date can move: the {{COLA_LATE_YEAR}} figure did not arrive until {{COLA_LATE_ANNOUNCED_LONG}}.{{/projected}}{{#official}}The {{CYCLE_YEAR}} COLA is <strong>{{CYCLE_COLA}}%</strong>. The Social Security Administration announced it on <strong>{{CYCLE_ANNOUNCE_DATE_LONG}}</strong>, right after the BLS released September CPI-W — the official number, no longer an estimate.{{/official}}</p>
 
     {{> ad-inline }}
 
@@ -143,7 +143,7 @@ changefreq: monthly
     <p>For most retirees, the <strong>Medicare Part B premium</strong> is deducted straight from the Social Security payment. When Part B goes up — and it often does — the increase eats into your COLA. Your gross benefit rises by the full percentage, but the number that actually lands in your bank account grows by less. In some years, a higher Part B premium has swallowed a large share of the raise.</p>
     <div class="callout callout--warn">
       <p class="callout__title">The two numbers to keep separate</p>
-      <p>Your <strong>gross raise</strong> is your benefit times the COLA. Your <strong>net raise</strong> is what's left after Part B is withheld. The gap between them is why a "{{COLA_CONFIRMED}}% raise" can feel like less. We break this down in detail in <a href="/guides/part-b-premium-and-your-cola">Part B premiums and your COLA</a>, and the projected <a href="/guides/medicare-premiums-2027">{{COLA_PROJECTED_YEAR}} Part B premium</a> shows next year's side of that ledger.</p>
+      <p>Your <strong>gross raise</strong> is your benefit times the COLA. Your <strong>net raise</strong> is what's left after Part B is withheld. The gap between them is why a "{{COLA_CONFIRMED}}% raise" can feel like less. We break this down in detail in <a href="/guides/part-b-premium-and-your-cola">Part B premiums and your COLA</a>, and the projected <a href="/guides/medicare-premiums-2027">{{CYCLE_YEAR}} Part B premium</a> shows next year's side of that ledger.</p>
     </div>
     <p>None of this means the COLA isn't real — it is, and it's permanent. It just means the headline percentage and the change to your deposit are two different figures worth looking at side by side.</p>
   </div>
@@ -163,7 +163,7 @@ changefreq: monthly
       <a class="card card--link" href="/key-dates">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-calendar-check" xlink:href="#ic-calendar-check"/></svg></div>
         <h3>Key dates for this fall</h3>
-        <p class="muted">The {{COLA_PROJECTED_YEAR}} COLA is expected {{COLA_ANNOUNCE_DATE_LONG}}. Medicare enrollment runs Oct 15 – Dec 7.</p>
+        <p class="muted">{{#projected}}The {{COLA_PROJECTED_YEAR}} COLA is expected {{COLA_ANNOUNCE_DATE_LONG}}.{{/projected}}{{#official}}The {{CYCLE_YEAR}} COLA was announced {{CYCLE_ANNOUNCE_DATE_LONG}}.{{/official}} Medicare enrollment runs Oct 15 – Dec 7.</p>
         <span class="badge badge--info">See the timeline →</span>
       </a>
     </div>
@@ -171,9 +171,9 @@ changefreq: monthly
     <h2>Frequently asked questions</h2>
 
     <details class="faq">
-      <summary>Is the {{COLA_PROJECTED_YEAR}} COLA of {{COLA_PROJECTED}}% official?</summary>
+      {{#projected}}<summary>Is the {{COLA_PROJECTED_YEAR}} COLA of {{COLA_PROJECTED}}% official?</summary>{{/projected}}{{#official}}<summary>Is the {{CYCLE_YEAR}} COLA of {{CYCLE_COLA}}% official?</summary>{{/official}}
       <div class="faq__body">
-        <p>No. The {{COLA_PROJECTED}}% figure is an early estimate from {{COLA_PROJECTED_SOURCE}}, based on inflation data gathered before the measuring period is finished. The Social Security Administration is expected to announce the official {{COLA_PROJECTED_YEAR}} COLA on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, and it can differ from the estimate.</p>
+        {{#projected}}<p>No. The {{COLA_PROJECTED}}% figure is an early estimate from {{COLA_PROJECTED_SOURCE}}, based on inflation data gathered before the measuring period is finished. The Social Security Administration is expected to announce the official {{COLA_PROJECTED_YEAR}} COLA on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, and it can differ from the estimate.</p>{{/projected}}{{#official}}<p>Yes. The Social Security Administration announced the {{CYCLE_YEAR}} COLA of {{CYCLE_COLA}}% on <strong>{{CYCLE_ANNOUNCE_DATE_LONG}}</strong>.</p>{{/official}}
       </div>
     </details>
 
@@ -278,7 +278,7 @@ changefreq: monthly
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "Is the {{COLA_PROJECTED_YEAR}} COLA of {{COLA_PROJECTED}}% official?", "acceptedAnswer": { "@type": "Answer", "text": "No. The {{COLA_PROJECTED}}% figure is an early estimate from {{COLA_PROJECTED_SOURCE}}, based on inflation data gathered before the measuring period is finished. The Social Security Administration is expected to announce the official {{COLA_PROJECTED_YEAR}} COLA on {{COLA_ANNOUNCE_DATE_LONG}}, and it can differ from the estimate." } },
+    {{#projected}}{ "@type": "Question", "name": "Is the {{COLA_PROJECTED_YEAR}} COLA of {{COLA_PROJECTED}}% official?", "acceptedAnswer": { "@type": "Answer", "text": "No. The {{COLA_PROJECTED}}% figure is an early estimate from {{COLA_PROJECTED_SOURCE}}, based on inflation data gathered before the measuring period is finished. The Social Security Administration is expected to announce the official {{COLA_PROJECTED_YEAR}} COLA on {{COLA_ANNOUNCE_DATE_LONG}}, and it can differ from the estimate." } },{{/projected}}{{#official}}{ "@type": "Question", "name": "Is the {{CYCLE_YEAR}} COLA of {{CYCLE_COLA}}% official?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Social Security Administration announced the {{CYCLE_YEAR}} COLA of {{CYCLE_COLA}}% on {{CYCLE_ANNOUNCE_DATE_LONG}}." } },{{/official}}
     { "@type": "Question", "name": "Which inflation index does the COLA use?", "acceptedAnswer": { "@type": "Answer", "text": "It uses CPI-W — the Consumer Price Index for Urban Wage Earners and Clerical Workers — not the more commonly quoted CPI-U. Specifically, it compares the average CPI-W for July, August, and September against the same quarter of the last year a COLA took effect, rounded to the nearest tenth of a percent. You can review the raw index on the BLS Consumer Price Index page." } },
     { "@type": "Question", "name": "When does the raise actually start?", "acceptedAnswer": { "@type": "Answer", "text": "The COLA takes effect with your January payment and is permanent. Each year's adjustment is added on top of the benefit you already receive, so increases build on one another over time." } },
     { "@type": "Question", "name": "Why did my deposit go up by less than the COLA percentage?", "acceptedAnswer": { "@type": "Answer", "text": "Because Medicare Part B is usually withheld from your Social Security check. Your gross benefit rises by the full COLA, but if the Part B premium also increases, the change to your actual deposit is smaller. Our COLA calculator shows both figures side by side." } },
