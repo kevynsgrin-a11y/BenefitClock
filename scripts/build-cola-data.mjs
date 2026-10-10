@@ -92,6 +92,11 @@ for (const e of exampleRows) {
 const cycleYear = determinationCycleYear(todayET);
 const cycleRow = rows.find((r) => r.year === cycleYear) || latestOfficial;
 
+/* The official COLA just before the cycle year: the calculator's second choice.
+   It used to be "the newest official COLA", which on announcement day becomes
+   the cycle's own COLA and would have listed the same percentage twice. */
+const priorRow = [...official].reverse().find((r) => r.year < cycleRow.year) || null;
+
 const examples = exampleRows.map((e) => {
   const p = projectBenefit({ priorGross: e.monthlyBase, colaPercent: cycleRow.colaPct, priorPartB: e.partbBase });
   return {
@@ -204,6 +209,8 @@ const out = {
     announced: cycleRow.announced,
     effective: cycleRow.effective,
     source: cycleRow.source,
+    priorYear: priorRow ? priorRow.year : null,
+    priorCola: priorRow ? priorRow.colaPct : null,
   },
   // The current cycle's COLA applied to SSA's published base amounts
   // (src/data/benefit-examples.csv). Recomputed on every build, so the

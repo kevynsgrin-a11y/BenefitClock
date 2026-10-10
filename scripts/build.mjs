@@ -352,6 +352,14 @@ function build() {
     CYCLE_YEAR: requireFigure(cycle.year, "CYCLE_YEAR", "cola.json has no cycle object — run scripts/build-cola-data.mjs."),
     CYCLE_COLA: requireFigure(cycle.cola, "CYCLE_COLA", "cola.json has no cycle.cola — run scripts/build-cola-data.mjs."),
     CYCLE_STATUS_LC: cycleIsProjected ? "projected" : "confirmed",
+    COLA_PRIOR_YEAR: requireFigure(cycle.priorYear, "COLA_PRIOR_YEAR", "No official COLA row before the cycle year in src/data/cola-history.csv."),
+    COLA_PRIOR_COLA: requireFigure(cycle.priorCola, "COLA_PRIOR_COLA", "No official COLA row before the cycle year in src/data/cola-history.csv."),
+    /* Calculator hint under the COLA picker. The picker defaults to the cycle's
+       COLA (the raise people are about to get), which is the projected figure
+       today and the official one from announcement day. */
+    CYCLE_CALC_HINT: cycleIsProjected
+      ? `The ${cycle.year} figure is an early estimate. The official COLA is expected on <strong>${longDate(announce)}</strong>.`
+      : `The ${cycle.year} COLA is official: the Social Security Administration announced it on ${cycleAnnouncedLong}.`,
     // The benefit-year the base amounts come from: the raise taking effect in
     // January of cycle year Y is applied to the figures SSA published for Y-1.
     CYCLE_BASE_YEAR: String(Number(cycle.year) - 1),

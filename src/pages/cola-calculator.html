@@ -1,6 +1,6 @@
 <!--
-title: {{COLA_PROJECTED_YEAR}} Social Security COLA Calculator | BenefitDial
-description: Estimate your {{COLA_PROJECTED_YEAR}} Social Security increase from the projected COLA, then subtract your Medicare Part B premium to see the raise you actually keep.
+title: {{CYCLE_YEAR}} Social Security COLA Calculator | BenefitDial
+description: Estimate your {{CYCLE_YEAR}} Social Security increase from the projected COLA, then subtract your Medicare Part B premium to see the raise you actually keep.
 slug: cola-calculator
 nav: cola
 scripts: cola.js
@@ -10,8 +10,8 @@ changefreq: weekly
 -->
 <section class="section" style="padding-bottom:1.5rem;">
   <div class="wrap">
-    <p class="eyebrow">Social Security · COLA {{COLA_PROJECTED_YEAR}}</p>
-    <h1>What will your {{COLA_PROJECTED_YEAR}} Social Security raise actually be?</h1>
+    <p class="eyebrow">Social Security · COLA {{CYCLE_YEAR}}</p>
+    <h1>What will your {{CYCLE_YEAR}} Social Security raise actually be?</h1>
     <p class="lead prose">Enter your current monthly benefit and we'll apply the cost-of-living adjustment (COLA), then subtract your Medicare Part B premium — because that is the number that really lands in your bank account. Nothing you type ever leaves your device.</p>
   </div>
 </section>
@@ -44,15 +44,15 @@ changefreq: weekly
             <div class="field">
               <label for="f-cola-preset">Which COLA should we use?</label>
               <select class="input" id="f-cola-preset" name="cola">
-                <option value="{{COLA_PROJECTED}}" selected>{{COLA_PROJECTED_YEAR}} projected COLA — {{COLA_PROJECTED}}%</option>
-                <option value="{{COLA_CONFIRMED}}">{{COLA_CONFIRMED_YEAR}} confirmed COLA — {{COLA_CONFIRMED}}%</option>
+                <option value="{{CYCLE_COLA}}" selected>{{CYCLE_YEAR}} {{CYCLE_STATUS_LC}} COLA — {{CYCLE_COLA}}%</option>
+                <option value="{{COLA_PRIOR_COLA}}">{{COLA_PRIOR_YEAR}} confirmed COLA — {{COLA_PRIOR_COLA}}%</option>
                 <option value="custom">Enter my own percentage…</option>
               </select>
-              <span class="hint">The {{COLA_PROJECTED_YEAR}} figure is an early estimate. The official COLA is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>.</span>
+              <span class="hint">{{CYCLE_CALC_HINT}}</span>
               <div class="field" id="cola-custom-wrap" hidden style="margin:0.75rem 0 0;">
                 <label for="f-cola-custom">Your own COLA percentage</label>
                 <div class="input-group">
-                  <input class="input" id="f-cola-custom" type="text" inputmode="decimal" value="{{COLA_PROJECTED}}" autocomplete="off" aria-describedby="f-cola-custom-hint f-cola-custom-error">
+                  <input class="input" id="f-cola-custom" type="text" inputmode="decimal" value="{{CYCLE_COLA}}" autocomplete="off" aria-describedby="f-cola-custom-hint f-cola-custom-error">
                   <span class="input-group__addon" style="border-radius:0 10px 10px 0;border-left:0;border-right:2px solid var(--bc-line);" aria-hidden="true">%</span>
                 </div>
                 <span class="hint" id="f-cola-custom-hint">Enter a number from 0 to 20 — for example 2.8. We round to one decimal place, the way Social Security does.</span>
@@ -133,7 +133,7 @@ changefreq: weekly
       <a class="card card--link" href="/medicare-plan-changes">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-magnifier-diff" xlink:href="#ic-magnifier-diff"/></svg></div>
         <h3>Now check your Medicare plan</h3>
-        <p class="muted">Your raise is only half the picture. See exactly what changed in your Medicare plan's premium, deductible, and benefits for {{COLA_PROJECTED_YEAR}}.</p>
+        <p class="muted">Your raise is only half the picture. See exactly what changed in your Medicare plan's premium, deductible, and benefits for {{PLAN_YEAR_NEXT}}.</p>
         <span class="badge badge--info">What Changed tool →</span>
       </a>
       <a class="card card--link" href="/key-dates">
