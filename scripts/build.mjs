@@ -264,6 +264,14 @@ function build() {
     PART_B_DEDUCTIBLE: whole(requireFigure(figures.partBDeductible, "PART_B_DEDUCTIBLE", "Add the current year's part_b_deductible to src/data/medicare-figures.csv.")),
     PART_D_OOP_CAP: whole(requireFigure(figures.partDOopCap, "PART_D_OOP_CAP", "Add the current year's part_d_oop_cap to src/data/medicare-figures.csv.")),
     MEDICARE_FIGURES_YEAR: requireFigure(figures.currentYear, "MEDICARE_FIGURES_YEAR", "src/data/medicare-figures.csv has no official row."),
+    /* The Part D cap for the plan year the site is helping people shop for
+       (PLAN_YEAR_NEXT). Looked up by year rather than "the newest row", so it
+       does not move when the Part B notice later promotes the 2027 row. */
+    PART_D_OOP_CAP_NEXT: whole(requireFigure(
+      ((figures.history || []).find((r) => Number(r.year) === Number(planManifest.nextYear)) || {}).partDOopCap,
+      "PART_D_OOP_CAP_NEXT",
+      `Add a ${planManifest.nextYear} row with part_d_oop_cap to src/data/medicare-figures.csv (status=announced is fine before the Part B notice).`
+    )),
 
     // Plan-comparison years, straight from the plan data the tool actually loads.
     PLAN_YEAR_CURRENT: requireFigure(planManifest.currentYear, "PLAN_YEAR_CURRENT", "src/data/manifest.json has no currentYear — check scripts/build-plan-data.mjs."),

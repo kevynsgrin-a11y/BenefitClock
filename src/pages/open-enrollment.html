@@ -211,6 +211,12 @@ scripts: open-enrollment.js
         <p class="oeh-cost__value">${{PART_D_OOP_CAP}}</p>
         <p class="oeh-cost__source">CMS CY{{MEDICARE_FIGURES_YEAR}} Part D Redesign Program Instructions</p>
       </div>
+      <div class="oeh-cost">
+        <p class="oeh-cost__year">{{PLAN_YEAR_NEXT}}</p>
+        <h3>Part D out-of-pocket cap</h3>
+        <p class="oeh-cost__value">${{PART_D_OOP_CAP_NEXT}}</p>
+        <p class="oeh-cost__source"><a href="https://www.medicare.gov/health-drug-plans/part-d/basics/costs" target="_blank" rel="noopener">Medicare.gov, Part D costs</a></p>
+      </div>
       <div class="oeh-cost oeh-cost--awaiting" data-slot="PART_B_PREMIUM_{{AEP_COVERAGE_YEAR}}">
         <p class="oeh-cost__year">{{AEP_COVERAGE_YEAR}}</p>
         <h3>Part B monthly premium</h3>
