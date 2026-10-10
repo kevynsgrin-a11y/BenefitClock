@@ -220,12 +220,24 @@ function build() {
 
   /* "Data last refreshed" describes the DATA, so it is derived from the data's
      own provenance dates. Using the build date meant every unrelated CSS commit
-     silently re-stamped the site as freshly verified. */
-  const provenanceDates = [
+     silently re-stamped the site as freshly verified.
+
+     Two stamps, because two different things were verified:
+       DATA_UPDATED       — the Medicare figures (Part B / Part D). Only the
+                            Medicare source date moves it. A COLA announcement
+                            used to move this too, so on announcement day the
+                            plan tool and the "Federal Register via GPO govinfo,
+                            confirmed ..." lines would have claimed the Part B
+                            figures were re-confirmed that day. They were not.
+       COLA_DATA_UPDATED  — the COLA figures, which really are confirmed on the
+                            day SSA announces; the newest of the COLA
+                            announcement dates and the Medicare source date. */
+  const dataUpdated = figures.sourceUpdated || null;
+  const colaProvenanceDates = [
     ...(cola.history || []).map((h) => h.announced).filter(Boolean),
     figures.sourceUpdated,
   ].filter(Boolean).sort();
-  const dataUpdated = provenanceDates[provenanceDates.length - 1] || null;
+  const colaDataUpdated = colaProvenanceDates[colaProvenanceDates.length - 1] || null;
 
   const colaTokens = {
     COLA_CONFIRMED: requireFigure(cola.confirmedCola, "COLA_CONFIRMED", "No official COLA in src/data/cola-history.csv."),
@@ -241,13 +253,25 @@ function build() {
     COLA_ANNOUNCE_DATE_LONG: longDate(announce),
     COLA_CONFIRMED_ANNOUNCED: requireFigure(cola.confirmedAnnounced, "COLA_CONFIRMED_ANNOUNCED", "The latest official row in src/data/cola-history.csv needs an `announced` date."),
     COLA_CONFIRMED_ANNOUNCED_LONG: longDate(requireFigure(cola.confirmedAnnounced, "COLA_CONFIRMED_ANNOUNCED_LONG", "The latest official row in src/data/cola-history.csv needs an `announced` date.")),
-    DATA_UPDATED: longDate(requireFigure(dataUpdated, "DATA_UPDATED", "No provenance dates found in the COLA history or Medicare figures.")),
+    COLA_CONFIRMED_LATE_NOTE: cola.confirmedLateReason ? ` (later than usual because of ${cola.confirmedLateReason})` : "",
+    COLA_LATE_YEAR: requireFigure(cola.lateYear, "COLA_LATE_YEAR", "No official row in src/data/cola-history.csv has a late_reason. The \"date can move\" sentences cite the most recent late announcement."),
+    COLA_LATE_ANNOUNCED_LONG: longDate(requireFigure(cola.lateAnnounced, "COLA_LATE_ANNOUNCED_LONG", "The official row with a late_reason in src/data/cola-history.csv needs an `announced` date.")),
+    DATA_UPDATED: longDate(requireFigure(dataUpdated, "DATA_UPDATED", "No source_updated date on the current row of src/data/medicare-figures.csv.")),
+    COLA_DATA_UPDATED: longDate(requireFigure(colaDataUpdated, "COLA_DATA_UPDATED", "No provenance dates found in the COLA history or Medicare figures.")),
 
     // Statutory Medicare figures — indexed annually, so never inline them in markup.
     PART_B_PREMIUM: money(requireFigure(figures.partBPremium, "PART_B_PREMIUM", "Add the current year's part_b_premium to src/data/medicare-figures.csv.")),
     PART_B_DEDUCTIBLE: whole(requireFigure(figures.partBDeductible, "PART_B_DEDUCTIBLE", "Add the current year's part_b_deductible to src/data/medicare-figures.csv.")),
     PART_D_OOP_CAP: whole(requireFigure(figures.partDOopCap, "PART_D_OOP_CAP", "Add the current year's part_d_oop_cap to src/data/medicare-figures.csv.")),
     MEDICARE_FIGURES_YEAR: requireFigure(figures.currentYear, "MEDICARE_FIGURES_YEAR", "src/data/medicare-figures.csv has no official row."),
+    /* The Part D cap for the plan year the site is helping people shop for
+       (PLAN_YEAR_NEXT). Looked up by year rather than "the newest row", so it
+       does not move when the Part B notice later promotes the 2027 row. */
+    PART_D_OOP_CAP_NEXT: whole(requireFigure(
+      ((figures.history || []).find((r) => Number(r.year) === Number(planManifest.nextYear)) || {}).partDOopCap,
+      "PART_D_OOP_CAP_NEXT",
+      `Add a ${planManifest.nextYear} row with part_d_oop_cap to src/data/medicare-figures.csv (status=announced is fine before the Part B notice).`
+    )),
 
     // Plan-comparison years, straight from the plan data the tool actually loads.
     PLAN_YEAR_CURRENT: requireFigure(planManifest.currentYear, "PLAN_YEAR_CURRENT", "src/data/manifest.json has no currentYear — check scripts/build-plan-data.mjs."),
@@ -328,6 +352,14 @@ function build() {
     CYCLE_YEAR: requireFigure(cycle.year, "CYCLE_YEAR", "cola.json has no cycle object — run scripts/build-cola-data.mjs."),
     CYCLE_COLA: requireFigure(cycle.cola, "CYCLE_COLA", "cola.json has no cycle.cola — run scripts/build-cola-data.mjs."),
     CYCLE_STATUS_LC: cycleIsProjected ? "projected" : "confirmed",
+    COLA_PRIOR_YEAR: requireFigure(cycle.priorYear, "COLA_PRIOR_YEAR", "No official COLA row before the cycle year in src/data/cola-history.csv."),
+    COLA_PRIOR_COLA: requireFigure(cycle.priorCola, "COLA_PRIOR_COLA", "No official COLA row before the cycle year in src/data/cola-history.csv."),
+    /* Calculator hint under the COLA picker. The picker defaults to the cycle's
+       COLA (the raise people are about to get), which is the projected figure
+       today and the official one from announcement day. */
+    CYCLE_CALC_HINT: cycleIsProjected
+      ? `The ${cycle.year} figure is an early estimate. The official COLA is expected on <strong>${longDate(announce)}</strong>.`
+      : `The ${cycle.year} COLA is official: the Social Security Administration announced it on ${cycleAnnouncedLong}.`,
     // The benefit-year the base amounts come from: the raise taking effect in
     // January of cycle year Y is applied to the figures SSA published for Y-1.
     CYCLE_BASE_YEAR: String(Number(cycle.year) - 1),

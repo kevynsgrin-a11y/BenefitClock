@@ -4,8 +4,14 @@
 # Refresh each autumn:
 #   part_b_premium / part_b_deductible — CMS "Medicare Parts A & B Premiums and
 #     Deductibles" fact sheet (published ~November, effective January 1).
-#   part_d_oop_cap — CMS Part D annual parameters (Inflation Reduction Act cap,
-#     indexed each year; it is NOT fixed at its original $2,000).
+#   part_d_oop_cap / part_d_deductible — CMS Part D annual parameters
+#     (Inflation Reduction Act cap, indexed each year; it is NOT fixed at its
+#     original $2,000).
+#
+# status=announced marks a future year whose Part D parameters are out but whose
+# Part B figures are not. It never becomes the "current" row (only the newest
+# status=official row does). When the Part B notice lands (~November), fill
+# part_b_premium / part_b_deductible and change the status to official.
 #
 # CONFIRMED 2026-09-28 (first-hand, from a networked environment): the 2026
 # Part B figures were verified directly against the Federal Register notice
@@ -18,8 +24,9 @@
 #     notice (published ~November) or the CMS "Parts A & B Premiums and
 #     Deductibles" fact sheet restating it.
 #   part_d_oop_cap — CMS Part D redesign / annual parameters for the new year.
-year,part_b_premium,part_b_deductible,part_d_oop_cap,status,source_updated,source
-2023,164.90,226,,official,2022-09-27,CMS annual Medicare Parts A & B premiums and deductibles
-2024,174.70,240,,official,2023-10-12,CMS annual Medicare Parts A & B premiums and deductibles
-2025,185.00,257,2000,official,2024-11-08,CMS annual Medicare Parts A & B premiums and deductibles; Inflation Reduction Act Part D cap
-2026,202.90,283,2100,official,2026-09-28,Federal Register 2025-20251 (Part B premium and deductible) confirmed first-hand via GPO govinfo.gov 2026-09-28; Part D cap per CMS CY2026 Part D Redesign Program Instructions
+year,part_b_premium,part_b_deductible,part_d_oop_cap,part_d_deductible,status,source_updated,source
+2023,164.90,226,,,official,2022-09-27,CMS annual Medicare Parts A & B premiums and deductibles
+2024,174.70,240,,,official,2023-10-12,CMS annual Medicare Parts A & B premiums and deductibles
+2025,185.00,257,2000,,official,2024-11-08,CMS annual Medicare Parts A & B premiums and deductibles; Inflation Reduction Act Part D cap
+2026,202.90,283,2100,615,official,2026-09-28,Federal Register 2025-20251 (Part B premium and deductible) confirmed first-hand via GPO govinfo.gov 2026-09-28; Part D cap per CMS CY2026 Part D Redesign Program Instructions
+2027,,,2400,700,announced,2026-10-10,Medicare.gov Part D costs page (CMS) read 2026-10-10 - Part D parameters only; the 2027 Part B figures are not published yet

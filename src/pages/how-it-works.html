@@ -27,7 +27,7 @@ changefreq: monthly
     <p>To set the COLA, Social Security looks at just one stretch of the year — the <strong>third quarter: July, August, and September</strong>. It averages the CPI-W for those three months, then compares that average to the same three-month average from the last year a COLA took effect. The percentage increase, <strong>rounded to the nearest tenth of a percent</strong>, is your COLA.</p>
 
     <h3>A worked example: the {{COLA_CONFIRMED_YEAR}} COLA</h3>
-    <p>The {{COLA_CONFIRMED_YEAR}} COLA was exactly {{COLA_CONFIRMED}}%, announced on {{COLA_CONFIRMED_ANNOUNCED_LONG}} (a few days later than usual because of the federal government shutdown). Here's how that number falls out of the two third-quarter averages:</p>
+    <p>The {{COLA_CONFIRMED_YEAR}} COLA was exactly {{COLA_CONFIRMED}}%, announced on {{COLA_CONFIRMED_ANNOUNCED_LONG}}{{COLA_CONFIRMED_LATE_NOTE}}. Here's how that number falls out of the two third-quarter averages:</p>
     <div class="table-scroll">
       <table class="data">
         <caption>How the {{COLA_CONFIRMED_YEAR}} COLA of {{COLA_CONFIRMED}}% is calculated from CPI-W</caption>
@@ -59,7 +59,7 @@ changefreq: monthly
     </div>
     <p>And here is how that {{COLA_CONFIRMED}}% fits into recent history (the {{COLA_PROJECTED_YEAR}} figure is an early estimate):</p>
 {{CHART_COLA_HISTORY}}
-    <p>That's the whole calculation. No opinion, no adjustment — just two averages and a rounding rule. The <a href="/guides/2027-social-security-cola">{{COLA_PROJECTED_YEAR}} COLA is an early estimate of {{COLA_PROJECTED}}%</a> from The Senior Citizens League and AARP, and we label it that way everywhere it appears. The official {{COLA_PROJECTED_YEAR}} figure arrives when the BLS releases September CPI-W — normally at 8:30&nbsp;a.m. ET — and the SSA announces the COLA, which it usually does the same morning. That is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, but the date can move: the {{COLA_CONFIRMED_YEAR}} announcement slipped to {{COLA_CONFIRMED_ANNOUNCED_LONG}}.</p>
+    <p>That's the whole calculation. No opinion, no adjustment — just two averages and a rounding rule. The <a href="/guides/2027-social-security-cola">{{COLA_PROJECTED_YEAR}} COLA is an early estimate of {{COLA_PROJECTED}}%</a> from {{COLA_PROJECTED_SOURCE}}, and we label it that way everywhere it appears. The official {{COLA_PROJECTED_YEAR}} figure arrives when the BLS releases September CPI-W — normally at 8:30&nbsp;a.m. ET — and the SSA announces the COLA, which it usually does the same morning. That is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, but the date can move: the {{COLA_LATE_YEAR}} announcement slipped to {{COLA_LATE_ANNOUNCED_LONG}}.</p>
 
     <div class="callout callout--info">
       <p class="callout__title">From the raise to what lands in your account</p>
@@ -141,8 +141,8 @@ changefreq: monthly
     </div>
 
     <div class="callout callout--warn">
-      <p class="callout__title">An honest note about {{COLA_PROJECTED_YEAR}}</p>
-      <p style="margin:0;">Until CMS publishes the official {{COLA_PROJECTED_YEAR}} files (late September / early October), our plan tool runs on a <strong>structurally identical sample dataset</strong> — same fields, same layout, real behavior — so you can see exactly how the comparison works before the real numbers exist. The moment CMS posts the actual files, we load them and the tool becomes live. We would rather tell you this plainly than pretend the {{COLA_PROJECTED_YEAR}} numbers are already final.</p>
+      <p class="callout__title">An honest note about {{PLAN_YEAR_NEXT}}</p>
+      <p style="margin:0;">Until CMS publishes the official {{PLAN_YEAR_NEXT}} files (late September / early October), our plan tool runs on a <strong>structurally identical sample dataset</strong> — same fields, same layout, real behavior — so you can see exactly how the comparison works before the real numbers exist. The moment CMS posts the actual files, we load them and the tool becomes live. We would rather tell you this plainly than pretend the {{PLAN_YEAR_NEXT}} numbers are already final.</p>
     </div>
   </div>
 </section>
@@ -155,11 +155,11 @@ changefreq: monthly
     <ul class="timeline">
       <li>
         <span class="date">Late Sep – early Oct 2026</span>
-        CMS releases the {{COLA_PROJECTED_YEAR}} Landscape, Crosswalk, PUF, and PBP files. We load them, replacing the sample dataset, so the "What Changed" tool shows real plan changes.
+        CMS releases the {{PLAN_YEAR_NEXT}} Landscape, Crosswalk, PUF, and PBP files. We load them, replacing the sample dataset, so the "What Changed" tool shows real plan changes.
       </li>
       <li>
-        <span class="date">{{COLA_ANNOUNCE_DATE_LONG}}</span>
-        The BLS releases September CPI-W and the SSA announces the official {{COLA_PROJECTED_YEAR}} COLA. We update the confirmed figure across the site.
+        <span class="date">{{COLA_ANNOUNCE_DATE_LONG}} (expected)</span>
+        The BLS releases September CPI-W and the SSA is expected to announce the official {{COLA_PROJECTED_YEAR}} COLA. We update the confirmed figure across the site.
       </li>
       <li>
         <span class="date">Each following October</span>
@@ -212,7 +212,7 @@ changefreq: monthly
       <a class="card card--link" href="/cola-calculator">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-coins-up" xlink:href="#ic-coins-up"/></svg></div>
         <h3>Calculate your COLA raise</h3>
-        <p class="muted">Apply the {{COLA_PROJECTED_YEAR}} COLA to your benefit and subtract Part B to see the raise you actually keep.</p>
+        <p class="muted">Apply the {{CYCLE_YEAR}} COLA to your benefit and subtract Part B to see the raise you actually keep.</p>
         <span class="badge badge--info">COLA calculator →</span>
       </a>
       <a class="card card--link" href="/medicare-plan-changes">

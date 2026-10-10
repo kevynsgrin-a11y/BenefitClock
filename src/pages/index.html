@@ -1,6 +1,6 @@
 <!--
 title: BenefitDial — Your Social Security COLA & Medicare Plan
-description: Estimate your {{COLA_PROJECTED_YEAR}} Social Security raise and see what changed in your Medicare plan. Independent and ad-supported — no sales calls, no data selling.
+description: Estimate your {{CYCLE_YEAR}} Social Security raise and see what changed in your Medicare plan. Independent and ad-supported — no sales calls, no data selling.
 slug: index
 nav: home
 ogtype: website
@@ -40,13 +40,13 @@ changefreq: weekly
       <a class="card card--link" href="/medicare-plan-changes">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-magnifier-diff" xlink:href="#ic-magnifier-diff"/></svg></div>
         <h3>What changed in my Medicare plan?</h3>
-        <p class="muted">Pick your plan and instantly see how your premium, deductible, max out-of-pocket, star rating, and extra benefits moved from {{PLAN_YEAR_CURRENT}} to {{PLAN_YEAR_NEXT}} — using public CMS data. No login, no form.</p>
+        <p class="muted">Pick your plan and instantly see how your premium, deductible, max out-of-pocket, star rating, and extra benefits moved from {{PLAN_YEAR_CURRENT}} to {{PLAN_YEAR_NEXT}}. No login, no form.</p>
         <span class="badge badge--info">Open the What&nbsp;Changed tool →</span>
       </a>
       <a class="card card--link" href="/cola-calculator">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-coins-up" xlink:href="#ic-coins-up"/></svg></div>
         <h3>What's my real Social Security raise?</h3>
-        <p class="muted">Enter your benefit and we'll apply the {{COLA_PROJECTED_YEAR}} COLA, then subtract Medicare Part B to show the raise that actually reaches your bank account. Everything runs in your browser.</p>
+        <p class="muted">Enter your benefit and we'll apply the {{CYCLE_YEAR}} COLA, then subtract Medicare Part B to show the raise that actually reaches your bank account. Everything runs in your browser.</p>
         <span class="badge badge--info">Open the COLA calculator →</span>
       </a>
     </div>
@@ -94,13 +94,13 @@ changefreq: weekly
       <div class="prose">
         <p class="eyebrow">Mark your calendar</p>
         <h2>Two deadlines, one busy autumn.</h2>
-        <p>The moment you learn your {{COLA_PROJECTED_YEAR}} Social Security raise is almost the exact moment you're allowed to change your Medicare plan. BenefitDial is built for that overlap.</p>
+        <p>The moment you learn your {{CYCLE_YEAR}} Social Security raise is almost the exact moment you're allowed to change your Medicare plan. BenefitDial is built for that overlap.</p>
         <a class="btn btn--solid" href="/key-dates">See all key dates &amp; deadlines <svg class="icon" aria-hidden="true" focusable="false"><use href="#ic-arrow-right" xlink:href="#ic-arrow-right"/></svg></a>
       </div>
       <ul class="timeline">
         <li>
-          <span class="date">{{COLA_ANNOUNCE_DATE_LONG}}</span>
-          BLS releases September inflation data and the SSA announces the official {{COLA_PROJECTED_YEAR}} COLA.
+          <span class="date">{{COLA_ANNOUNCE_DATE_LONG}} (expected)</span>
+          BLS releases September inflation data and the SSA is expected to announce the official {{COLA_PROJECTED_YEAR}} COLA.
         </li>
         <li>
           <span class="date">{{AEP_WINDOW_RANGE_LONG}}</span>
@@ -125,7 +125,7 @@ changefreq: weekly
           <span class="step__num" aria-hidden="true">1</span>
           <div>
             <p class="step__title">Check your raise</p>
-            <p>Enter your benefit in the COLA calculator to see your {{COLA_PROJECTED_YEAR}} increase — before and after Part B.</p>
+            <p>Enter your benefit in the COLA calculator to see your {{CYCLE_YEAR}} increase — before and after Part B.</p>
           </div>
         </div>
       </li>

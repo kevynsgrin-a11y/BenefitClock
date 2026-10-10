@@ -1,6 +1,6 @@
 <!--
-title: Medicare & Social Security Key Dates 2026–{{COLA_PROJECTED_YEAR}} | BenefitDial
-description: A plain-language calendar of the fall benefits season: when the {{COLA_PROJECTED_YEAR}} COLA is announced, when Medicare Open Enrollment runs, and when changes take effect.
+title: Medicare & Social Security Key Dates 2026–{{CYCLE_YEAR}} | BenefitDial
+description: A plain-language calendar of the fall benefits season: when the {{CYCLE_YEAR}} COLA is announced, when Medicare Open Enrollment runs, and when changes take effect.
 slug: key-dates
 nav: dates
 ogtype: article
@@ -13,7 +13,7 @@ changefreq: monthly
 <section class="section" style="padding-bottom:1.5rem;">
   <div class="wrap">
     <p class="eyebrow">Your fall calendar, in one place</p>
-    <h1>Key Medicare &amp; Social Security dates for fall 2026 into {{COLA_PROJECTED_YEAR}}</h1>
+    <h1>Key Medicare &amp; Social Security dates for fall 2026 into {{CYCLE_YEAR}}</h1>
     <p class="lead prose">Every autumn, two of the biggest numbers in your year land almost on top of each other. You learn your Social Security cost-of-living raise, and — at the very same time — you get the window to change your Medicare plan. This page lays out the whole overlap, in order, so nothing sneaks up on you.</p>
     <figure class="lead-fig">
       <img src="/assets/img/key-dates.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="A wall calendar with completely blank pages hanging on a muted teal wall, with a small vase of dried autumn grass on a side table below.">
@@ -29,13 +29,13 @@ changefreq: monthly
       <div class="prose">
         <p class="eyebrow">The season at a glance</p>
         <h2>Two announcements, one busy autumn.</h2>
-        <p>The dates below run from midsummer, when the first {{COLA_PROJECTED_YEAR}} COLA estimates appear, through the following spring, when the last enrollment window closes. The two you can act on are the Annual Enrollment Period and the Medicare Advantage Open Enrollment Period — everything else is a heads-up so you're ready.</p>
+        <p>The dates below run from midsummer, when the first {{CYCLE_YEAR}} COLA estimates appear, through the following spring, when the last enrollment window closes. The two you can act on are the Annual Enrollment Period and the Medicare Advantage Open Enrollment Period — everything else is a heads-up so you're ready.</p>
         <p>Want the short version? The official COLA is expected on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, and Medicare Open Enrollment runs <strong>{{AEP_WINDOW_RANGE_LONG}}</strong>.</p>
       </div>
       <ul class="timeline">
         <li>
           <span class="date">Mid-July 2026</span>
-          Early {{COLA_PROJECTED_YEAR}} COLA projections begin. Groups like AARP and The Senior Citizens League publish estimates as summer inflation data comes in. The current early estimate is <strong>{{COLA_PROJECTED}}%</strong> — a projection, not the official figure.
+          Early {{COLA_PROJECTED_YEAR}} COLA projections begin. The Senior Citizens League publishes estimates as summer inflation data comes in. The current early estimate is <strong>{{COLA_PROJECTED}}%</strong> — a projection, not the official figure.
         </li>
         <li>
           <span class="date">September 2026</span>
@@ -43,11 +43,11 @@ changefreq: monthly
         </li>
         <li>
           <span class="date">{{COLA_ANNOUNCE_DATE_LONG}} (expected)</span>
-          The Bureau of Labor Statistics releases September CPI-W inflation data, normally at 8:30&nbsp;a.m. ET, and the Social Security Administration usually announces the <strong>official {{COLA_PROJECTED_YEAR}} COLA</strong> the same morning. This is the day the estimate becomes real — though the date can slip: the {{COLA_CONFIRMED_YEAR}} COLA was not announced until {{COLA_CONFIRMED_ANNOUNCED_LONG}}.
+          The Bureau of Labor Statistics releases September CPI-W inflation data, normally at 8:30&nbsp;a.m. ET, and the Social Security Administration usually announces the <strong>official {{COLA_PROJECTED_YEAR}} COLA</strong> the same morning. This is the day the estimate becomes real — though the date can slip: the {{COLA_LATE_YEAR}} COLA was not announced until {{COLA_LATE_ANNOUNCED_LONG}}.
         </li>
         <li>
           <span class="date">{{AEP_WINDOW_RANGE_LONG}}</span>
-          <strong>Medicare Annual Enrollment Period (AEP).</strong> This is the main window to compare, switch, or change your Medicare Advantage and Part D coverage for {{COLA_PROJECTED_YEAR}}. Open to everyone with Medicare.
+          <strong>Medicare Annual Enrollment Period (AEP).</strong> This is the main window to compare, switch, or change your Medicare Advantage and Part D coverage for {{AEP_COVERAGE_YEAR}}. Open to everyone with Medicare.
         </li>
         <li>
           <span class="date">Late November {{AEP_SEASON_YEAR}}</span>
@@ -95,14 +95,14 @@ changefreq: monthly
     <div class="grid grid--2" style="margin-top:2rem;">
       <a class="card card--link" href="/cola-calculator">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-coins-up" xlink:href="#ic-coins-up"/></svg></div>
-        <h3>Estimate your {{COLA_PROJECTED_YEAR}} raise</h3>
+        <h3>Estimate your {{CYCLE_YEAR}} raise</h3>
         <p class="muted">Enter your benefit and we'll apply the COLA, then subtract Part B to show the increase you actually keep. Runs entirely in your browser.</p>
         <span class="badge badge--info">COLA calculator →</span>
       </a>
       <a class="card card--link" href="/medicare-plan-changes">
         <div class="card__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#ic-magnifier-diff" xlink:href="#ic-magnifier-diff"/></svg></div>
         <h3>See what changed in your plan</h3>
-        <p class="muted">Pick your plan and compare {{COLA_CONFIRMED_YEAR}} to {{COLA_PROJECTED_YEAR}} side by side — premium, deductible, max out-of-pocket, star rating, and dropped extras.</p>
+        <p class="muted">Pick your plan and compare {{PLAN_YEAR_CURRENT}} to {{PLAN_YEAR_NEXT}} side by side — premium, deductible, max out-of-pocket, star rating, and dropped extras.</p>
         <span class="badge badge--info">What Changed tool →</span>
       </a>
     </div>
@@ -119,14 +119,14 @@ changefreq: monthly
     <details class="faq">
       <summary>What if I miss the Annual Enrollment Period?</summary>
       <div class="faq__body">
-        <p>If you miss AEP ({{AEP_WINDOW_RANGE}}), your current coverage simply carries into {{COLA_PROJECTED_YEAR}} with whatever changes your plan made — so it's worth reading your ANOC even if you plan to stay put. If you're already in a Medicare Advantage plan, you get one more chance during the <strong>MA Open Enrollment Period, {{AEP_MA_OEP_RANGE_LONG}}</strong>, to switch plans or return to Original Medicare. Outside those windows, you generally need a Special Enrollment Period, which is triggered by specific life events like moving. Check your options on the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or by calling 1-800-MEDICARE.</p>
+        <p>If you miss AEP ({{AEP_WINDOW_RANGE}}), your current coverage simply carries into {{AEP_COVERAGE_YEAR}} with whatever changes your plan made — so it's worth reading your ANOC even if you plan to stay put. If you're already in a Medicare Advantage plan, you get one more chance during the <strong>MA Open Enrollment Period, {{AEP_MA_OEP_RANGE_LONG}}</strong>, to switch plans or return to Original Medicare. Outside those windows, you generally need a Special Enrollment Period, which is triggered by specific life events like moving. Check your options on the official <a href="https://www.medicare.gov/plan-compare/" rel="nofollow noopener" target="_blank">Medicare Plan Finder</a> or by calling 1-800-MEDICARE.</p>
       </div>
     </details>
 
     <details class="faq">
       <summary>Is the {{COLA_PROJECTED}}% COLA for {{COLA_PROJECTED_YEAR}} final?</summary>
       <div class="faq__body">
-        <p>No. The <strong>{{COLA_PROJECTED}}%</strong> figure is an early estimate from groups like The Senior Citizens League and AARP, based on inflation data so far. By law, the official COLA is the percentage increase in the average <strong>CPI-W</strong> for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration is expected to announce the official number on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, though the date can move. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was <strong>{{COLA_CONFIRMED}}%</strong>.</p>
+        <p>No. The <strong>{{COLA_PROJECTED}}%</strong> figure is an early estimate from {{COLA_PROJECTED_SOURCE}}, based on inflation data so far. By law, the official COLA is the percentage increase in the average <strong>CPI-W</strong> for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration is expected to announce the official number on <strong>{{COLA_ANNOUNCE_DATE_LONG}}</strong>, though the date can move. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was <strong>{{COLA_CONFIRMED}}%</strong>.</p>
       </div>
     </details>
 
@@ -154,8 +154,8 @@ changefreq: monthly
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Key Medicare & Social Security dates for fall 2026 into {{COLA_PROJECTED_YEAR}}",
-  "description": "A plain-language calendar of the fall benefits season — when the {{COLA_PROJECTED_YEAR}} COLA is announced, when Medicare Open Enrollment runs, and when your bigger check and new plan start.",
+  "headline": "Key Medicare & Social Security dates for fall 2026 into {{CYCLE_YEAR}}",
+  "description": "A plain-language calendar of the fall benefits season — when the {{CYCLE_YEAR}} COLA is announced, when Medicare Open Enrollment runs, and when your bigger check and new plan start.",
   "about": ["Social Security COLA", "Medicare Annual Enrollment Period", "Medicare Advantage Open Enrollment"],
   "articleSection": "Key dates",
   "inLanguage": "en-US",
@@ -187,8 +187,8 @@ changefreq: monthly
   "@type": "FAQPage",
   "mainEntity": [
     { "@type": "Question", "name": "When will I actually see the bigger check?", "acceptedAnswer": { "@type": "Answer", "text": "The {{COLA_PROJECTED_YEAR}} COLA is expected on {{COLA_ANNOUNCE_DATE_LONG}}, but the higher amount doesn't arrive right away. The new benefit takes effect for January 2027, which most people receive in their payment in January 2027. You'll get a notice in your my Social Security message center in late November, and a mailed notice in December, confirming your new amount before it starts." } },
-    { "@type": "Question", "name": "What if I miss the Annual Enrollment Period?", "acceptedAnswer": { "@type": "Answer", "text": "If you miss AEP ({{AEP_WINDOW_RANGE}}), your current coverage simply carries into {{COLA_PROJECTED_YEAR}} with whatever changes your plan made — so it's worth reading your ANOC even if you plan to stay put. If you're already in a Medicare Advantage plan, you get one more chance during the MA Open Enrollment Period, {{AEP_MA_OEP_RANGE_LONG}}, to switch plans or return to Original Medicare. Outside those windows, you generally need a Special Enrollment Period, which is triggered by specific life events like moving. Check your options on the official Medicare Plan Finder or by calling 1-800-MEDICARE." } },
-    { "@type": "Question", "name": "Is the {{COLA_PROJECTED}}% COLA for {{COLA_PROJECTED_YEAR}} final?", "acceptedAnswer": { "@type": "Answer", "text": "No. The {{COLA_PROJECTED}}% figure is an early estimate from groups like The Senior Citizens League and AARP, based on inflation data so far. By law, the official COLA is the percentage increase in the average CPI-W for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration is expected to announce the official number on {{COLA_ANNOUNCE_DATE_LONG}}, though the date can move. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was {{COLA_CONFIRMED}}%." } },
+    { "@type": "Question", "name": "What if I miss the Annual Enrollment Period?", "acceptedAnswer": { "@type": "Answer", "text": "If you miss AEP ({{AEP_WINDOW_RANGE}}), your current coverage simply carries into {{AEP_COVERAGE_YEAR}} with whatever changes your plan made — so it's worth reading your ANOC even if you plan to stay put. If you're already in a Medicare Advantage plan, you get one more chance during the MA Open Enrollment Period, {{AEP_MA_OEP_RANGE_LONG}}, to switch plans or return to Original Medicare. Outside those windows, you generally need a Special Enrollment Period, which is triggered by specific life events like moving. Check your options on the official Medicare Plan Finder or by calling 1-800-MEDICARE." } },
+    { "@type": "Question", "name": "Is the {{COLA_PROJECTED}}% COLA for {{COLA_PROJECTED_YEAR}} final?", "acceptedAnswer": { "@type": "Answer", "text": "No. The {{COLA_PROJECTED}}% figure is an early estimate from {{COLA_PROJECTED_SOURCE}}, based on inflation data so far. By law, the official COLA is the percentage increase in the average CPI-W for July, August, and September over the same quarter of the last year a COLA took effect, rounded to the nearest tenth. The Social Security Administration is expected to announce the official number on {{COLA_ANNOUNCE_DATE_LONG}}, though the date can move. For comparison, the confirmed {{COLA_CONFIRMED_YEAR}} COLA was {{COLA_CONFIRMED}}%." } },
     { "@type": "Question", "name": "Where do these dates come from?", "acceptedAnswer": { "@type": "Answer", "text": "All of them come from public government sources: the Social Security Administration and Bureau of Labor Statistics for the COLA, and CMS for the Medicare enrollment periods and plan files. BenefitDial is independent — we're not a broker or agent, we take no commissions, and we never ask for your name, phone number, or email. We just line the dates up for you." } }
   ]
 }

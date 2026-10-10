@@ -1,6 +1,6 @@
 <!--
 title: Guides to Social Security & Medicare | BenefitDial
-description: Clear, jargon-free guides to the {{COLA_PROJECTED_YEAR}} Social Security COLA, Medicare Open Enrollment, what changed across Medicare, and how Part B affects your raise.
+description: Clear, jargon-free guides to the {{CYCLE_YEAR}} Social Security COLA, Medicare Open Enrollment, what changed across Medicare, and how Part B affects your raise.
 slug: guides
 nav: guides
 ogtype: website
@@ -23,7 +23,7 @@ changefreq: monthly
     <div class="grid grid--2">
       <a class="card card--link card--media" href="/guides/2027-social-security-cola">
         <img class="card__media" src="/assets/img/guide-cola.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="Coins, a blank envelope, and reading glasses on a warm wooden table in soft morning light.">
-        <h3>The {{COLA_PROJECTED_YEAR}} Social Security COLA, explained</h3>
+        <h3>The {{CYCLE_YEAR}} Social Security COLA, explained</h3>
         <p class="muted">How the cost-of-living adjustment is figured, why the {{COLA_PROJECTED}}% figure for {{COLA_PROJECTED_YEAR}} is still an estimate, and when the official number arrives.</p>
         <span class="badge badge--info">Read the guide →</span>
       </a>
@@ -35,8 +35,8 @@ changefreq: monthly
       </a>
       <a class="card card--link card--media" href="/guides/what-changed-medicare-2027">
         <img class="card__media" src="/assets/img/guide-changes.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="Two blank cards laid side by side on a slate surface with a brass magnifying glass beside them.">
-        <h3>What changed across Medicare for {{COLA_PROJECTED_YEAR}}</h3>
-        <p class="muted">Fewer plans on the shelf, formulary shifts, and the yearly Part D drug-cost cap — ${{PART_D_OOP_CAP}} in {{MEDICARE_FIGURES_YEAR}} — in plain language, straight from public CMS files.</p>
+        <h3>What changed across Medicare for {{PLAN_YEAR_NEXT}}</h3>
+        <p class="muted">Fewer plans on the shelf, formulary shifts, and the yearly Part D drug-cost cap — ${{PART_D_OOP_CAP_NEXT}} in {{PLAN_YEAR_NEXT}} — in plain language, straight from public CMS files.</p>
         <span class="badge badge--info">Read the guide →</span>
       </a>
       <a class="card card--link card--media" href="/guides/part-b-premium-and-your-cola">
@@ -53,11 +53,6 @@ changefreq: monthly
       <a class="card card--link" href="/guides/medicare-premiums-2027">
         <h3>Medicare Part B premium in 2027: projection vs. official</h3>
         <p class="muted">The Trustees Report projects about $209.50/month for 2027, up from $202.90. What's actually official, and how hold-harmless protects your check.</p>
-        <span class="badge badge--info">Read the guide →</span>
-      </a>
-      <a class="card card--link" href="/guides/fsa-limits-2026">
-        <h3>Medical FSA limits for 2026: $3,400 cap, $680 carryover</h3>
-        <p class="muted">The exact 2026 FSA numbers, how the carryover or grace period works, and the Medicare enrollment trap that catches working 65-year-olds.</p>
         <span class="badge badge--info">Read the guide →</span>
       </a>
     </div>
@@ -114,15 +109,14 @@ changefreq: monthly
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   "name": "Plain-language guides to Social Security & Medicare",
-  "description": "Clear, jargon-free guides to the {{COLA_PROJECTED_YEAR}} Social Security COLA, Medicare Open Enrollment, what changed across Medicare, and how Part B affects your raise.",
+  "description": "Clear, jargon-free guides to the {{CYCLE_YEAR}} Social Security COLA, Medicare Open Enrollment, what changed across Medicare, and how Part B affects your raise.",
   "hasPart": [
-    { "@type": "Article", "name": "The {{COLA_PROJECTED_YEAR}} Social Security COLA, explained", "url": "{{SITE_URL}}/guides/2027-social-security-cola" },
+    { "@type": "Article", "name": "The {{CYCLE_YEAR}} Social Security COLA, explained", "url": "{{SITE_URL}}/guides/2027-social-security-cola" },
     { "@type": "Article", "name": "Medicare Open Enrollment 2026: dates & how it works", "url": "{{SITE_URL}}/guides/medicare-aep-2026" },
-    { "@type": "Article", "name": "What changed across Medicare for {{COLA_PROJECTED_YEAR}}", "url": "{{SITE_URL}}/guides/what-changed-medicare-2027" },
+    { "@type": "Article", "name": "What changed across Medicare for {{PLAN_YEAR_NEXT}}", "url": "{{SITE_URL}}/guides/what-changed-medicare-2027" },
     { "@type": "Article", "name": "How Medicare Part B eats into your COLA", "url": "{{SITE_URL}}/guides/part-b-premium-and-your-cola" },
     { "@type": "Article", "name": "Medicare AEP checklist 2026: 9 steps, one window", "url": "{{SITE_URL}}/guides/aep-checklist" },
-    { "@type": "Article", "name": "Medicare Part B premium in 2027: projection vs. official", "url": "{{SITE_URL}}/guides/medicare-premiums-2027" },
-    { "@type": "Article", "name": "Medical FSA limits for 2026", "url": "{{SITE_URL}}/guides/fsa-limits-2026" }
+    { "@type": "Article", "name": "Medicare Part B premium in 2027: projection vs. official", "url": "{{SITE_URL}}/guides/medicare-premiums-2027" }
   ]
 }
 </script>

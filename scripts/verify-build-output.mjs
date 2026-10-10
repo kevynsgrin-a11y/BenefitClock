@@ -83,12 +83,13 @@ console.log("\nBuilt pages agree with the data layer");
   const cola = JSON.parse(read(join(DIST, "data", "cola.json")));
   const calc = read(join(DIST, "cola-calculator.html"));
 
-  /* The projected COLA is the calculator's own default. When these disagree the
-     tool computes a raise from a percentage the rest of the page never mentions. */
-  const projected = String(cola.projectedCola);
-  calc.includes(`${projected}%`)
-    ? ok(`projected COLA ${projected}% from cola.json appears on the calculator`)
-    : bad(`cola.json says projectedCola=${projected} but "${projected}%" does not appear in cola-calculator.html`);
+  /* The cycle's COLA (projected today, official from announcement day) is the
+     calculator's own default. When these disagree the tool computes a raise from
+     a percentage the rest of the page never mentions. */
+  const cycleDefault = String(cola.cycle.cola);
+  calc.includes(`<option value="${cycleDefault}" selected>`)
+    ? ok(`cycle COLA ${cycleDefault}% from cola.json is the calculator's selected default`)
+    : bad(`cola.json says cycle.cola=${cycleDefault} but it is not the selected default in cola-calculator.html`);
 
   const confirmed = String(cola.confirmedCola);
   const keyDates = read(join(DIST, "key-dates.html"));
